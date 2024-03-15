@@ -5,7 +5,7 @@
 
 = Introduction
 
-I am a user of your {{ analysisMeta.platform }} app "{{ analysisMeta.appName }}"{{ '#footnote[#link("https://play.google.com/store/apps/details?id=tld.sample.app")]' if analysisMeta.appUrl }} (hereinafter: "the app").
+I am a user of your {{ analysisMeta.platform }} app "{{ analysisMeta.appName }}"#footnote[{{ analysisMeta.appUrl | safe }}] (hereinafter: "the app").
 
 Through an automated analysis of the app, I have unfortunately become aware that the app is performing tracking and similar data transmissions in violation of applicable data protection law.
 
@@ -16,16 +16,16 @@ With this notice, I am making you aware of these violations and giving you the o
 I have recorded {{ trackHarResult.length }} requests that transmitted data to {{ findings | length }} tracker(s) between {{ harEntries[0].startTime | dateFormat }} and {{ harEntries[harEntries.length - 1].startTime | dateFormat }}. These requests happened *without any interaction* with the app or any potential consent dialogs. See the attached technical report for further details.
 
 {% for adapterSlug, adapterResult in findings %}
-== {{ adapterSlug }} (TODO: nicer title)
+== {{ adapterResult.adapter.name }}
 
-The app sent {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterSlug }}" (TODO: nicer title) (TODO: tracker URL), operated by "{{ adapterResult.adapter.tracker.name }}". Through these requests, at least the following information was transmitted:
+The app sent {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterResult.adapter.name }}", operated by "{{ adapterResult.adapter.tracker.name }}". Through these requests, at least the following information was transmitted:
 
 #table(
-  columns: (auto, auto),
+  columns: (33.3333%, 66.6666%),
 
   [*Data type*], [*Transmitted value(s)*],
   {% for property, value in adapterResult.receivedData -%}
-  [{{ t("data-path-property-" + property.toLowerCase()) }}], [{{ value | join(', ') | code }}],
+  [{{ t("properties", property) }}], [{{ value | join(', ') | code }}],
   {% endfor %}
 )
 {% endfor %}
@@ -47,6 +47,8 @@ As explained, the transmissions detailed above happened without any interaction 
 Processing that can only rely on consent as a legal basis may only happen after consent has been given, and you, as the controller, need to be able to demonstrate that consent has been given (Art. 7(1) GDPR).
 
 In addition, you have violated other provisions of the GDPR. In particular, Art. 5(1)(c) GDPR mandates the principle of data minimisation, requiring you to only process data to the extent necessary for the particular purpose. Further, Art. 25(1) GDPR prescribes the principle of data protection by design and by default.
+
+According to Art. 5(2), 7(1), and 24(1) GDPR, you have the burden to prove that all your processing is performed in accordance with the GDPR. This was explicitly confirmed by the European Court of Justice in case C-175/20.
 
 Finally, you have violated Art. 5(3) ePrivacy Directive. Unlike the GDPR, Art. 5(3) ePD doesn't just cover personal data but any data that is read from or stored on a user's device.
 

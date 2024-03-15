@@ -3,19 +3,11 @@ import { readFileSync } from 'fs';
 import type { Har } from 'har-format';
 import Nunjucks from 'nunjucks';
 import { adapters, type Adapter, type AnnotatedResult } from 'trackhar';
+import trackHarTranslationsEn from 'trackhar/i18n/en.json';
 import { generateTyp as generateTypForHar, unhar } from './lib/har2pdf';
-import { translations } from './translations';
-
-const templates = {
-    en: {
-        report: readFileSync(new URL('../templates/en/report.typ', import.meta.url), 'utf-8'),
-        notice: readFileSync(new URL('../templates/en/notice.typ', import.meta.url), 'utf-8'),
-        style: readFileSync(new URL('../templates/en/style.typ', import.meta.url), 'utf-8'),
-    },
-};
 
 export type GenerateOptions = {
-    type: 'report' | 'notice';
+    type: 'report' | 'notice' | 'complaint';
     language: 'en';
 
     analysisMeta: {
@@ -23,8 +15,12 @@ export type GenerateOptions = {
 
         appName: string;
         appVersion: string;
-        appUrl?: string;
+        appUrl: string;
+        appStore: 'Google Play Store' | 'Apple App Store';
 
+        // For complaints.
+        initialAnalysisDate: Date;
+        // For complaints, this is the date of the second analysis.
         analysisDate: Date;
         analysisPlatformVersion: string;
 
@@ -32,6 +28,39 @@ export type GenerateOptions = {
     };
     har: Har;
     trackHarResult: (null | AnnotatedResult)[];
+
+    complaintOptions: {
+        date: Date;
+        reference: string;
+
+        noticeDate: Date;
+
+        nationalEPrivacyLaw: 'TTDSG' | false;
+
+        complainantAddress: string;
+        controllerAddress: string;
+
+        loggedIntoAppStore: boolean;
+        deviceHasRegisteredSimCard: boolean;
+
+        controllerResponse: 'none' | 'denial' | 'broken-promise';
+
+        complainantContactDetails: string;
+        complainantAgreesToUnencryptedCommunication: boolean;
+    };
+};
+
+const templates = {
+    en: {
+        report: readFileSync(new URL('../templates/en/report.typ', import.meta.url), 'utf-8'),
+        notice: readFileSync(new URL('../templates/en/notice.typ', import.meta.url), 'utf-8'),
+        complaint: readFileSync(new URL('../templates/en/complaint.typ', import.meta.url), 'utf-8'),
+        style: readFileSync(new URL('../templates/en/style.typ', import.meta.url), 'utf-8'),
+    },
+};
+
+const translations = {
+    en: trackHarTranslationsEn,
 };
 
 export const generate = async (options: GenerateOptions) => {
@@ -64,15 +93,17 @@ export const generate = async (options: GenerateOptions) => {
         acc[req.adapter]!.requests.push(req);
 
         for (const transmission of req.transmissions) {
-            if (!acc[req.adapter]?.receivedData[transmission.property]) {
+            const property = String(transmission.property);
+
+            if (!acc[req.adapter]?.receivedData[property]) {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                acc[req.adapter]!.receivedData[transmission.property] = [];
+                acc[req.adapter]!.receivedData[property] = [];
             }
 
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            acc[req.adapter]!.receivedData[transmission.property] = [
+            acc[req.adapter]!.receivedData[property] = [
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                ...new Set([...acc[req.adapter]!.receivedData[transmission.property]!, transmission.value]),
+                ...new Set([...acc[req.adapter]!.receivedData[property]!, transmission.value]),
             ];
         }
 
@@ -80,8 +111,13 @@ export const generate = async (options: GenerateOptions) => {
     }, {});
 
     const nunjucks = Nunjucks.configure({ autoescape: true, throwOnUndefined: true });
-    nunjucks.addFilter('dateFormat', (date: Date | string | undefined) =>
-        date ? new Date(date).toLocaleString(options.language, { dateStyle: 'long', timeStyle: 'long' }) : undefined
+    nunjucks.addFilter('dateFormat', (date: Date | string | undefined, includeTime = true) =>
+        date
+            ? new Date(date).toLocaleString(options.language, {
+                  dateStyle: 'long',
+                  timeStyle: includeTime ? 'long' : undefined,
+              })
+            : undefined
     );
     nunjucks.addFilter('timeFormat', (date: Date | string | undefined) =>
         date ? new Date(date).toLocaleTimeString(options.language) : undefined
@@ -92,20 +128,26 @@ export const generate = async (options: GenerateOptions) => {
         (s: string | undefined) =>
             new Nunjucks.runtime.SafeString(s === undefined ? '' : `\`\`\` ${(s + '').replace(/`/g, '`\u200b')}\`\`\``)
     );
+    // Convert string from TrackHAR's markup language to Typst.
+    nunjucks.addFilter('trackharMl', (str: string) => str.replace(/\s*\[(https?:\/\/.+?)\]/g, '#footnote[$1]'));
     // Translate.
     nunjucks.addGlobal(
         't',
-        (key: keyof (typeof translations)['en']) => (
+        <TScope extends keyof (typeof translations)['en']>(
+            scope: TScope,
+            key: keyof (typeof translations)['en'][TScope] & string
+        ) => (
             (() => {
-                const translation = translations[options.language][key];
-                if (!translation) throw new Error(`Translation not found: ${key}`);
+                const translation = translations[options.language][scope][key];
+                if (!translation) throw new Error(`Translation not found: ${scope}::${key}`);
             })(),
-            translations[options.language][key]
+            translations[options.language][scope][key]
         )
     );
 
     const typSource = nunjucks.renderString(templates[options.language][options.type], {
         analysisMeta: options.analysisMeta,
+        complaintOptions: options.complaintOptions,
         harEntries,
         trackHarResult,
         findings,

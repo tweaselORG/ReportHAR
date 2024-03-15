@@ -4212,10 +4212,8 @@ to-regex-range@^5.0.1:
   dependencies:
     is-number "^7.0.0"
 
-trackhar@^0.3.0:
+"trackhar@file:.yalc/trackhar":
   version "0.3.0"
-  resolved "https://registry.yarnpkg.com/trackhar/-/trackhar-0.3.0.tgz#af727d395739e7c26aa5d9fa8e7325e8fb272954"
-  integrity sha512-EHB5Z/2xMxVIrSD0lhHk7j4bIE+DYdY4AV1i4F035+lunUhvx7dQssiNglFFkaAm7P9f2A2b832uISbcsS2jkA==
   dependencies:
     "@types/har-format" "^1.2.10"
     base64-search "^1.0.0"

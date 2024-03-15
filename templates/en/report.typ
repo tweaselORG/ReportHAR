@@ -5,9 +5,9 @@
 
 = Introduction
 
-This report details the findings and methodology of an automated analysis concerning tracking and similar data transmissions performed on the {{ analysisMeta.platform }} app "{{ analysisMeta.appName }}"{{ '#footnote[#link("https://play.google.com/store/apps/details?id=tld.sample.app")]' if analysisMeta.appUrl }} (hereinafter: "the app") through the Tweasel project, operated by Datenanfragen.de e. V.
+This report details the findings and methodology of an automated analysis concerning tracking and similar data transmissions performed on the {{ analysisMeta.platform }} app "{{ analysisMeta.appName }}"#footnote[{{ analysisMeta.appUrl | safe }}] (hereinafter: "the app") through the tweasel project, operated by Datenanfragen.de e.~V.
 
-The analysis was performed on {{ analysisMeta.analysisDate | dateFormat }} on version {{ analysisMeta.appVersion }} of the app on {{ analysisMeta.platform }} {{ analysisMeta.analysisPlatformVersion }}.
+The analysis was performed on {{ analysisMeta.analysisDate | dateFormat }} on version {{ analysisMeta.appVersion }} of the app, downloaded from the {{ analysisMeta.appStore }}, running on {{ analysisMeta.platform }} {{ analysisMeta.analysisPlatformVersion }}.
 
 = Findings
 
@@ -15,14 +15,14 @@ During the analysis, the network traffic initiated by the app was recorded. In t
 
 == Network traffic without any interaction
 
-The requests described in this sections happened *without any interaction* with the app or any potential consent dialogs.
+The requests described in this section happened *without any interaction* with the app or any potential consent dialogs.
 
 In total, there were {{ trackHarResult.length }} requests detected that transmitted data to {{ findings | length }} tracker(s) without any interaction.
 
 {% for adapterSlug, adapterResult in findings %}
-=== {{ adapterSlug }} (TODO: nicer title)
+=== {{ adapterResult.adapter.name }}
 
-The app sent the following {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterSlug }}" (TODO: nicer title) (TODO: tracker URL), operated by "{{ adapterResult.adapter.tracker.name }}". For details on how the requests to this tracker were decoded and the reasoning for how the transmitted information was determined, see the documentation in the Tweasel Tracker Wiki#footnote[The documentation for "{{ adapterSlug }}" (TODO: nicer title) is available at: #link("https://trackers.tweasel.org/t/{{ adapterSlug | safe }}")].
+The app sent the following {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterResult.adapter.name }}", operated by "{{ adapterResult.adapter.tracker.name }}". For details on how the requests to this tracker were decoded and the reasoning for how the transmitted information was determined, see the documentation in the Tweasel Tracker Wiki#footnote[The documentation for "{{ adapterResult.adapter.name }}" is available at: #link("https://trackers.tweasel.org/t/{{ adapterSlug | safe }}")].
 
 {% for request in adapterResult.requests %}
 {% set harEntry = harEntries[request.harIndex] %}
@@ -33,7 +33,7 @@ On {{ harEntry.startTime | dateFormat }}, the app sent a {{ harEntry.request.met
 The following information was detected as being transmitted through this request:
 
 {% for transmission in request.transmissions -%}
-+ {{ t("data-path-property-" + transmission.property.toLowerCase()) }} (transmitted as {{ transmission.path | code }} with the value {{ transmission.value | code }})
++ {{ t("properties", transmission.property) }} (transmitted as {{ transmission.path | code }} with the value {{ transmission.value | code }})
 {% endfor %}
 {% endfor %}
 {% endfor %}
