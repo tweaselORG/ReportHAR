@@ -5,6 +5,7 @@ import Nunjucks from 'nunjucks';
 import { adapters, type Adapter, type AnnotatedResult } from 'trackhar';
 import trackHarTranslationsEn from 'trackhar/i18n/en.json';
 import { generateTyp as generateTypForHar, unhar } from './lib/har2pdf';
+import type { NetworkActivityReport } from './lib/user-network-activity';
 
 export type GenerateOptions = {
     type: 'report' | 'notice' | 'complaint';
@@ -47,6 +48,8 @@ export type GenerateOptions = {
 
         complainantContactDetails: string;
         complainantAgreesToUnencryptedCommunication: boolean;
+
+        userNetworkActivity: NetworkActivityReport;
     };
 };
 

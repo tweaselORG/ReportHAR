@@ -260,7 +260,15 @@ Thank you in advance for your assistance.
 
 = Results from "{% if analysisMeta.platform === 'Android' %}TrackerControl{% elif analysisMeta.platform === 'iOS' %}App Privacy Report{% endif %}" on my device <personal-hostnames>
 
-TODO
+#table(
+  columns: (10%, 30%, 60%),
+  align: (right, left, left),
+
+  [*\#*], [*Time*], [*Hostname*],
+  {% for entry in complaintOptions.userNetworkActivity -%}
+  [{{ entry.index + 1 }}], [{{ entry.timestamp | dateFormat }}], [{{ entry.hostname }}],
+  {% endfor %}
+)
 
 = DPA guidelines regarding personal data in the context of online tracking <dpa-guidelines-id>
 
