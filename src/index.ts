@@ -8,6 +8,7 @@ import { generateTyp as generateTypForHar, unhar } from './lib/har2pdf';
 import type { NetworkActivityReport } from './lib/user-network-activity';
 
 export type App = {
+    id: string;
     name: string;
     version: string;
     url: string;
@@ -88,7 +89,19 @@ export const generate = async (options: GenerateOptions) => {
                 : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   { harIndex, adapter: transmissions[0]!.adapter, transmissions }
         )
-        .filter((e): e is NonNullable<typeof e> => e !== null);
+        .filter((e): e is NonNullable<typeof e> => e !== null)
+        // For complaints, only consider results from adapters for which we know that the user's device contacted at
+        // least one matching hostname.
+        .filter((e) => {
+            if (options.type !== 'complaint') return true;
+
+            const hostname = harEntries[e.harIndex]?.request.host;
+            if (!hostname) return false;
+
+            return options.complaintOptions.userNetworkActivity
+                .filter((e) => e.appId === options.analysis.app.id)
+                .some((e) => e.hostname === hostname);
+        });
     const findings = trackHarResult.reduce<
         Record<
             string,

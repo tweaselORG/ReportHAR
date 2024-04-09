@@ -74,7 +74,7 @@ export const parseNetworkActivityReport = (
                 index,
                 timestamp: new Date(+e.time),
                 hostname: e.daddr,
-                appId: e.App,
+                appId: e.Package,
             })
         );
 
