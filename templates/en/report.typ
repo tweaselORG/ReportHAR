@@ -1,17 +1,17 @@
 #import "style.typ": tweaselStyle
 #show: tweaselStyle
 
-#text(weight: 700, 1.75em)[Technical report: Analysis of {{ analysisMeta.platform }} app "{{ analysisMeta.appName }}"]
+#text(weight: 700, 1.75em)[Technical report: Analysis of {{ analysis.app.platform }} app "{{ analysis.app.name }}"]
 
 = Introduction
 
-This report details the findings and methodology of an automated analysis concerning tracking and similar data transmissions performed on the {{ analysisMeta.platform }} app "{{ analysisMeta.appName }}"#footnote[{{ analysisMeta.appUrl | safe }}] (hereinafter: "the app") through the tweasel project, operated by Datenanfragen.de e.~V.
+This report details the findings and methodology of an automated analysis concerning tracking and similar data transmissions performed on the {{ analysis.app.platform }} app "{{ analysis.app.name }}"#footnote[{{ analysis.app.url | safe }}] (hereinafter: "the app") through the tweasel project, operated by Datenanfragen.de e.~V.
 
-The analysis was performed on {{ analysisMeta.analysisDate | dateFormat }} on version {{ analysisMeta.appVersion }} of the app, downloaded from the {{ analysisMeta.appStore }}, running on {{ analysisMeta.platform }} {{ analysisMeta.analysisPlatformVersion }}.
+The analysis was performed on {{ analysis.date | dateFormat }} on version {{ analysis.app.version }} of the app, downloaded from the {{ analysis.app.store }}, running on {{ analysis.app.platform }} {{ analysis.platformVersion }}.
 
 = Findings
 
-During the analysis, the network traffic initiated by the app was recorded. In total, {{ harEntries.length }} requests were recorded between {{ harEntries[0].startTime | dateFormat }} and {{ harEntries[harEntries.length - 1].startTime | dateFormat }}. The recorded traffic is attached as a HAR file{% if analysisMeta.harMd5 %} (MD5 checksum of the HAR file: {{ analysisMeta.harMd5 | code }}){% endif %}, a standard format used by HTTP(S) monitoring tools to export collected data.#footnote[#link("http://www.softwareishard.com/blog/har-12-spec/")] HAR files can be viewed using Firefox or Chrome, for example.#footnote[TODO: https://github.com/tweaselORG/docs.tweasel.org/issues/7] The contents of the recorded traffic are also reproduced in @har2pdf[Appendix]
+During the analysis, the network traffic initiated by the app was recorded. In total, {{ harEntries.length }} requests were recorded between {{ harEntries[0].startTime | dateFormat }} and {{ harEntries[harEntries.length - 1].startTime | dateFormat }}. The recorded traffic is attached as a HAR file{% if analysis.harMd5 %} (MD5 checksum of the HAR file: {{ analysis.harMd5 | code }}){% endif %}, a standard format used by HTTP(S) monitoring tools to export collected data.#footnote[#link("http://www.softwareishard.com/blog/har-12-spec/")] HAR files can be viewed using Firefox or Chrome, for example.#footnote[TODO: https://github.com/tweaselORG/docs.tweasel.org/issues/7] The contents of the recorded traffic are also reproduced in @har2pdf[Appendix]
 
 == Network traffic without any interaction
 

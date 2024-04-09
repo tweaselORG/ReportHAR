@@ -14,7 +14,7 @@
   (complainant, hereinafter: "I")
 
   _against_ \
-  the controller for the {{ analysisMeta.platform }} app "{{ analysisMeta.appName }}", assumed to be \
+  the controller for the {{ analysis.app.platform }} app "{{ analysis.app.name }}", assumed to be \
   {{ complaintOptions.controllerAddress }} \
   (respondent, hereinafter: "the controller")
 
@@ -40,19 +40,19 @@
 // Main content
 = Introduction
 
-I am hereby filing a complaint under Art. 77(1) GDPR regarding the {{ analysisMeta.platform }} app "{{ analysisMeta.appName }}" (hereinafter: "the app").
+I am hereby filing a complaint under Art. 77(1) GDPR regarding the {{ analysis.app.platform }} app "{{ analysis.app.name }}" (hereinafter: "the app").
 
-According to the {{ analysisMeta.appStore }} page for the app#footnote[{{ analysisMeta.appUrl | safe }}], it is operated by {{ complaintOptions.controllerAddress }}. I am thus assuming them to be the app's controller. Should this assumption be incorrect, my complaint is directed against the actual controller of the app.
+According to the {{ analysis.app.store }} page for the app#footnote[{{ analysis.app.url | safe }}], it is operated by {{ complaintOptions.controllerAddress }}. I am thus assuming them to be the app's controller. Should this assumption be incorrect, my complaint is directed against the actual controller of the app.
 
-I am a user of the app on my personal {{ analysisMeta.platform }} device. The {{ analysisMeta.platform }} device is only used by me personally. {% if complaintOptions.loggedIntoAppStore %}I have installed it through the {{ analysisMeta.appStore }}. I am logged into the {{ analysisMeta.appStore }} with my personal account.{% endif %}
+I am a user of the app on my personal {{ analysis.app.platform }} device. The {{ analysis.app.platform }} device is only used by me personally. {% if complaintOptions.loggedIntoAppStore %}I have installed it through the {{ analysis.app.store }}. I am logged into the {{ analysis.app.store }} with my personal account.{% endif %}
 
-{% if complaintOptions.deviceHasRegisteredSimCard %}My {{ analysisMeta.platform }} device has a SIM card installed that is registered to my name.{% endif %}
+{% if complaintOptions.deviceHasRegisteredSimCard %}My {{ analysis.app.platform }} device has a SIM card installed that is registered to my name.{% endif %}
 
 = Facts
 
 == Preliminary remarks
 
-To understand how the app is processing my data, I used the tools of the tweasel project#footnote[https://docs.tweasel.org/], operated by Datenanfragen.de e.~V., to perform an automated analysis of the app's network traffic. The analysis was performed on {{ analysisMeta.initialAnalysisDate | dateFormat }} on version {{ analysisMeta.appVersion }} of the app, downloaded from the {{ analysisMeta.appStore }}, running on {{ analysisMeta.platform }} {{ analysisMeta.analysisPlatformVersion }}.
+To understand how the app is processing my data, I used the tools of the tweasel project#footnote[https://docs.tweasel.org/], operated by Datenanfragen.de e.~V., to perform an automated analysis of the app's network traffic. The analysis was performed on {{ initialAnalysis.date | dateFormat }} on version {{ initialAnalysis.app.version }} of the app, downloaded from the {{ initialAnalysis.app.store }}, running on {{ initialAnalysis.app.platform }} {{ initialAnalysis.platformVersion }}.
 
 During this analysis, the app was run _without any user input_ (i.e. there was no interaction with the app at all) and its network traffic was recorded. The recorded traffic was then analyzed for tracking and similar data transmissions. Based on that, the tweasel tools produced a technical report.
 
@@ -74,17 +74,17 @@ In the interest of avoiding unnecessary work for the data protection authorities
 
 I am attaching my notice to the controller{% if complaintOptions.controllerResponse !== "none" %} as well as any communication I have received from them in this matter{% endif %} to the complaint.
 
-On {{ analysisMeta.analysisDate | dateFormat }}, and thus after the expiration of the voluntary grace period, I retested the app using the tweasel tools. Unfortunately, I had to find that the app still performs tracking in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}.
+On {{ analysis.date | dateFormat }}, and thus after the expiration of the voluntary grace period, I retested the app using the tweasel tools. Unfortunately, I had to find that the app still performs tracking in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}.
 
-To verify that the tracking also affects me, I used the {% if analysisMeta.platform === 'Android' %}the "TrackerControl" app#footnote[https://trackercontrol.org/#network-traffic-analysis]{% elif analysisMeta.platform === 'iOS' %}the "App Privacy Report" feature#footnote[https://support.apple.com/en-gb/HT212958]{% endif %} on my personal {{ analysisMeta.platform }} device. This confirmed that the app also contacts those tracking servers on my own device.#footnote[Recording a phone's network traffic requires rooting the device and making severe configuration changes. Doing this is not feasible or advised for devices that are in actual day-to-day use. That is why the tweasel project provides public infrastructure for doing such testing on devices/emulators that are only used for this purpose. However, logging a list of DNS hostnames contacted by an app is possible without such severe procedures {% if analysisMeta.platform === 'Android' %}by installing the "TrackerControl" app{% elif analysisMeta.platform === 'iOS' %}using the "App Privacy Report" feature integrated directly into iOS{% endif %}.\
+To verify that the tracking also affects me, I used the {% if analysis.app.platform === 'Android' %}the "TrackerControl" app#footnote[https://trackercontrol.org/#network-traffic-analysis]{% elif analysis.app.platform === 'iOS' %}the "App Privacy Report" feature#footnote[https://support.apple.com/en-gb/HT212958]{% endif %} on my personal {{ analysis.app.platform }} device. This confirmed that the app also contacts those tracking servers on my own device.#footnote[Recording a phone's network traffic requires rooting the device and making severe configuration changes. Doing this is not feasible or advised for devices that are in actual day-to-day use. That is why the tweasel project provides public infrastructure for doing such testing on devices/emulators that are only used for this purpose. However, logging a list of DNS hostnames contacted by an app is possible without such severe procedures {% if analysis.app.platform === 'Android' %}by installing the "TrackerControl" app{% elif analysis.app.platform === 'iOS' %}using the "App Privacy Report" feature integrated directly into iOS{% endif %}.\
 \
 While the results from this log don't allow for inspecting the actual data that was transmitted, they do prove that the app contacted the same tracking servers. In combination with the technical report by the tweasel project, for which the request content was actually analysed, this provides a very strong indication that I am affected by the same tracking. As I will elaborate on in @legal-grounds-burden-of-proof, the controller has the burden of proving that their processing is in line with the GDPR. It would thus be on them to produce evidence for disproving the conclusion I am drawing here.] I have attached the evidence for this in @personal-hostnames[Appendix]
 
 == Tracking without interaction <tracking>
 
-In this section, I am detailing the tracking data transmissions that the app performed. I am only including transmissions from the second technical report from the tweasel project from {{ analysisMeta.analysisDate | dateFormat(false) }}. All these transmissions thus occurred *at least 60 days after* I informed the controller of the violations I had initially discovered and gave them the opportunity to remedy them.
+In this section, I am detailing the tracking data transmissions that the app performed. I am only including transmissions from the second technical report from the tweasel project from {{ analysis.date | dateFormat(false) }}. All these transmissions thus occurred *at least 60 days after* I informed the controller of the violations I had initially discovered and gave them the opportunity to remedy them.
 
-Additionally, I am only including transmissions to servers for which the log of {% if analysisMeta.platform === 'Android' %}the "TrackerControl" app{% elif analysisMeta.platform === 'iOS' %}the "App Privacy Report"{% endif %} confirmed that the app also contacts them on my personal device, as explained above. It is thus safe to assume that all these transmissions also affect me personally.
+Additionally, I am only including transmissions to servers for which the log of {% if analysis.app.platform === 'Android' %}the "TrackerControl" app{% elif analysis.app.platform === 'iOS' %}the "App Privacy Report"{% endif %} confirmed that the app also contacts them on my personal device, as explained above. It is thus safe to assume that all these transmissions also affect me personally.
 
 It further bears repeating that, as guaranteed by the analysis methodology, the tracking transmissions described here all occurred *without any interaction* with the app or any potential consent dialog.
 
@@ -258,7 +258,7 @@ Thank you in advance for your assistance.
 
 #text(weight: 700, 1.75em)[Appendix]
 
-= Results from "{% if analysisMeta.platform === 'Android' %}TrackerControl{% elif analysisMeta.platform === 'iOS' %}App Privacy Report{% endif %}" on my device <personal-hostnames>
+= Results from "{% if analysis.app.platform === 'Android' %}TrackerControl{% elif analysis.app.platform === 'iOS' %}App Privacy Report{% endif %}" on my device <personal-hostnames>
 
 #table(
   columns: (10%, 30%, 60%),

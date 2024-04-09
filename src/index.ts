@@ -2,56 +2,69 @@ import { createTypstCompiler } from '@myriaddreamin/typst.ts/dist/esm/compiler.m
 import { readFileSync } from 'fs';
 import type { Har } from 'har-format';
 import Nunjucks from 'nunjucks';
-import { adapters, type Adapter, type AnnotatedResult } from 'trackhar';
+import { adapters, type Adapter, type processRequest } from 'trackhar';
 import trackHarTranslationsEn from 'trackhar/i18n/en.json';
 import { generateTyp as generateTypForHar, unhar } from './lib/har2pdf';
 import type { NetworkActivityReport } from './lib/user-network-activity';
 
-export type GenerateOptions = {
-    type: 'report' | 'notice' | 'complaint';
-    language: 'en';
+export type App = {
+    name: string;
+    version: string;
+    url: string;
+    store: 'Google Play Store' | 'Apple App Store';
 
-    analysisMeta: {
-        platform: 'Android' | 'iOS';
-
-        appName: string;
-        appVersion: string;
-        appUrl: string;
-        appStore: 'Google Play Store' | 'Apple App Store';
-
-        // For complaints.
-        initialAnalysisDate: Date;
-        // For complaints, this is the date of the second analysis.
-        analysisDate: Date;
-        analysisPlatformVersion: string;
-
-        harMd5?: string;
-    };
-    har: Har;
-    trackHarResult: (null | AnnotatedResult)[];
-
-    complaintOptions: {
-        date: Date;
-        reference: string;
-
-        noticeDate: Date;
-
-        nationalEPrivacyLaw: 'TTDSG' | false;
-
-        complainantAddress: string;
-        controllerAddress: string;
-
-        loggedIntoAppStore: boolean;
-        deviceHasRegisteredSimCard: boolean;
-
-        controllerResponse: 'none' | 'denial' | 'broken-promise';
-
-        complainantContactDetails: string;
-        complainantAgreesToUnencryptedCommunication: boolean;
-
-        userNetworkActivity: NetworkActivityReport;
-    };
+    platform: 'Android' | 'iOS';
 };
+export type Analysis = {
+    date: Date;
+
+    app: App;
+    platformVersion: string;
+
+    har: Har;
+    harMd5?: string;
+
+    trackHarResult: ReturnType<typeof processRequest>[];
+};
+export type ComplaintOptions = {
+    date: Date;
+    reference: string;
+
+    noticeDate: Date;
+
+    nationalEPrivacyLaw: 'TTDSG' | false;
+
+    complainantAddress: string;
+    controllerAddress: string;
+
+    loggedIntoAppStore: boolean;
+    deviceHasRegisteredSimCard: boolean;
+
+    controllerResponse: 'none' | 'denial' | 'broken-promise';
+
+    complainantContactDetails: string;
+    complainantAgreesToUnencryptedCommunication: boolean;
+
+    userNetworkActivity: NetworkActivityReport;
+};
+
+export type GenerateOptions =
+    | {
+          type: 'report' | 'notice';
+          language: 'en';
+
+          analysis: Analysis;
+      }
+    | {
+          type: 'complaint';
+          language: 'en';
+
+          /** Data for the initial analysis, that the notice to the controller was based on. */
+          initialAnalysis: Analysis;
+          /** Data for the second analysis, that will be the basis for the complaint. */
+          analysis: Analysis;
+          complaintOptions: ComplaintOptions;
+      };
 
 const templates = {
     en: {
@@ -67,10 +80,10 @@ const translations = {
 };
 
 export const generate = async (options: GenerateOptions) => {
-    const harEntries = unhar(options.har);
-    const trackHarResult = options.trackHarResult
+    const harEntries = unhar(options.analysis.har);
+    const trackHarResult = options.analysis.trackHarResult
         .map((transmissions, harIndex) =>
-            transmissions === null || transmissions.length === 0
+            !transmissions || transmissions.length === 0
                 ? null
                 : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   { harIndex, adapter: transmissions[0]!.adapter, transmissions }
@@ -149,8 +162,9 @@ export const generate = async (options: GenerateOptions) => {
     );
 
     const typSource = nunjucks.renderString(templates[options.language][options.type], {
-        analysisMeta: options.analysisMeta,
-        complaintOptions: options.complaintOptions,
+        analysis: options.analysis,
+        initialAnalysis: options.type === 'complaint' && options.initialAnalysis,
+        complaintOptions: options.type === 'complaint' && options.complaintOptions,
         harEntries,
         trackHarResult,
         findings,

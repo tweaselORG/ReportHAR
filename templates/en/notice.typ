@@ -1,11 +1,11 @@
 #import "style.typ": tweaselStyle
 #show: tweaselStyle
 
-#text(weight: 700, 1.75em)[Data protection violations in {{ analysisMeta.platform }} app "{{ analysisMeta.appName }}"]
+#text(weight: 700, 1.75em)[Data protection violations in {{ analysis.app.platform }} app "{{ analysis.app.name }}"]
 
 = Introduction
 
-I am a user of your {{ analysisMeta.platform }} app "{{ analysisMeta.appName }}"#footnote[{{ analysisMeta.appUrl | safe }}] (hereinafter: "the app").
+I am a user of your {{ analysis.app.platform }} app "{{ analysis.app.name }}"#footnote[{{ analysis.app.url | safe }}] (hereinafter: "the app").
 
 Through an automated analysis of the app, I have unfortunately become aware that the app is performing tracking and similar data transmissions in violation of applicable data protection law.
 
