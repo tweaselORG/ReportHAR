@@ -1,11 +1,11 @@
 {
-    "name": "complaint-generator",
+    "name": "reporthar",
     "version": "0.0.0",
     "description": "Library for generating technical reports, notices, and GDPR complaints concerning tracking by mobile apps for the tweasel project.",
-    "bugs": "https://github.com/tweaselORG/complaint-generator/issues",
+    "bugs": "https://github.com/tweaselORG/ReportHAR/issues",
     "repository": {
         "type": "git",
-        "url": "https://github.com/tweaselORG/complaint-generator.git"
+        "url": "https://github.com/tweaselORG/ReportHAR.git"
     },
     "license": "MIT",
     "author": "Benjamin Altpeter <hi@bn.al>",

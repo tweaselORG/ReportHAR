@@ -1,4 +1,4 @@
-# complaint-generator
+# ReportHAR
 
 > TODO
 
@@ -6,11 +6,11 @@
 
 ## Installation
 
-You can install complaint-generator using yarn or npm:
+You can install ReportHAR using yarn or npm:
 
 ```sh
-yarn add complaint-generator
-# or `npm i complaint-generator`
+yarn add reporthar
+# or `npm i reporthar`
 ```
 
 ## API reference
