@@ -1,10 +1,10 @@
-import { createTypstCompiler } from '@myriaddreamin/typst.ts/dist/esm/compiler.mjs';
 import type { Har } from 'har-format';
 import { type processRequest } from 'trackhar';
 import { generateTyp as generateTypForHar } from './lib/har2pdf';
 import { renderNunjucks } from './lib/nunjucks';
 import { prepareTraffic, type PrepareTrafficOptions } from './lib/traffic';
 import { templates, type SupportedLanguage } from './lib/translations';
+import { compileTypst } from './lib/typst';
 import type { NetworkActivityReport } from './lib/user-network-activity';
 
 export type App = {
@@ -67,7 +67,7 @@ export type GenerateOptions =
           complaintOptions: ComplaintOptions;
       };
 
-export const generate = async (options: GenerateOptions) => {
+export const generate = (options: GenerateOptions) => {
     // Prepare traffic.
     const prepareTrafficOptions: PrepareTrafficOptions = {
         har: options.analysis.har,
@@ -101,23 +101,19 @@ export const generate = async (options: GenerateOptions) => {
         },
     });
 
-    const mainFilePath = '/main.typ';
-
-    const cc = createTypstCompiler();
-    await cc.init({ beforeBuild: [] });
-
-    cc.addSource(mainFilePath, typSource);
-    cc.addSource('/style.typ', templates[options.language].style);
-    if (options.type === 'report')
-        cc.addSource(
-            '/har.typ',
-            generateTypForHar(
-                harEntries
-                    .map((e, index) => ({ ...e, index }))
-                    .filter((e) => trackHarResult.some((r) => r.harIndex === e.index)),
-                { includeResponses: false, truncateContent: 4096 }
-            )
-        );
-
-    return await cc.compile({ mainFilePath, format: 'pdf' });
+    // Compile Typst to PDF.
+    return compileTypst({
+        mainContent: typSource,
+        additionalFiles: {
+            '/style.typ': templates[options.language].style,
+            ...(options.type === 'report' && {
+                '/har.typ': generateTypForHar(
+                    harEntries
+                        .map((e, index) => ({ ...e, index }))
+                        .filter((e) => trackHarResult.some((r) => r.harIndex === e.index)),
+                    { includeResponses: false, truncateContent: 4096 }
+                ),
+            }),
+        },
+    });
 };
