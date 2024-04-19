@@ -2,9 +2,10 @@ import { createTypstCompiler } from '@myriaddreamin/typst.ts/dist/esm/compiler.m
 import { readFileSync } from 'fs';
 import type { Har } from 'har-format';
 import Nunjucks from 'nunjucks';
-import { adapters, type Adapter, type processRequest } from 'trackhar';
+import { type processRequest } from 'trackhar';
 import trackHarTranslationsEn from 'trackhar/i18n/en.json';
-import { generateTyp as generateTypForHar, unhar } from './lib/har2pdf';
+import { generateTyp as generateTypForHar } from './lib/har2pdf';
+import { prepareTraffic, type PrepareTrafficOptions } from './lib/traffic';
 import type { NetworkActivityReport } from './lib/user-network-activity';
 
 export type App = {
@@ -81,63 +82,24 @@ const translations = {
 };
 
 export const generate = async (options: GenerateOptions) => {
-    const harEntries = unhar(options.analysis.har);
-    const trackHarResult = options.analysis.trackHarResult
-        .map((transmissions, harIndex) =>
-            !transmissions || transmissions.length === 0
-                ? null
-                : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  { harIndex, adapter: transmissions[0]!.adapter, transmissions }
-        )
-        .filter((e): e is NonNullable<typeof e> => e !== null)
+    // Prepare traffic.
+    const prepareTrafficOptions: PrepareTrafficOptions = {
+        har: options.analysis.har,
+        trackHarResult: options.analysis.trackHarResult,
+    };
+    if (options.type === 'complaint') {
         // For complaints, only consider results from adapters for which we know that the user's device contacted at
         // least one matching hostname.
-        .filter((e) => {
-            if (options.type !== 'complaint') return true;
-
-            const hostname = harEntries[e.harIndex]?.request.host;
+        prepareTrafficOptions.entryFilter = (entry) => {
+            const hostname = entry.harEntry?.request.host;
             if (!hostname) return false;
 
             return options.complaintOptions.userNetworkActivity
                 .filter((e) => e.appId === options.analysis.app.id)
                 .some((e) => e.hostname === hostname);
-        });
-    const findings = trackHarResult.reduce<
-        Record<
-            string,
-            { adapter: Adapter; requests: typeof trackHarResult; receivedData: Record<string, Array<string>> }
-        >
-    >((acc, req) => {
-        if (!acc[req.adapter]) {
-            const adapter = adapters.find((a) => a.tracker.slug + '/' + a.slug === req.adapter);
-            if (!adapter) throw new Error(`Unknown adapter: ${req.adapter}`);
-            acc[req.adapter] = {
-                adapter,
-                requests: [],
-                receivedData: {},
-            };
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        acc[req.adapter]!.requests.push(req);
-
-        for (const transmission of req.transmissions) {
-            const property = String(transmission.property);
-
-            if (!acc[req.adapter]?.receivedData[property]) {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                acc[req.adapter]!.receivedData[property] = [];
-            }
-
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            acc[req.adapter]!.receivedData[property] = [
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                ...new Set([...acc[req.adapter]!.receivedData[property]!, transmission.value]),
-            ];
-        }
-
-        return acc;
-    }, {});
+        };
+    }
+    const { harEntries, trackHarResult, findings } = prepareTraffic(prepareTrafficOptions);
 
     const nunjucks = Nunjucks.configure({ autoescape: true, throwOnUndefined: true });
     nunjucks.addFilter('dateFormat', (date: Date | string | undefined, includeTime = true) =>
