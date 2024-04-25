@@ -1,52 +1,21 @@
-import type { Har } from 'har-format';
+import { type TweaselHar } from 'cyanoacrylate';
 import { type processRequest } from 'trackhar';
-import { generateTyp as generateTypForHar } from './lib/har2pdf';
-import { renderNunjucks } from './lib/nunjucks';
-import { prepareTraffic, type PrepareTrafficOptions } from './lib/traffic';
-import { templates, type SupportedLanguage } from './lib/translations';
-import { compileTypst } from './lib/typst';
-import type { NetworkActivityReport } from './lib/user-network-activity';
+import {
+    generate as generateInternal,
+    type ComplaintOptions,
+    type GenerateOptions as GenerateInternalOptions,
+} from './lib/generate';
+import { type SupportedLanguage } from './lib/translations';
 
-export type App = {
+// TODO: Due to the stacks of unreleased package versions we're using through yalc here, the `App` type from
+// appstraction doesn't arrive here. Remove once they are released.
+type App = {
+    platform: 'android' | 'ios';
     id: string;
-    name: string;
-    version: string;
-    url: string;
-    store: 'Google Play Store' | 'Apple App Store';
-
-    platform: 'Android' | 'iOS';
-};
-export type Analysis = {
-    date: Date;
-
-    app: App;
-    platformVersion: string;
-
-    har: Har;
-    harMd5?: string;
-
-    trackHarResult: ReturnType<typeof processRequest>[];
-};
-export type ComplaintOptions = {
-    date: Date;
-    reference: string;
-
-    noticeDate: Date;
-
-    nationalEPrivacyLaw: 'TTDSG' | false;
-
-    complainantAddress: string;
-    controllerAddress: string;
-
-    loggedIntoAppStore: boolean;
-    deviceHasRegisteredSimCard: boolean;
-
-    controllerResponse: 'none' | 'denial' | 'broken-promise';
-
-    complainantContactDetails: string;
-    complainantAgreesToUnencryptedCommunication: boolean;
-
-    userNetworkActivity: NetworkActivityReport;
+    name?: string;
+    version?: string;
+    versionCode?: string;
+    architectures: ('arm64' | 'arm' | 'x86' | 'x86_64' | 'mips' | 'mips64')[];
 };
 
 export type GenerateOptions =
@@ -54,66 +23,85 @@ export type GenerateOptions =
           type: 'report' | 'notice';
           language: SupportedLanguage;
 
-          analysis: Analysis;
+          har: TweaselHar;
+          trackHarResult: ReturnType<typeof processRequest>[];
       }
     | {
           type: 'complaint';
           language: SupportedLanguage;
 
-          /** Data for the initial analysis, that the notice to the controller was based on. */
-          initialAnalysis: Analysis;
-          /** Data for the second analysis, that will be the basis for the complaint. */
-          analysis: Analysis;
+          /** HAR for the initial analysis, that the notice to the controller was based on. */
+          initialHar: TweaselHar;
+          initialTrackHarResult: ReturnType<typeof processRequest>[];
+
+          /** HAR for the second analysis, that will be the basis for the complaint. */
+          har: TweaselHar;
+          trackHarResult: ReturnType<typeof processRequest>[];
+
           complaintOptions: ComplaintOptions;
       };
 
+const platformMapping = {
+    android: 'Android',
+    ios: 'iOS',
+} as const;
+
 export const generate = (options: GenerateOptions) => {
-    // Prepare traffic.
-    const prepareTrafficOptions: PrepareTrafficOptions = {
-        har: options.analysis.har,
-        trackHarResult: options.analysis.trackHarResult,
-    };
-    if (options.type === 'complaint') {
-        // For complaints, only consider results from adapters for which we know that the user's device contacted at
-        // least one matching hostname.
-        prepareTrafficOptions.entryFilter = (entry) => {
-            const hostname = entry.harEntry?.request.host;
-            if (!hostname) return false;
+    const errHint = (m: string) => `${m} Use generateInternal() instead and manually provide the required metadata.`;
+    if (!('_tweasel' in options.har.log) || (options.type === 'complaint' && !('_tweasel' in options.initialHar.log)))
+        throw new Error(
+            errHint(
+                'The generate() function relies on the additional metadata in tweasel HAR files. If you have a HAR file produced by another tool:'
+            )
+        );
 
-            return options.complaintOptions.userNetworkActivity
-                .filter((e) => e.appId === options.analysis.app.id)
-                .some((e) => e.hostname === hostname);
+    const getAnalysisMeta = (har: TweaselHar, trackHarResult: ReturnType<typeof processRequest>[]) => {
+        const apps = har.log._tweasel.apps;
+        if (!apps)
+            throw new Error(errHint('Your HAR file does not contain any metadata on the app that was analyzed.'));
+        if (apps.length !== 1)
+            throw new Error('Your HAR file contains traffic for more than one app. This is not supported.');
+        const app = apps[0] as App;
+
+        const appVersion = app.version || app.versionCode;
+        if (!appVersion)
+            throw new Error(
+                errHint('Your HAR file does not contain any metadata on the version of the app that was analyzed.')
+            );
+
+        return {
+            date: new Date(har.log._tweasel.startDate),
+            app: {
+                id: app.id,
+                name: app.name || app.id,
+                version: appVersion,
+
+                platform: platformMapping[app.platform],
+            },
+            platformVersion: har.log._tweasel.device.osVersion,
+            har: har,
+            trackHarResult: trackHarResult,
         };
-    }
-    const { harEntries, trackHarResult, findings } = prepareTraffic(prepareTrafficOptions);
+    };
 
-    // Render Nunjucks template.
-    const typSource = renderNunjucks({
-        template: templates[options.language][options.type],
+    // TODO: harMd5
+
+    if (options.type === 'complaint')
+        return generateInternal({
+            type: options.type,
+            language: options.language,
+
+            analysis: getAnalysisMeta(options.har, options.trackHarResult),
+            initialAnalysis: getAnalysisMeta(options.initialHar, options.initialTrackHarResult),
+
+            complaintOptions: options.complaintOptions,
+        });
+    return generateInternal({
+        type: options.type,
         language: options.language,
-        context: {
-            analysis: options.analysis,
-            initialAnalysis: options.type === 'complaint' && options.initialAnalysis,
-            complaintOptions: options.type === 'complaint' && options.complaintOptions,
-            harEntries,
-            trackHarResult,
-            findings,
-        },
-    });
 
-    // Compile Typst to PDF.
-    return compileTypst({
-        mainContent: typSource,
-        additionalFiles: {
-            '/style.typ': templates[options.language].style,
-            ...(options.type === 'report' && {
-                '/har.typ': generateTypForHar(
-                    harEntries
-                        .map((e, index) => ({ ...e, index }))
-                        .filter((e) => trackHarResult.some((r) => r.harIndex === e.index)),
-                    { includeResponses: false, truncateContent: 4096 }
-                ),
-            }),
-        },
+        analysis: getAnalysisMeta(options.har, options.trackHarResult),
     });
 };
+
+export { generateInternal, type GenerateInternalOptions };

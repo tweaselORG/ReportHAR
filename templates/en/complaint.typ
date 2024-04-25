@@ -42,9 +42,9 @@
 
 I am hereby filing a complaint under Art. 77(1) GDPR regarding the {{ analysis.app.platform }} app "{{ analysis.app.name }}" (hereinafter: "the app").
 
-According to the {{ analysis.app.store }} page for the app#footnote[{{ analysis.app.url | safe }}], it is operated by {{ complaintOptions.controllerAddress }}. I am thus assuming them to be the app's controller. Should this assumption be incorrect, my complaint is directed against the actual controller of the app.
+According to the store page for the app#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}], it is operated by {{ complaintOptions.controllerAddress }}. I am thus assuming them to be the app's controller. Should this assumption be incorrect, my complaint is directed against the actual controller of the app.
 
-I am a user of the app on my personal {{ analysis.app.platform }} device. The {{ analysis.app.platform }} device is only used by me personally. {% if complaintOptions.loggedIntoAppStore %}I have installed it through the {{ analysis.app.store }}. I am logged into the {{ analysis.app.store }} with my personal account.{% endif %}
+I am a user of the app on my personal {{ analysis.app.platform }} device. The {{ analysis.app.platform }} device is only used by me personally. I have installed the app through the {{ complaintOptions.userDeviceAppStore }}.{% if complaintOptions.loggedIntoAppStore %} I am logged into the {{ complaintOptions.userDeviceAppStore }} with my personal account.{% endif %}
 
 {% if complaintOptions.deviceHasRegisteredSimCard %}My {{ analysis.app.platform }} device has a SIM card installed that is registered to my name.{% endif %}
 
@@ -52,7 +52,7 @@ I am a user of the app on my personal {{ analysis.app.platform }} device. The {{
 
 == Preliminary remarks
 
-To understand how the app is processing my data, I used the tools of the tweasel project#footnote[https://docs.tweasel.org/], operated by Datenanfragen.de e.~V., to perform an automated analysis of the app's network traffic. The analysis was performed on {{ initialAnalysis.date | dateFormat }} on version {{ initialAnalysis.app.version }} of the app, downloaded from the {{ initialAnalysis.app.store }}, running on {{ initialAnalysis.app.platform }} {{ initialAnalysis.platformVersion }}.
+To understand how the app is processing my data, I used the tools of the tweasel project#footnote[https://docs.tweasel.org/], operated by Datenanfragen.de e.~V., to perform an automated analysis of the app's network traffic. The analysis was performed on {{ initialAnalysis.date | dateFormat }} on version {{ initialAnalysis.app.version }} of the app, {% if analysis.app.store %}downloaded from the {{ analysis.app.store }}, {% endif %}running on {{ initialAnalysis.app.platform }} {{ initialAnalysis.platformVersion }}.
 
 During this analysis, the app was run _without any user input_ (i.e. there was no interaction with the app at all) and its network traffic was recorded. The recorded traffic was then analyzed for tracking and similar data transmissions. Based on that, the tweasel tools produced a technical report.
 
@@ -74,7 +74,7 @@ In the interest of avoiding unnecessary work for the data protection authorities
 
 I am attaching my notice to the controller{% if complaintOptions.controllerResponse !== "none" %} as well as any communication I have received from them in this matter{% endif %} to the complaint.
 
-On {{ analysis.date | dateFormat }}, and thus after the expiration of the voluntary grace period, I retested the app using the tweasel tools. The analysis was performed on version {{ analysis.app.version }} of the app, downloaded from the {{ analysis.app.store }}, running on {{ analysis.app.platform }} {{ analysis.platformVersion }}. Unfortunately, I had to find that the app still performs tracking in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}.
+On {{ analysis.date | dateFormat }}, and thus after the expiration of the voluntary grace period, I retested the app using the tweasel tools. The analysis was performed on version {{ analysis.app.version }} of the app, {% if analysis.app.store %}downloaded from the {{ analysis.app.store }}, {% endif %}running on {{ analysis.app.platform }} {{ analysis.platformVersion }}. Unfortunately, I had to find that the app still performs tracking in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}.
 
 To verify that the tracking also affects me, I used the {% if analysis.app.platform === 'Android' %}the "TrackerControl" app#footnote[https://trackercontrol.org/#network-traffic-analysis]{% elif analysis.app.platform === 'iOS' %}the "App Privacy Report" feature#footnote[https://support.apple.com/en-gb/HT212958]{% endif %} on my personal {{ analysis.app.platform }} device. This confirmed that the app also contacts those tracking servers on my own device.#footnote[Recording a phone's network traffic requires rooting the device and making severe configuration changes. Doing this is not feasible or advised for devices that are in actual day-to-day use. That is why the tweasel project provides public infrastructure for doing such testing on devices/emulators that are only used for this purpose. However, logging a list of DNS hostnames contacted by an app is possible without such severe procedures {% if analysis.app.platform === 'Android' %}by installing the "TrackerControl" app{% elif analysis.app.platform === 'iOS' %}using the "App Privacy Report" feature integrated directly into iOS{% endif %}.\
 \

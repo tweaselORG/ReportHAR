@@ -5,9 +5,9 @@
 
 = Introduction
 
-This report details the findings and methodology of an automated analysis concerning tracking and similar data transmissions performed on the {{ analysis.app.platform }} app "{{ analysis.app.name }}"#footnote[{{ analysis.app.url | safe }}] (hereinafter: "the app") through the tweasel project, operated by Datenanfragen.de e.~V.
+This report details the findings and methodology of an automated analysis concerning tracking and similar data transmissions performed on the {{ analysis.app.platform }} app "{{ analysis.app.name }}"{% if analysis.app.url %}#footnote[{{ analysis.app.url | safe }}]{% endif %} (hereinafter: "the app") through the tweasel project, operated by Datenanfragen.de e.~V.
 
-The analysis was performed on {{ analysis.date | dateFormat }} on version {{ analysis.app.version }} of the app, downloaded from the {{ analysis.app.store }}, running on {{ analysis.app.platform }} {{ analysis.platformVersion }}.
+The analysis was performed on {{ analysis.date | dateFormat }} on version {{ analysis.app.version }} of the app, {% if analysis.app.store %}downloaded from the {{ analysis.app.store }}, {% endif %}running on {{ analysis.app.platform }} {{ analysis.platformVersion }}.
 
 = Findings
 

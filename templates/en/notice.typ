@@ -5,7 +5,7 @@
 
 = Introduction
 
-I am a user of your {{ analysis.app.platform }} app "{{ analysis.app.name }}"#footnote[{{ analysis.app.url | safe }}] (hereinafter: "the app").
+I am a user of your {{ analysis.app.platform }} app "{{ analysis.app.name }}"{% if analysis.app.url %}#footnote[{{ analysis.app.url | safe }}]{% endif %} (hereinafter: "the app").
 
 Through an automated analysis of the app, I have unfortunately become aware that the app is performing tracking and similar data transmissions in violation of applicable data protection law.
 
