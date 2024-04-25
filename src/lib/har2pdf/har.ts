@@ -41,7 +41,7 @@ export const unhar = (har: Har): HarEntry[] =>
             if (!content?.text) return undefined;
 
             if (content.encoding) {
-                if (content.encoding !== 'base64') return Buffer.from(content.text, 'base64').toString('binary');
+                if (content.encoding === 'base64') return Buffer.from(content.text, 'base64').toString('binary');
 
                 throw new Error(`Unsupported content encoding: ${content.encoding}`);
             }
