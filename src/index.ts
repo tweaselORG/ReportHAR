@@ -24,6 +24,7 @@ export type GenerateOptions =
           language: SupportedLanguage;
 
           har: TweaselHar;
+          harMd5?: string;
           trackHarResult: ReturnType<typeof processRequest>[];
       }
     | {
@@ -32,10 +33,12 @@ export type GenerateOptions =
 
           /** HAR for the initial analysis, that the notice to the controller was based on. */
           initialHar: TweaselHar;
+          initialHarMd5?: string;
           initialTrackHarResult: ReturnType<typeof processRequest>[];
 
           /** HAR for the second analysis, that will be the basis for the complaint. */
           har: TweaselHar;
+          harMd5?: string;
           trackHarResult: ReturnType<typeof processRequest>[];
 
           complaintOptions: ComplaintOptions;
@@ -55,7 +58,7 @@ export const generate = (options: GenerateOptions) => {
             )
         );
 
-    const getAnalysisMeta = (har: TweaselHar, trackHarResult: ReturnType<typeof processRequest>[]) => {
+    const getAnalysisMeta = (har: TweaselHar, trackHarResult: ReturnType<typeof processRequest>[], harMd5?: string) => {
         const apps = har.log._tweasel.apps;
         if (!apps)
             throw new Error(errHint('Your HAR file does not contain any metadata on the app that was analyzed.'));
@@ -80,19 +83,18 @@ export const generate = (options: GenerateOptions) => {
             },
             platformVersion: har.log._tweasel.device.osVersion,
             har: har,
+            harMd5,
             trackHarResult: trackHarResult,
         };
     };
-
-    // TODO: harMd5
 
     if (options.type === 'complaint')
         return generateInternal({
             type: options.type,
             language: options.language,
 
-            analysis: getAnalysisMeta(options.har, options.trackHarResult),
-            initialAnalysis: getAnalysisMeta(options.initialHar, options.initialTrackHarResult),
+            analysis: getAnalysisMeta(options.har, options.trackHarResult, options.harMd5),
+            initialAnalysis: getAnalysisMeta(options.initialHar, options.initialTrackHarResult, options.initialHarMd5),
 
             complaintOptions: options.complaintOptions,
         });
@@ -100,7 +102,7 @@ export const generate = (options: GenerateOptions) => {
         type: options.type,
         language: options.language,
 
-        analysis: getAnalysisMeta(options.har, options.trackHarResult),
+        analysis: getAnalysisMeta(options.har, options.trackHarResult, options.harMd5),
     });
 };
 
