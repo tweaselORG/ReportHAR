@@ -14,4 +14,5 @@ export const templates = {
     },
 };
 
+/** A language that translations are available for. */
 export type SupportedLanguage = keyof typeof templates & keyof typeof translations;

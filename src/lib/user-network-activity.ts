@@ -1,9 +1,17 @@
 import Papa from 'papaparse';
 
+/**
+ * An entry in a network activity report, containing information about the hostnames that were contacted on the user's
+ * device.
+ */
 export type NetworkActivityReport = {
+    /** A unique index for this entry within the report. */
     index: number;
+    /** The date and time the request occurred. */
     timestamp: Date;
+    /** The hostname that was contacted. */
     hostname: string;
+    /** The ID of the app that made the request. */
     appId: string;
 }[];
 
@@ -39,6 +47,7 @@ export type IosAppPrivacyReportNetworkActivityEntry = {
     bundleID: string;
 };
 
+/** An entry in a network traffic export from the Tracker Control app on Android. */
 export type TrackerControlNetworkTrafficExportEntry = {
     uid: string;
     daddr: string;
@@ -50,6 +59,19 @@ export type TrackerControlNetworkTrafficExportEntry = {
     App: string;
 };
 
+/**
+ * Parse a network activity report from the iOS App Privacy Report or Tracker Control on Android into a standardized
+ * {@link NetworkActivityReport} format.
+ *
+ * @param type The type/format of the input report, with the following possible values:
+ *
+ *   - `ios-app-privacy-report-ndjson`: A report exported from the iOS App Privacy Report feature, in NDJSON format.
+ *   - `tracker-control-csv`: A CSV export of the network traffic log from the Tracker Control Android app.
+ *
+ * @param report The report to parse.
+ *
+ * @returns The parsed report as a {@link NetworkActivityReport}.
+ */
 export const parseNetworkActivityReport = (
     type: 'ios-app-privacy-report-ndjson' | 'tracker-control-csv',
     report: string
