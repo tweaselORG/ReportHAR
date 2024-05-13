@@ -190,6 +190,11 @@ const initialAnalysis = {
         url: 'https://play.google.com/store/apps/details?id=tld.sample.app',
         store: 'Google Play Store',
     },
+
+    dependencies: {
+        "python": "3.11.3",
+        "mitmproxy": "9.0.1"
+    },
 };
 
 const initialReport = await generateAdvanced({
@@ -223,6 +228,11 @@ const secondAnalysis = {
         version: '1.2.4',
         url: 'https://play.google.com/store/apps/details?id=tld.sample.app',
         store: 'Google Play Store',
+    },
+
+    dependencies: {
+        "python": "3.11.3",
+        "mitmproxy": "9.0.1"
     },
 };
 

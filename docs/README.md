@@ -40,6 +40,7 @@ Information about a network traffic analysis that was performed.
 | :------ | :------ | :------ |
 | `app` | [`App`](README.md#app) | Information about the analyzed app. |
 | `date` | `Date` | The date and time the analysis was performed. |
+| `dependencies` | `Record`<`string`, `string`\> | The versions of the dependencies used in the analysis. |
 | `har` | `Har` | The recorded network traffic in HAR format. |
 | `harMd5?` | `string` | The MD5 hash of the HAR file such that recipients of the report can verify the integrity of the attached HAR file. |
 | `platformVersion` | `string` | The operating system version of the device/emulator the analysis was performed on. |
@@ -101,7 +102,7 @@ Additional information required for generating a complaint to a data protection 
 
 #### Defined in
 
-[lib/generate.ts:48](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L48)
+[lib/generate.ts:51](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L51)
 
 ___
 
@@ -120,7 +121,7 @@ The options type is a discriminated union based on the `type` property:
 
 #### Defined in
 
-[lib/generate.ts:145](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L145)
+[lib/generate.ts:148](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L148)
 
 ___
 
@@ -142,7 +143,7 @@ Options for generating a complaint using the [generateAdvanced](README.md#genera
 
 #### Defined in
 
-[lib/generate.ts:118](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L118)
+[lib/generate.ts:121](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L121)
 
 ___
 
@@ -162,7 +163,7 @@ Options for generating a report or controller notice using the [generateAdvanced
 
 #### Defined in
 
-[lib/generate.ts:103](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L103)
+[lib/generate.ts:106](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L106)
 
 ___
 
@@ -370,7 +371,7 @@ The generated document as a PDF file.
 
 #### Defined in
 
-[lib/generate.ts:158](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L158)
+[lib/generate.ts:161](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L161)
 
 ___
 

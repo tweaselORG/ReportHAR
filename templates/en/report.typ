@@ -9,6 +9,16 @@ This report details the findings and methodology of an automated analysis concer
 
 The analysis was performed on {{ analysis.date | dateFormat }} on version {{ analysis.app.version }} of the app, {% if analysis.app.store %}downloaded from the {{ analysis.app.store }}, {% endif %}running on {{ analysis.app.platform }} {{ analysis.platformVersion }}.
 
+The following tools were used for the analysis:
+
+#table(
+  columns: (auto, auto),
+  [*Tool*], [*Version*],
+  {% for tool, version in analysis.dependencies -%}
+  [{{ tool }}], [{{ version }}],
+  {% endfor %}
+)
+
 = Findings
 
 During the analysis, the network traffic initiated by the app was recorded. In total, {{ harEntries.length }} requests were recorded between {{ harEntries[0].startTime | dateFormat }} and {{ harEntries[harEntries.length - 1].startTime | dateFormat }}. The recorded traffic is attached as a HAR file{% if analysis.harMd5 %} (MD5 checksum of the HAR file: {{ analysis.harMd5 | code }}){% endif %}, a standard format used by HTTP(S) monitoring tools to export collected data.#footnote[#link("http://www.softwareishard.com/blog/har-12-spec/")] HAR files can be viewed using Firefox or Chrome, for example.#footnote[TODO: https://github.com/tweaselORG/docs.tweasel.org/issues/7] The contents of the recorded traffic are also reproduced in @har2pdf[Appendix]

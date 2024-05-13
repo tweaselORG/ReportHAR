@@ -139,6 +139,7 @@ export const generate = (options: GenerateOptions) => {
             har: har,
             harMd5,
             trackHarResult: trackHarResult,
+            dependencies: har.log._tweasel.versions,
         };
     };
 

@@ -43,6 +43,9 @@ export type Analysis = {
 
     /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR. */
     trackHarResult: ReturnType<typeof processRequest>[];
+
+    /** The versions of the dependencies used in the analysis. */
+    dependencies: Record<string, string>;
 };
 /** Additional information required for generating a complaint to a data protection authority. */
 export type ComplaintOptions = {
