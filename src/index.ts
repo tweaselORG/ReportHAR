@@ -162,6 +162,7 @@ export const generate = (options: GenerateOptions) => {
 };
 
 export type { Analysis, App, GenerateAdvancedOptionsComplaint, GenerateAdvancedOptionsDefault } from './lib/generate';
+export { prepareTraffic, type PrepareTrafficOptions } from './lib/traffic';
 export {
     parseNetworkActivityReport,
     type IosAppPrivacyReportNetworkActivityEntry,
