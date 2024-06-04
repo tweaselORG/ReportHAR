@@ -1,8 +1,10 @@
 import { readFileSync } from 'fs';
-import trackHarTranslationsEn from 'trackhar/i18n/en.json';
+import type trackHarTranslationsEn from 'trackhar/i18n/en.json';
 
 export const translations = {
-    en: trackHarTranslationsEn,
+    en: JSON.parse(
+        readFileSync(new URL('../../node_modules/trackhar/i18n/en.json', import.meta.url), 'utf-8')
+    ) as typeof trackHarTranslationsEn,
 };
 
 export const templates = {

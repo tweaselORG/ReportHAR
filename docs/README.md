@@ -286,7 +286,7 @@ A language that translations are available for.
 
 #### Defined in
 
-[lib/translations.ts:18](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/translations.ts#L18)
+[lib/translations.ts:20](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/translations.ts#L20)
 
 ___
 
