@@ -1,18 +1,7 @@
-import { type TweaselHar } from 'cyanoacrylate';
 import { type processRequest } from 'trackhar';
 import { generateAdvanced, type ComplaintOptions, type GenerateAdvancedOptions } from './lib/generate';
 import { type SupportedLanguage } from './lib/translations';
-
-// TODO: Due to the stacks of unreleased package versions we're using through yalc here, the `App` type from
-// appstraction doesn't arrive here. Remove once they are released.
-type App = {
-    platform: 'android' | 'ios';
-    id: string;
-    name?: string;
-    version?: string;
-    versionCode?: string;
-    architectures: ('arm64' | 'arm' | 'x86' | 'x86_64' | 'mips' | 'mips64')[];
-};
+import { type TweaselHar } from './lib/tweasel-har';
 
 /** Options for generating a report or controller notice using the {@link generate} function. */
 export type GenerateOptionsDefault = {
@@ -116,9 +105,9 @@ export const generate = (options: GenerateOptions) => {
         const apps = har.log._tweasel.apps;
         if (!apps)
             throw new Error(errHint('Your HAR file does not contain any metadata on the app that was analyzed.'));
-        if (apps.length !== 1)
+        const app = apps[0];
+        if (apps.length !== 1 || !app)
             throw new Error('Your HAR file contains traffic for more than one app. This is not supported.');
-        const app = apps[0] as App;
 
         const appVersion = app.version || app.versionCode;
         if (!appVersion)

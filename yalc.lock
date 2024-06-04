@@ -5,11 +5,6 @@
       "signature": "7077fdee32fb9208dbfcca7292aaf3be",
       "file": true,
       "replaced": "^0.3.0"
-    },
-    "cyanoacrylate": {
-      "signature": "f75b5ac8f91fa62914b275d80d7d2bd1",
-      "file": true,
-      "replaced": "^1.0.0"
     }
   }
 }

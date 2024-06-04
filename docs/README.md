@@ -182,7 +182,7 @@ The options type is a discriminated union based on the `type` property:
 
 #### Defined in
 
-[index.ts:88](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L88)
+[index.ts:77](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L77)
 
 ___
 
@@ -208,7 +208,7 @@ Options for generating a complaint using the [generate](README.md#generate) func
 
 #### Defined in
 
-[index.ts:40](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L40)
+[index.ts:29](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L29)
 
 ___
 
@@ -230,7 +230,7 @@ Options for generating a report or controller notice using the [generate](README
 
 #### Defined in
 
-[index.ts:18](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L18)
+[index.ts:7](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L7)
 
 ___
 
@@ -341,7 +341,7 @@ The generated document as a PDF file.
 
 #### Defined in
 
-[index.ts:106](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L106)
+[index.ts:95](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L95)
 
 ___
 
