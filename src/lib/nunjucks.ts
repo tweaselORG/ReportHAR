@@ -1,4 +1,4 @@
-import Nunjucks from 'nunjucks';
+import Nunjucks from '@tweasel/nunjucks';
 import { translations, type SupportedLanguage } from './translations';
 
 export type RenderNunjucksOptions = {

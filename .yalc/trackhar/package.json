@@ -1,6 +1,6 @@
 {
     "name": "trackhar",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "Library for detecting tracking data transmissions from traffic in HAR format.",
     "bugs": "https://github.com/tweaselORG/TrackHAR/issues",
     "repository": {
@@ -57,7 +57,8 @@
     "prettier": "@baltpeter/prettier-config",
     "dependencies": {
         "@types/har-format": "^1.2.10",
-        "base64-search": "^1.0.0",
+        "base64-search": "^1.1.0",
+        "buffer": "^6.0.3",
         "cross-dirname": "^0.1.0",
         "escape-string-regexp": "^5.0.0",
         "fflate": "^0.8.0",
@@ -65,5 +66,5 @@
         "protobufjs": "^7.2.3",
         "qs": "^6.11.1"
     },
-    "yalcSig": "7077fdee32fb9208dbfcca7292aaf3be"
+    "yalcSig": "f7b6721ddf5a813609292d44e50392ac"
 }
