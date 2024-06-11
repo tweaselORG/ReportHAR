@@ -45,7 +45,7 @@
         "hexy": "^0.3.5",
         "papaparse": "^5.4.1",
         "safe-buffer": "^5.2.1",
-        "trackhar": "file:.yalc/trackhar"
+        "trackhar": "^0.4.1"
     },
     "devDependencies": {
         "@baltpeter/eslint-config": "2.2.0",
