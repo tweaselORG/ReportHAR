@@ -5,7 +5,13 @@
 #align(center)[
   #v(120pt)
 
-  #block(text(weight: 700, 2.5em, [Complaint under GDPR{% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}]))
+  #block(text(weight: 700, 2.5em, [
+    {% if type === 'complaint' %}
+      Complaint under GDPR{% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}
+    {% else %}
+      Informal suggestion for investigation
+    {% endif %}
+  ]))
 
   #v(30pt)
 
@@ -40,13 +46,19 @@
 // Main content
 = Introduction
 
+{% if type === 'complaint' %}
 I am hereby filing a complaint under Art. 77(1) GDPR regarding the {{ analysis.app.platform }} app "{{ analysis.app.name }}" (hereinafter: "the app").
 
-According to the store page for the app#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}], it is operated by {{ complaintOptions.controllerAddress }}. I am thus assuming them to be the app's controller. Should this assumption be incorrect, my complaint is directed against the actual controller of the app.
+As far as I can tell, the app is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the app's controller. Should this assumption be incorrect, my complaint is directed against the actual controller of the app.
 
-I am a user of the app on my personal {{ analysis.app.platform }} device. The {{ analysis.app.platform }} device is only used by me personally. I have installed the app through the {{ complaintOptions.userDeviceAppStore }}.{% if complaintOptions.loggedIntoAppStore %} I am logged into the {{ complaintOptions.userDeviceAppStore }} with my personal account.{% endif %}
+I am a user of the app on my personal {{ analysis.app.platform }} device. The {{ analysis.app.platform }} device is only used by me personally.{% if complaintOptions.userDeviceAppStore and complaintOptions.loggedIntoAppStore %} I have installed the app through the {{ complaintOptions.userDeviceAppStore }}. I am logged into the {{ complaintOptions.userDeviceAppStore }} with my personal account.{% endif %}
 
 {% if complaintOptions.deviceHasRegisteredSimCard %}My {{ analysis.app.platform }} device has a SIM card installed that is registered to my name.{% endif %}
+{% else %}
+I am hereby asking you to investigate the {{ analysis.app.platform }} app "{{ analysis.app.name }}" (hereinafter: "the app").
+
+As far as I can tell, the app is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the app's controller. Should this assumption be incorrect, my request is directed against the actual controller of the app.
+{% endif %}
 
 = Facts
 
@@ -56,9 +68,9 @@ To understand how the app is processing my data, I used the tools of the tweasel
 
 During this analysis, the app was run _without any user input_ (i.e. there was no interaction with the app at all) and its network traffic was recorded. The recorded traffic was then analyzed for tracking and similar data transmissions. Based on that, the tweasel tools produced a technical report.
 
-Both this technical report and the traffic recording are attached to this complaint as evidence. The report also contains a detailed description of the methodology used for the analysis and its basis in mobile privacy research.
+Both this technical report and the traffic recording are attached as evidence as part of my communication with the controller. The report also contains a detailed description of the methodology used for the analysis and its basis in mobile privacy research.
 
-Through the analysis, I unfortunately had to find out that the app performs tracking (as explained in @tracking) in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %} (as explained in @legal-grounds).
+Through the analysis, I unfortunately had to find out that the app performs tracking (as explained in @tracking) which I believe to be in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %} (as explained in @legal-grounds).
 
 On {{ complaintOptions.noticeDate | dateFormat(false) }}, I sent a notice to the controller making them aware of the violations I discovered and giving them the opportunity to remedy them.
 
@@ -67,24 +79,28 @@ In the interest of avoiding unnecessary work for the data protection authorities
 {% if complaintOptions.controllerResponse === "none" %}
   I have not received any response from the controller.
 {% elif complaintOptions.controllerResponse === "denial" %}
-  I have received a response from the controller in which they deny there being any violations in their app. I am providing an in-depth technical and legal argument as to why I do believe the controller is violating the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %} in this complaint.
+  I have received a response from the controller in which they deny there being any violations in their app. I am providing an in-depth technical and legal argument as to why I do believe the controller is violating the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %} below.
 {% elif complaintOptions.controllerResponse === "broken-promise" %}
   I have received a response from the controller in which they agreed to remedy the violations I discovered. However, as I will explain below, they have not actually done so.
 {% endif %}
 
-I am attaching my notice to the controller{% if complaintOptions.controllerResponse !== "none" %} as well as any communication I have received from them in this matter{% endif %} to the complaint.
+I am attaching my notice to the controller{% if complaintOptions.controllerResponse !== "none" %} as well as any communication I have received from them in this matter{% endif %}.
 
-On {{ analysis.date | dateFormat }}, and thus after the expiration of the voluntary grace period, I retested the app using the tweasel tools. The analysis was performed on version {{ analysis.app.version }} of the app, {% if analysis.app.store %}downloaded from the {{ analysis.app.store }}, {% endif %}running on {{ analysis.app.platform }} {{ analysis.platformVersion }}. Unfortunately, I had to find that the app still performs tracking in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}.
+On {{ analysis.date | dateFormat }}, {% if complaintOptions.controllerResponse === "none" %}and thus after the expiration of the voluntary grace period{% else %}after the controller had responded{% endif %}, I retested the app using the tweasel tools. The analysis was performed on version {{ analysis.app.version }} of the app, {% if analysis.app.store %}downloaded from the {{ analysis.app.store }}, {% endif %}running on {{ analysis.app.platform }} {{ analysis.platformVersion }}. Unfortunately, I had to find that the app still performs tracking in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}. Both this second technical report and the traffic recording are also attached.
 
+{% if type === 'complaint' %}
 To verify that the tracking also affects me, I used the {% if analysis.app.platform === 'Android' %}the "TrackerControl" app#footnote[https://trackercontrol.org/#network-traffic-analysis]{% elif analysis.app.platform === 'iOS' %}the "App Privacy Report" feature#footnote[https://support.apple.com/en-gb/HT212958]{% endif %} on my personal {{ analysis.app.platform }} device. This confirmed that the app also contacts those tracking servers on my own device.#footnote[Recording a phone's network traffic requires rooting the device and making severe configuration changes. Doing this is not feasible or advised for devices that are in actual day-to-day use. That is why the tweasel project provides public infrastructure for doing such testing on devices/emulators that are only used for this purpose. However, logging a list of DNS hostnames contacted by an app is possible without such severe procedures {% if analysis.app.platform === 'Android' %}by installing the "TrackerControl" app{% elif analysis.app.platform === 'iOS' %}using the "App Privacy Report" feature integrated directly into iOS{% endif %}.\
 \
 While the results from this log don't allow for inspecting the actual data that was transmitted, they do prove that the app contacted the same tracking servers. In combination with the technical report by the tweasel project, for which the request content was actually analysed, this provides a very strong indication that I am affected by the same tracking. As I will elaborate on in @legal-grounds-burden-of-proof, the controller has the burden of proving that their processing is in line with the GDPR. It would thus be on them to produce evidence for disproving the conclusion I am drawing here.] I have attached the evidence for this in @personal-hostnames[Appendix]
+{% endif %}
 
 == Tracking without interaction <tracking>
 
-In this section, I am detailing the tracking data transmissions that the app performed. I am only including transmissions from the second technical report from the tweasel project from {{ analysis.date | dateFormat(false) }}. All these transmissions thus occurred *at least 60 days after* I informed the controller of the violations I had initially discovered and gave them the opportunity to remedy them.
+In this section, I am detailing the tracking data transmissions that the app performed. I am only including transmissions from the second technical report from the tweasel project from {{ analysis.date | dateFormat(false) }}. All these transmissions thus occurred {% if complaintOptions.controllerResponse === "none" %}*at least 60 days after* I informed the controller of the violations I had initially discovered and gave them the opportunity to remedy them{% else %}after the controller had responded to my notice{% endif %}.
 
+{% if type === 'complaint' %}
 Additionally, I am only including transmissions to servers for which the log of {% if analysis.app.platform === 'Android' %}the "TrackerControl" app{% elif analysis.app.platform === 'iOS' %}the "App Privacy Report"{% endif %} confirmed that the app also contacts them on my personal device, as explained above. It is thus safe to assume that all these transmissions also affect me personally.
+{% endif %}
 
 It further bears repeating that, as guaranteed by the analysis methodology, the tracking transmissions described here all occurred *without any interaction* with the app or any potential consent dialog.
 
@@ -145,7 +161,7 @@ Supposedly anonymized datasets are rarely safe against re-identification. In man
 
 Given the above, it is crucial that data protection law protects data subjects against these dangers. Its very purpose is to safeguard individuals from the misuse of their personal data, which is a fundamental right. Tracking practices, as outlined, not only infringe upon this right but also pose a significant threat to the autonomy and dignity of individuals. The covert accumulation and exploitation of personal data through tracking mechanisms enable manipulation and discrimination, undermining the essence of individual freedom and self-determination.
 
-= Grounds for the complaint <legal-grounds>
+= {{ 'Grounds for the complaint' if type === 'complaint' else 'Legal grounds' }} <legal-grounds>
 
 Based on the facts presented above, I am of the opinion that the controller has violated data protection law, as I will explain in the following.
 
@@ -218,7 +234,7 @@ The burden of proof that their processing is in line with the GDPR falls on the 
 
 == §~25 TTDSG: Privacy protection for terminal equipment
 
-In addition to the GDPR, the controller has also violated §~25 TTDSG as the transposition of Art. 5(3) ePrivacy Directive into German law.
+In addition to the GDPR, I believe that the controller has also violated §~25 TTDSG as the transposition of Art. 5(3) ePrivacy Directive into German law.
 
 As shown in @tracking, the app has sent various information relating to used device to tracking companies. In order to do so, the app inevitably had to read the information from the terminal equipment#footnote[Schürmann/Guttmann in Auernhammer, DSGVO/BDSG, 8. edition, 2023, §~25 TTDSG, mn. 27, 31, 37; EDPB, Guidelines 2/2023 on Technical Scope of Art. 5(3) of ePrivacy Directive, 2023, https://www.edpb.europa.eu/system/files/2023-11/edpb_guidelines_202302_technical_scope_art_53_eprivacydirective_en.pdf, mn. 29, 31, 35, 39], thus opening the scope of §~25 TTDSG. Unlike the GDPR, the TTDSG doesn't just cover personal data but any data that is read from or stored on an end user's terminal equipment.#footnote[EDPB, Guidelines 2/2023 on Technical Scope of Art. 5(3) of ePrivacy Directive, 2023, https://www.edpb.europa.eu/system/files/2023-11/edpb_guidelines_202302_technical_scope_art_53_eprivacydirective_en.pdf, mn. 7–12; Schneider in Assion, TTDSG, 2022, §~25 TTDSG, mn. 23] The TTDSG does not include any significance threshold on the types of data concerned, either—any information can fall within its scope, including purely technical information.#footnote[Schürmann/Guttmann in Auernhammer, DSGVO/BDSG, 8. edition, 2023, §~25 TTDSG, mn. 20–23; Burkhardt/Reif/Schwartmann in Schwartmann/Jaspers/Eckhardt, TTDSG, 1. edition, 2022, §~25 TTDSG, mn. 29]
 
@@ -233,6 +249,7 @@ However, the controller has not obtained consent as there was no interaction wit
 
 = Requests and suggestions
 
+{% if type === 'complaint' %}
 In the previous sections, I have explained why I believe that the controller has violated my data protection rights. Therefore, I am now addressing this complaint to you.
 
 I ask you to investigate my complaint and to examine the described issues by means of your investigative powers according to Art. 58(1) GDPR.
@@ -240,10 +257,17 @@ I ask you to investigate my complaint and to examine the described issues by mea
 I also ask you to inform me about the progress and outcome of the complaint procedure according to Art. 77(2) GDPR and Art. 57(1)(f) GDPR during the course of the complaint procedure, but at the latest within three months (cf. Art. 78(2) GDPR).
 
 I finally ask you to make use of any supervisory measures that you deem necessary to mitigate the controller's violation of my rights in line with your corrective powers as per Art. 58(2) GDPR. In doing so, please consider that the described violations in all likelihood do not just apply to me, but to all users of the app.
+{% else %}
+In the previous sections, I have explained why I believe that the controller has violated my data protection rights. I am therefore asking you to investigate this matter and to examine the described issues by means of your investigative powers according to Art. 58(1) GDPR. I am also asking you to make use of any supervisory measures that you deem necessary to mitigate the controller's violation of my rights in line with your corrective powers as per Art. 58(2) GDPR. In doing so, please consider that the described violations in all likelihood do not just apply to me, but to all users of the app.
+
+While I am aware that you are not legally required to inform me about the progress and outcome of the procedure as this is not a formal complaint, I would nonetheless appreciate if you did.
+{% endif %}
 
 = Concluding remarks
 
+{% if type === 'complaint' %}
 You may share my data with the controller for the purpose of processing the complaint.
+{% endif %}
 
 If you need any more details, please feel free to contact me. You can reach me as follows: {{ complaintOptions.complainantContactDetails }} \
 I{% if not complaintOptions.complainantAgreesToUnencryptedCommunication %} do not{% endif %} agree to being contacted via unencrypted email.
@@ -258,7 +282,8 @@ Thank you in advance for your assistance.
 
 #text(weight: 700, 1.75em)[Appendix]
 
-= Results from "{% if analysis.app.platform === 'Android' %}TrackerControl{% elif analysis.app.platform === 'iOS' %}App Privacy Report{% endif %}" on my device <personal-hostnames>
+{% if type === 'complaint' %}
+= Results from "{% if analysis.app.platform === 'Android' %}TrackerControl{% elif analysis.app.platform === 'iOS' %}App Privacy Report{% endif %}" on my device, filtered to DNS hostnames contacted by the app <personal-hostnames>
 
 #table(
   columns: (10%, 30%, 60%),
@@ -269,6 +294,7 @@ Thank you in advance for your assistance.
   [{{ entry.index + 1 }}], [{{ entry.timestamp | dateFormat }}], [{{ entry.hostname }}],
   {% endfor %}
 )
+{% endif %}
 
 = DPA guidelines regarding personal data in the context of online tracking <dpa-guidelines-id>
 

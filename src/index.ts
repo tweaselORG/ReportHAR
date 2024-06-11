@@ -1,5 +1,10 @@
 import { type processRequest } from 'trackhar';
-import { generateAdvanced, type ComplaintOptions, type GenerateAdvancedOptions } from './lib/generate';
+import {
+    generateAdvanced,
+    type ComplaintOptionsFormal,
+    type ComplaintOptionsInformal,
+    type GenerateAdvancedOptions,
+} from './lib/generate';
 import { type SupportedLanguage } from './lib/translations';
 import { type TweaselHar } from './lib/tweasel-har';
 
@@ -25,8 +30,8 @@ export type GenerateOptionsDefault = {
     /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR. */
     trackHarResult: ReturnType<typeof processRequest>[];
 };
-/** Options for generating a complaint using the {@link generate} function. */
-export type GenerateOptionsComplaint = {
+/** Options for generating a formal complaint using the {@link generate} function. */
+export type GenerateOptionsComplaintFormal = {
     /**
      * The type of document to generate, with the following possible values:
      *
@@ -62,8 +67,48 @@ export type GenerateOptionsComplaint = {
     /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the second HAR. */
     trackHarResult: ReturnType<typeof processRequest>[];
 
-    /** Additional metadata for complaints. */
-    complaintOptions: ComplaintOptions;
+    /** Additional metadata for formal complaints. */
+    complaintOptions: ComplaintOptionsInformal & ComplaintOptionsFormal;
+};
+/** Options for generating an informal complaint using the {@link generate} function. */
+export type GenerateOptionsComplaintInformal = {
+    /**
+     * The type of document to generate, with the following possible values:
+     *
+     * - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority.
+     */
+    type: 'complaint-informal';
+    /** The language the generated document should be in. */
+    language: SupportedLanguage;
+
+    /**
+     * The HAR containing the recorded network traffic of the initial analysis that the notice to the controller was
+     * based on. Must be a tweasel HAR with metadata.
+     */
+    initialHar: TweaselHar;
+    /**
+     * The MD5 hash of the initial HAR file such that recipients of the report can verify the integrity of the attached
+     * HAR file.
+     */
+    initialHarMd5?: string;
+    /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the initial HAR. */
+    initialTrackHarResult: ReturnType<typeof processRequest>[];
+
+    /**
+     * The HAR containing the recorded network traffic of second analysis, that will be the basis for the complaint.
+     * Must be a tweasel HAR with metadata.
+     */
+    har: TweaselHar;
+    /**
+     * The MD5 hash of the second HAR file such that recipients of the report can verify the integrity of the attached
+     * HAR file.
+     */
+    harMd5?: string;
+    /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the second HAR. */
+    trackHarResult: ReturnType<typeof processRequest>[];
+
+    /** Additional metadata for informal complaints. */
+    complaintOptions: ComplaintOptionsInformal;
 };
 /**
  * Options for the {@link generate} function.
@@ -72,9 +117,13 @@ export type GenerateOptionsComplaint = {
  * The options type is a discriminated union based on the `type` property:
  *
  * - For `type: 'report' | 'notice'`, provide {@link GenerateOptionsDefault}.
- * - For `type: 'complaint'`, provide {@link GenerateOptionsComplaint}.
+ * - For `type: 'complaint'`, provide {@link GenerateOptionsComplaintFormal}.
+ * - For `type: 'complaint-informal'`, provide {@link GenerateOptionsComplaintInformal}.
  */
-export type GenerateOptions = GenerateOptionsDefault | GenerateOptionsComplaint;
+export type GenerateOptions =
+    | GenerateOptionsDefault
+    | GenerateOptionsComplaintFormal
+    | GenerateOptionsComplaintInformal;
 
 const platformMapping = {
     android: 'Android',
@@ -94,7 +143,11 @@ const platformMapping = {
  */
 export const generate = (options: GenerateOptions) => {
     const errHint = (m: string) => `${m} Use generateAdvanced() instead and manually provide the required metadata.`;
-    if (!('_tweasel' in options.har.log) || (options.type === 'complaint' && !('_tweasel' in options.initialHar.log)))
+    if (
+        !('_tweasel' in options.har.log) ||
+        ((options.type === 'complaint' || options.type === 'complaint-informal') &&
+            !('_tweasel' in options.initialHar.log))
+    )
         throw new Error(
             errHint(
                 'The generate() function relies on the additional metadata in tweasel HAR files. If you have a HAR file produced by another tool:'
@@ -132,9 +185,9 @@ export const generate = (options: GenerateOptions) => {
         };
     };
 
-    if (options.type === 'complaint')
+    if (options.type === 'complaint' || options.type === 'complaint-informal')
         return generateAdvanced({
-            type: options.type,
+            type: options.type as 'complaint-informal',
             language: options.language,
 
             analysis: getAnalysisMeta(options.har, options.trackHarResult, options.harMd5),
@@ -150,7 +203,13 @@ export const generate = (options: GenerateOptions) => {
     });
 };
 
-export type { Analysis, App, GenerateAdvancedOptionsComplaint, GenerateAdvancedOptionsDefault } from './lib/generate';
+export type {
+    Analysis,
+    App,
+    GenerateAdvancedOptionsComplaintFormal,
+    GenerateAdvancedOptionsComplaintInformal,
+    GenerateAdvancedOptionsDefault,
+} from './lib/generate';
 export { prepareTraffic, type PrepareTrafficOptions } from './lib/traffic';
 export { supportedLanguages, templates, translations } from './lib/translations';
 export {
@@ -159,4 +218,10 @@ export {
     type NetworkActivityReport,
     type TrackerControlNetworkTrafficExportEntry,
 } from './lib/user-network-activity';
-export { generateAdvanced, type ComplaintOptions, type GenerateAdvancedOptions, type SupportedLanguage };
+export {
+    generateAdvanced,
+    type ComplaintOptionsFormal,
+    type ComplaintOptionsInformal,
+    type GenerateAdvancedOptions,
+    type SupportedLanguage,
+};

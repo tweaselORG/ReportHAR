@@ -47,8 +47,8 @@ export type Analysis = {
     /** The versions of the dependencies used in the analysis. */
     dependencies: Record<string, string>;
 };
-/** Additional information required for generating a complaint to a data protection authority. */
-export type ComplaintOptions = {
+/** Additional information required for generating an informal complaint to a data protection authority. */
+export type ComplaintOptionsInformal = {
     /** The date the complaint is being made. */
     date: Date;
     /** The complaint's reference number, to be used in any further communication about this complaint. */
@@ -72,13 +72,6 @@ export type ComplaintOptions = {
     /** The URL of the source where the controller's postal address was found. */
     controllerAddressSourceUrl: string;
 
-    /** The app store the app was installed through on the user's device. */
-    userDeviceAppStore: string;
-    /** Whether the user is logged into this app store account on their device. */
-    loggedIntoAppStore: boolean;
-    /** Whether the user's device has a SIM card registered to them. */
-    deviceHasRegisteredSimCard: boolean;
-
     /**
      * How the controller responded to the notice, with the following possible values:
      *
@@ -92,6 +85,15 @@ export type ComplaintOptions = {
     complainantContactDetails: string;
     /** Whether the complainant agrees to the DPA communicating with them via unencrypted email. */
     complainantAgreesToUnencryptedCommunication: boolean;
+};
+/** Additional information for formal complaints to a data protection authority. */
+export type ComplaintOptionsFormal = {
+    /** The app store the app was installed through on the user's device. */
+    userDeviceAppStore?: string;
+    /** Whether the user is logged into this app store account on their device. */
+    loggedIntoAppStore: boolean;
+    /** Whether the user's device has a SIM card registered to them. */
+    deviceHasRegisteredSimCard: boolean;
 
     /**
      * A report of the user's network activity, as recorded using the iOS App Privacy Report or Tracker Control on
@@ -117,12 +119,12 @@ export type GenerateAdvancedOptionsDefault = {
     /** Information about the network traffic analyis that the document should be based on. */
     analysis: Analysis;
 };
-/** Options for generating a complaint using the {@link generateAdvanced} function. */
-export type GenerateAdvancedOptionsComplaint = {
+/** Options for generating a formal complaint using the {@link generateAdvanced} function. */
+export type GenerateAdvancedOptionsComplaintFormal = {
     /**
      * The type of document to generate, with the following possible values:
      *
-     * - `complaint`: Generate a complaint to a data protection authority.
+     * - `complaint`: Generate a formal complaint to a data protection authority.
      */
     type: 'complaint';
     /** The language the generated document should be in. */
@@ -133,8 +135,27 @@ export type GenerateAdvancedOptionsComplaint = {
     /** Information about the second network traffic analyis that will be the basis for the complaint. */
     analysis: Analysis;
 
+    /** Additional metadata for formal complaints. */
+    complaintOptions: ComplaintOptionsInformal & ComplaintOptionsFormal;
+};
+/** Options for generating a formal or in informal complaint using the {@link generateAdvanced} function. */
+export type GenerateAdvancedOptionsComplaintInformal = {
+    /**
+     * The type of document to generate, with the following possible values:
+     *
+     * - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority.
+     */
+    type: 'complaint-informal';
+    /** The language the generated document should be in. */
+    language: SupportedLanguage;
+
+    /** Information about the initial network traffic analyis that the notice to the controller was based on. */
+    initialAnalysis: Analysis;
+    /** Information about the second network traffic analyis that will be the basis for the complaint. */
+    analysis: Analysis;
+
     /** Additional metadata for complaints. */
-    complaintOptions: ComplaintOptions;
+    complaintOptions: ComplaintOptionsInformal;
 };
 /**
  * Options for the {@link generateAdvanced} function.
@@ -143,9 +164,13 @@ export type GenerateAdvancedOptionsComplaint = {
  * The options type is a discriminated union based on the `type` property:
  *
  * - For `type: 'report' | 'notice'`, provide {@link GenerateAdvancedOptionsDefault}.
- * - For `type: 'complaint'`, provide {@link GenerateAdvancedOptionsComplaint}.
+ * - For `type: 'complaint'`, provide {@link GenerateAdvancedOptionsComplaintFormal}.
+ * - For `type: 'complaint-informal'`, provide {@link GenerateAdvancedOptionsComplaintInformal}.
  */
-export type GenerateAdvancedOptions = GenerateAdvancedOptionsDefault | GenerateAdvancedOptionsComplaint;
+export type GenerateAdvancedOptions =
+    | GenerateAdvancedOptionsDefault
+    | GenerateAdvancedOptionsComplaintFormal
+    | GenerateAdvancedOptionsComplaintInformal;
 
 /**
  * Generate a technical report, controller notice or DPA complaint based on a network traffic analysis, manually
@@ -165,27 +190,35 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
         trackHarResult: options.analysis.trackHarResult,
     };
     if (options.type === 'complaint') {
+        options.complaintOptions.userNetworkActivity = options.complaintOptions.userNetworkActivity.filter(
+            (e) => e.appId === undefined || e.appId === options.analysis.app.id
+        );
+
         // For complaints, only consider results from adapters for which we know that the user's device contacted at
         // least one matching hostname.
         prepareTrafficOptions.entryFilter = (entry) => {
             const hostname = entry.harEntry?.request.host;
             if (!hostname) return false;
 
-            return options.complaintOptions.userNetworkActivity
-                .filter((e) => e.appId === undefined || e.appId === options.analysis.app.id)
-                .some((e) => e.hostname === hostname);
+            return options.complaintOptions.userNetworkActivity.some((e) => e.hostname === hostname);
         };
     }
     const { harEntries, trackHarResult, findings } = prepareTraffic(prepareTrafficOptions);
 
     // Render Nunjucks template.
     const typSource = renderNunjucks({
-        template: templates[options.language][options.type],
+        template:
+            templates[options.language][
+                options.type === 'complaint' || options.type === 'complaint-informal' ? 'complaint' : options.type
+            ],
         language: options.language,
         context: {
+            type: options.type,
             analysis: options.analysis,
-            initialAnalysis: options.type === 'complaint' && options.initialAnalysis,
-            complaintOptions: options.type === 'complaint' && options.complaintOptions,
+            initialAnalysis:
+                (options.type === 'complaint' || options.type === 'complaint-informal') && options.initialAnalysis,
+            complaintOptions:
+                (options.type === 'complaint' || options.type === 'complaint-informal') && options.complaintOptions,
             harEntries,
             trackHarResult,
             findings,

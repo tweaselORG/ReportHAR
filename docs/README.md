@@ -8,12 +8,15 @@ reporthar
 
 - [Analysis](README.md#analysis)
 - [App](README.md#app)
-- [ComplaintOptions](README.md#complaintoptions)
+- [ComplaintOptionsFormal](README.md#complaintoptionsformal)
+- [ComplaintOptionsInformal](README.md#complaintoptionsinformal)
 - [GenerateAdvancedOptions](README.md#generateadvancedoptions)
-- [GenerateAdvancedOptionsComplaint](README.md#generateadvancedoptionscomplaint)
+- [GenerateAdvancedOptionsComplaintFormal](README.md#generateadvancedoptionscomplaintformal)
+- [GenerateAdvancedOptionsComplaintInformal](README.md#generateadvancedoptionscomplaintinformal)
 - [GenerateAdvancedOptionsDefault](README.md#generateadvancedoptionsdefault)
 - [GenerateOptions](README.md#generateoptions)
-- [GenerateOptionsComplaint](README.md#generateoptionscomplaint)
+- [GenerateOptionsComplaintFormal](README.md#generateoptionscomplaintformal)
+- [GenerateOptionsComplaintInformal](README.md#generateoptionscomplaintinformal)
 - [GenerateOptionsDefault](README.md#generateoptionsdefault)
 - [IosAppPrivacyReportNetworkActivityEntry](README.md#iosappprivacyreportnetworkactivityentry)
 - [NetworkActivityReport](README.md#networkactivityreport)
@@ -81,11 +84,32 @@ Information about an app.
 
 ___
 
-### ComplaintOptions
+### ComplaintOptionsFormal
 
-Ƭ **ComplaintOptions**: `Object`
+Ƭ **ComplaintOptionsFormal**: `Object`
 
-Additional information required for generating a complaint to a data protection authority.
+Additional information for formal complaints to a data protection authority.
+
+#### Type declaration
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `deviceHasRegisteredSimCard` | `boolean` | Whether the user's device has a SIM card registered to them. |
+| `loggedIntoAppStore` | `boolean` | Whether the user is logged into this app store account on their device. |
+| `userDeviceAppStore?` | `string` | The app store the app was installed through on the user's device. |
+| `userNetworkActivity` | [`NetworkActivityReport`](README.md#networkactivityreport) | A report of the user's network activity, as recorded using the iOS App Privacy Report or Tracker Control on Android. This is used to prove that the user's device actually sent requests to the relevant trackers. Parse the raw exports from the platforms into the correct format using [parseNetworkActivityReport](README.md#parsenetworkactivityreport). |
+
+#### Defined in
+
+[src/lib/generate.ts:90](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L90)
+
+___
+
+### ComplaintOptionsInformal
+
+Ƭ **ComplaintOptionsInformal**: `Object`
+
+Additional information required for generating an informal complaint to a data protection authority.
 
 #### Type declaration
 
@@ -98,13 +122,9 @@ Additional information required for generating a complaint to a data protection 
 | `controllerAddressSourceUrl` | `string` | The URL of the source where the controller's postal address was found. |
 | `controllerResponse` | ``"none"`` \| ``"denial"`` \| ``"broken-promise"`` | How the controller responded to the notice, with the following possible values: - `none`: The controller did not respond. - `denial`: The controller denied the claims made in the notice. - `broken-promise`: The controller promised to make changes, but did not actually do so. |
 | `date` | `Date` | The date the complaint is being made. |
-| `deviceHasRegisteredSimCard` | `boolean` | Whether the user's device has a SIM card registered to them. |
-| `loggedIntoAppStore` | `boolean` | Whether the user is logged into this app store account on their device. |
 | `nationalEPrivacyLaw` | ``"TTDSG"`` \| ``false`` | If the complaint should also reference the ePrivacy directive, the name of the national law implementing it. Supported values: - `TTDSG`: Germany. |
 | `noticeDate` | `Date` | The date the notice to the controller was sent. |
 | `reference` | `string` | The complaint's reference number, to be used in any further communication about this complaint. |
-| `userDeviceAppStore` | `string` | The app store the app was installed through on the user's device. |
-| `userNetworkActivity` | [`NetworkActivityReport`](README.md#networkactivityreport) | A report of the user's network activity, as recorded using the iOS App Privacy Report or Tracker Control on Android. This is used to prove that the user's device actually sent requests to the relevant trackers. Parse the raw exports from the platforms into the correct format using [parseNetworkActivityReport](README.md#parsenetworkactivityreport). |
 
 #### Defined in
 
@@ -114,7 +134,7 @@ ___
 
 ### GenerateAdvancedOptions
 
-Ƭ **GenerateAdvancedOptions**: [`GenerateAdvancedOptionsDefault`](README.md#generateadvancedoptionsdefault) \| [`GenerateAdvancedOptionsComplaint`](README.md#generateadvancedoptionscomplaint)
+Ƭ **GenerateAdvancedOptions**: [`GenerateAdvancedOptionsDefault`](README.md#generateadvancedoptionsdefault) \| [`GenerateAdvancedOptionsComplaintFormal`](README.md#generateadvancedoptionscomplaintformal) \| [`GenerateAdvancedOptionsComplaintInformal`](README.md#generateadvancedoptionscomplaintinformal)
 
 Options for the [generateAdvanced](README.md#generateadvanced) function.
 
@@ -123,33 +143,56 @@ Options for the [generateAdvanced](README.md#generateadvanced) function.
 The options type is a discriminated union based on the `type` property:
 
 - For `type: 'report' | 'notice'`, provide [GenerateAdvancedOptionsDefault](README.md#generateadvancedoptionsdefault).
-- For `type: 'complaint'`, provide [GenerateAdvancedOptionsComplaint](README.md#generateadvancedoptionscomplaint).
+- For `type: 'complaint'`, provide [GenerateAdvancedOptionsComplaintFormal](README.md#generateadvancedoptionscomplaintformal).
+- For `type: 'complaint-informal'`, provide [GenerateAdvancedOptionsComplaintInformal](README.md#generateadvancedoptionscomplaintinformal).
 
 #### Defined in
 
-[src/lib/generate.ts:148](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L148)
+[src/lib/generate.ts:170](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L170)
 
 ___
 
-### GenerateAdvancedOptionsComplaint
+### GenerateAdvancedOptionsComplaintFormal
 
-Ƭ **GenerateAdvancedOptionsComplaint**: `Object`
+Ƭ **GenerateAdvancedOptionsComplaintFormal**: `Object`
 
-Options for generating a complaint using the [generateAdvanced](README.md#generateadvanced) function.
+Options for generating a formal complaint using the [generateAdvanced](README.md#generateadvanced) function.
 
 #### Type declaration
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `analysis` | [`Analysis`](README.md#analysis) | Information about the second network traffic analyis that will be the basis for the complaint. |
-| `complaintOptions` | [`ComplaintOptions`](README.md#complaintoptions) | Additional metadata for complaints. |
+| `complaintOptions` | [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) & [`ComplaintOptionsFormal`](README.md#complaintoptionsformal) | Additional metadata for formal complaints. |
 | `initialAnalysis` | [`Analysis`](README.md#analysis) | Information about the initial network traffic analyis that the notice to the controller was based on. |
 | `language` | [`SupportedLanguage`](README.md#supportedlanguage) | The language the generated document should be in. |
-| `type` | ``"complaint"`` | The type of document to generate, with the following possible values: - `complaint`: Generate a complaint to a data protection authority. |
+| `type` | ``"complaint"`` | The type of document to generate, with the following possible values: - `complaint`: Generate a formal complaint to a data protection authority. |
 
 #### Defined in
 
-[src/lib/generate.ts:121](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L121)
+[src/lib/generate.ts:123](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L123)
+
+___
+
+### GenerateAdvancedOptionsComplaintInformal
+
+Ƭ **GenerateAdvancedOptionsComplaintInformal**: `Object`
+
+Options for generating a formal or in informal complaint using the [generateAdvanced](README.md#generateadvanced) function.
+
+#### Type declaration
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `analysis` | [`Analysis`](README.md#analysis) | Information about the second network traffic analyis that will be the basis for the complaint. |
+| `complaintOptions` | [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) | Additional metadata for complaints. |
+| `initialAnalysis` | [`Analysis`](README.md#analysis) | Information about the initial network traffic analyis that the notice to the controller was based on. |
+| `language` | [`SupportedLanguage`](README.md#supportedlanguage) | The language the generated document should be in. |
+| `type` | ``"complaint-informal"`` | The type of document to generate, with the following possible values: - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority. |
+
+#### Defined in
+
+[src/lib/generate.ts:142](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L142)
 
 ___
 
@@ -169,13 +212,13 @@ Options for generating a report or controller notice using the [generateAdvanced
 
 #### Defined in
 
-[src/lib/generate.ts:106](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L106)
+[src/lib/generate.ts:108](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L108)
 
 ___
 
 ### GenerateOptions
 
-Ƭ **GenerateOptions**: [`GenerateOptionsDefault`](README.md#generateoptionsdefault) \| [`GenerateOptionsComplaint`](README.md#generateoptionscomplaint)
+Ƭ **GenerateOptions**: [`GenerateOptionsDefault`](README.md#generateoptionsdefault) \| [`GenerateOptionsComplaintFormal`](README.md#generateoptionscomplaintformal) \| [`GenerateOptionsComplaintInformal`](README.md#generateoptionscomplaintinformal)
 
 Options for the [generate](README.md#generate) function.
 
@@ -184,25 +227,26 @@ Options for the [generate](README.md#generate) function.
 The options type is a discriminated union based on the `type` property:
 
 - For `type: 'report' | 'notice'`, provide [GenerateOptionsDefault](README.md#generateoptionsdefault).
-- For `type: 'complaint'`, provide [GenerateOptionsComplaint](README.md#generateoptionscomplaint).
+- For `type: 'complaint'`, provide [GenerateOptionsComplaintFormal](README.md#generateoptionscomplaintformal).
+- For `type: 'complaint-informal'`, provide [GenerateOptionsComplaintInformal](README.md#generateoptionscomplaintinformal).
 
 #### Defined in
 
-[src/index.ts:77](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L77)
+[src/index.ts:123](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L123)
 
 ___
 
-### GenerateOptionsComplaint
+### GenerateOptionsComplaintFormal
 
-Ƭ **GenerateOptionsComplaint**: `Object`
+Ƭ **GenerateOptionsComplaintFormal**: `Object`
 
-Options for generating a complaint using the [generate](README.md#generate) function.
+Options for generating a formal complaint using the [generate](README.md#generate) function.
 
 #### Type declaration
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `complaintOptions` | [`ComplaintOptions`](README.md#complaintoptions) | Additional metadata for complaints. |
+| `complaintOptions` | [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) & [`ComplaintOptionsFormal`](README.md#complaintoptionsformal) | Additional metadata for formal complaints. |
 | `har` | `TweaselHar` | The HAR containing the recorded network traffic of second analysis, that will be the basis for the complaint. Must be a tweasel HAR with metadata. |
 | `harMd5?` | `string` | The MD5 hash of the second HAR file such that recipients of the report can verify the integrity of the attached HAR file. |
 | `initialHar` | `TweaselHar` | The HAR containing the recorded network traffic of the initial analysis that the notice to the controller was based on. Must be a tweasel HAR with metadata. |
@@ -214,7 +258,33 @@ Options for generating a complaint using the [generate](README.md#generate) func
 
 #### Defined in
 
-[src/index.ts:29](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L29)
+[src/index.ts:34](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L34)
+
+___
+
+### GenerateOptionsComplaintInformal
+
+Ƭ **GenerateOptionsComplaintInformal**: `Object`
+
+Options for generating an informal complaint using the [generate](README.md#generate) function.
+
+#### Type declaration
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `complaintOptions` | [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) | Additional metadata for informal complaints. |
+| `har` | `TweaselHar` | The HAR containing the recorded network traffic of second analysis, that will be the basis for the complaint. Must be a tweasel HAR with metadata. |
+| `harMd5?` | `string` | The MD5 hash of the second HAR file such that recipients of the report can verify the integrity of the attached HAR file. |
+| `initialHar` | `TweaselHar` | The HAR containing the recorded network traffic of the initial analysis that the notice to the controller was based on. Must be a tweasel HAR with metadata. |
+| `initialHarMd5?` | `string` | The MD5 hash of the initial HAR file such that recipients of the report can verify the integrity of the attached HAR file. |
+| `initialTrackHarResult` | `ReturnType`<typeof `processRequest`\>[] | The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the initial HAR. |
+| `language` | [`SupportedLanguage`](README.md#supportedlanguage) | The language the generated document should be in. |
+| `trackHarResult` | `ReturnType`<typeof `processRequest`\>[] | The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the second HAR. |
+| `type` | ``"complaint-informal"`` | The type of document to generate, with the following possible values: - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority. |
+
+#### Defined in
+
+[src/index.ts:74](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L74)
 
 ___
 
@@ -236,7 +306,7 @@ Options for generating a report or controller notice using the [generate](README
 
 #### Defined in
 
-[src/index.ts:7](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L7)
+[src/index.ts:12](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L12)
 
 ___
 
@@ -470,7 +540,7 @@ The generated document as a PDF file.
 
 #### Defined in
 
-[src/index.ts:95](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L95)
+[src/index.ts:144](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L144)
 
 ___
 
@@ -500,7 +570,7 @@ The generated document as a PDF file.
 
 #### Defined in
 
-[src/lib/generate.ts:161](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L161)
+[src/lib/generate.ts:186](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L186)
 
 ___
 
