@@ -11,8 +11,13 @@ export type NetworkActivityReport = {
     timestamp: Date;
     /** The hostname that was contacted. */
     hostname: string;
-    /** The ID of the app that made the request. */
-    appId: string;
+    /**
+     * The ID of the app that made the request.
+     *
+     * This is `undefined` if the network activity report was exported pre-filtered for a single app from
+     * TrackerControl.
+     */
+    appId: string | undefined;
 }[];
 
 /**
@@ -47,17 +52,29 @@ export type IosAppPrivacyReportNetworkActivityEntry = {
     bundleID: string;
 };
 
-/** An entry in a network traffic export from the Tracker Control app on Android. */
-export type TrackerControlNetworkTrafficExportEntry = {
-    uid: string;
-    daddr: string;
-    time: string;
-    uncertain: string;
-    Tracker: string;
-    Category: string;
-    Package: string;
-    App: string;
-};
+/**
+ * An entry in a network traffic export from the Tracker Control app on Android.
+ *
+ * Exports across all apps contain more fields than exports for just one app.
+ */
+export type TrackerControlNetworkTrafficExportEntry =
+    | {
+          uid: string;
+          daddr: string;
+          time: string;
+          uncertain: string;
+          Tracker: string;
+          Category: string;
+          Package: string;
+          App: string;
+      }
+    | {
+          daddr: string;
+          time: string;
+          uncertain: string;
+          'Tracker Name': string;
+          'Tracker Category': string;
+      };
 
 /**
  * Parse a network activity report from the iOS App Privacy Report or Tracker Control on Android into a standardized
@@ -66,7 +83,9 @@ export type TrackerControlNetworkTrafficExportEntry = {
  * @param type The type/format of the input report, with the following possible values:
  *
  *   - `ios-app-privacy-report-ndjson`: A report exported from the iOS App Privacy Report feature, in NDJSON format.
- *   - `tracker-control-csv`: A CSV export of the network traffic log from the Tracker Control Android app.
+ *   - `tracker-control-csv`: A CSV export of the network traffic log from the Tracker Control Android app. This supports
+ *       both the full export of all apps and the individual app export. In the latter case, the `appId` in the result
+ *       will always be `undefined`.
  *
  * @param report The report to parse.
  *
@@ -96,7 +115,7 @@ export const parseNetworkActivityReport = (
                 index,
                 timestamp: new Date(+e.time),
                 hostname: e.daddr,
-                appId: e.Package,
+                appId: 'Package' in e ? e.Package : undefined,
             })
         );
 

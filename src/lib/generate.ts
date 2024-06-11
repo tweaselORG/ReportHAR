@@ -172,7 +172,7 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
             if (!hostname) return false;
 
             return options.complaintOptions.userNetworkActivity
-                .filter((e) => e.appId === options.analysis.app.id)
+                .filter((e) => e.appId === undefined || e.appId === options.analysis.app.id)
                 .some((e) => e.hostname === hostname);
         };
     }

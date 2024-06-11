@@ -267,13 +267,13 @@ https://developer.apple.com/documentation/network/privacy_management/inspecting_
 
 #### Defined in
 
-[src/lib/user-network-activity.ts:23](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/user-network-activity.ts#L23)
+[src/lib/user-network-activity.ts:28](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/user-network-activity.ts#L28)
 
 ___
 
 ### NetworkActivityReport
 
-Ƭ **NetworkActivityReport**: { `appId`: `string` ; `hostname`: `string` ; `index`: `number` ; `timestamp`: `Date`  }[]
+Ƭ **NetworkActivityReport**: { `appId`: `string` \| `undefined` ; `hostname`: `string` ; `index`: `number` ; `timestamp`: `Date`  }[]
 
 An entry in a network activity report, containing information about the hostnames that were contacted on the user's
 device.
@@ -298,26 +298,15 @@ ___
 
 ### TrackerControlNetworkTrafficExportEntry
 
-Ƭ **TrackerControlNetworkTrafficExportEntry**: `Object`
+Ƭ **TrackerControlNetworkTrafficExportEntry**: { `App`: `string` ; `Category`: `string` ; `Package`: `string` ; `Tracker`: `string` ; `daddr`: `string` ; `time`: `string` ; `uid`: `string` ; `uncertain`: `string`  } \| { `Tracker Category`: `string` ; `Tracker Name`: `string` ; `daddr`: `string` ; `time`: `string` ; `uncertain`: `string`  }
 
 An entry in a network traffic export from the Tracker Control app on Android.
 
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `App` | `string` |
-| `Category` | `string` |
-| `Package` | `string` |
-| `Tracker` | `string` |
-| `daddr` | `string` |
-| `time` | `string` |
-| `uid` | `string` |
-| `uncertain` | `string` |
+Exports across all apps contain more fields than exports for just one app.
 
 #### Defined in
 
-[src/lib/user-network-activity.ts:51](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/user-network-activity.ts#L51)
+[src/lib/user-network-activity.ts:60](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/user-network-activity.ts#L60)
 
 ## Variables
 
@@ -523,7 +512,7 @@ Parse a network activity report from the iOS App Privacy Report or Tracker Contr
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `type` | ``"ios-app-privacy-report-ndjson"`` \| ``"tracker-control-csv"`` | The type/format of the input report, with the following possible values: - `ios-app-privacy-report-ndjson`: A report exported from the iOS App Privacy Report feature, in NDJSON format. - `tracker-control-csv`: A CSV export of the network traffic log from the Tracker Control Android app. |
+| `type` | ``"ios-app-privacy-report-ndjson"`` \| ``"tracker-control-csv"`` | The type/format of the input report, with the following possible values: - `ios-app-privacy-report-ndjson`: A report exported from the iOS App Privacy Report feature, in NDJSON format. - `tracker-control-csv`: A CSV export of the network traffic log from the Tracker Control Android app. This supports both the full export of all apps and the individual app export. In the latter case, the `appId` in the result will always be `undefined`. |
 | `report` | `string` | The report to parse. |
 
 #### Returns
@@ -534,4 +523,4 @@ The parsed report as a [NetworkActivityReport](README.md#networkactivityreport).
 
 #### Defined in
 
-[src/lib/user-network-activity.ts:75](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/user-network-activity.ts#L75)
+[src/lib/user-network-activity.ts:94](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/user-network-activity.ts#L94)
