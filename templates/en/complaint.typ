@@ -7,7 +7,7 @@
 
   #block(text(weight: 700, 2.5em, [
     {% if type === 'complaint' %}
-      Complaint under GDPR{% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}
+      Complaint under the GDPR{% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}
     {% else %}
       Informal suggestion for investigation
     {% endif %}
@@ -269,8 +269,8 @@ While I am aware that you are not legally required to inform me about the progre
 You may share my data with the controller for the purpose of processing the complaint.
 {% endif %}
 
-If you need any more details, please feel free to contact me. You can reach me as follows: {{ complaintOptions.complainantContactDetails }} \
-I{% if not complaintOptions.complainantAgreesToUnencryptedCommunication %} do not{% endif %} agree to being contacted via unencrypted email.
+If you need any more details, please feel free to contact me. You can reach me as follows: {{ complaintOptions.complainantContactDetails }}{% if complaintOptions.complainantAgreesToUnencryptedCommunication %}\
+I agree to being contacted via unencrypted email.{% endif %}
 
 Thank you in advance for your assistance.
 
