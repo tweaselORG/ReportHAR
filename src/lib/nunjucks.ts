@@ -36,8 +36,8 @@ export const renderNunjucks = (options: RenderNunjucksOptions) => {
             key: keyof (typeof translations)['en'][TScope] & string
         ) => (
             (() => {
-                const translation = translations[options.language][scope][key];
-                if (!translation) throw new Error(`Translation not found: ${scope}::${key}`);
+                const translation = translations[options.language]?.[scope]?.[key];
+                if (!translation) throw new Error(`Translation not found: ${options.language}::${scope}::${key}`);
             })(),
             translations[options.language][scope][key]
         )

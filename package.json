@@ -45,7 +45,7 @@
         "hexy": "^0.3.5",
         "papaparse": "^5.4.1",
         "safe-buffer": "^5.2.1",
-        "trackhar": "^0.4.1"
+        "trackhar": "^0.5.1"
     },
     "devDependencies": {
         "@baltpeter/eslint-config": "2.2.0",
@@ -61,7 +61,7 @@
         "eslint-plugin-eslint-comments": "3.2.0",
         "eslint-plugin-import": "2.27.5",
         "husky": "4.3.7",
-        "lint-staged": "13.2.3",
+        "lint-staged": "15.2.7",
         "parcel": "2.12.0",
         "prettier": "2.8.8",
         "typedoc": "0.24.8",
