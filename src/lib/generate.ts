@@ -4,6 +4,7 @@ import { generateTyp as generateTypForHar } from './har2pdf';
 import { renderNunjucks } from './nunjucks';
 import { prepareTraffic, type PrepareTrafficOptions } from './traffic';
 import { templates, type SupportedLanguage } from './translations';
+import type { Device, TrafficCollectionOptions } from './tweasel-har';
 import { compileTypst } from './typst';
 import type { NetworkActivityReport } from './user-network-activity';
 
@@ -32,6 +33,11 @@ export type Analysis = {
     app: App;
     /** The operating system version of the device/emulator the analysis was performed on. */
     platformVersion: string;
+
+    /** Other information on the device/emulator the analysis was performed on. Typically extracted from the HAR file. */
+    device?: Device;
+    /** Information on the traffic collectiong, in particular. */
+    trafficCollectionOptions?: TrafficCollectionOptions;
 
     /** The recorded network traffic in HAR format. */
     har: Har;

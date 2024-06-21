@@ -50,14 +50,16 @@ Information about a network traffic analysis that was performed.
 | `app` | [`App`](README.md#app) | Information about the analyzed app. |
 | `date` | `Date` | The date and time the analysis was performed. |
 | `dependencies` | `Record`<`string`, `string`\> | The versions of the dependencies used in the analysis. |
+| `device?` | `Device` | Other information on the device/emulator the analysis was performed on. Typically extracted from the HAR file. |
 | `har` | `Har` | The recorded network traffic in HAR format. |
 | `harMd5?` | `string` | The MD5 hash of the HAR file such that recipients of the report can verify the integrity of the attached HAR file. |
 | `platformVersion` | `string` | The operating system version of the device/emulator the analysis was performed on. |
 | `trackHarResult` | `ReturnType`<typeof `processRequest`\>[] | The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR. |
+| `trafficCollectionOptions?` | `TrafficCollectionOptions` | Information on the traffic collectiong, in particular. |
 
 #### Defined in
 
-[src/lib/generate.ts:27](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L27)
+[src/lib/generate.ts:28](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L28)
 
 ___
 
@@ -80,7 +82,7 @@ Information about an app.
 
 #### Defined in
 
-[src/lib/generate.ts:11](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L11)
+[src/lib/generate.ts:12](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L12)
 
 ___
 
@@ -101,7 +103,7 @@ Additional information for formal complaints to a data protection authority.
 
 #### Defined in
 
-[src/lib/generate.ts:90](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L90)
+[src/lib/generate.ts:96](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L96)
 
 ___
 
@@ -128,7 +130,7 @@ Additional information required for generating an informal complaint to a data p
 
 #### Defined in
 
-[src/lib/generate.ts:51](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L51)
+[src/lib/generate.ts:57](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L57)
 
 ___
 
@@ -148,7 +150,7 @@ The options type is a discriminated union based on the `type` property:
 
 #### Defined in
 
-[src/lib/generate.ts:170](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L170)
+[src/lib/generate.ts:176](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L176)
 
 ___
 
@@ -170,7 +172,7 @@ Options for generating a formal complaint using the [generateAdvanced](README.md
 
 #### Defined in
 
-[src/lib/generate.ts:123](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L123)
+[src/lib/generate.ts:129](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L129)
 
 ___
 
@@ -192,7 +194,7 @@ Options for generating a formal or in informal complaint using the [generateAdva
 
 #### Defined in
 
-[src/lib/generate.ts:142](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L142)
+[src/lib/generate.ts:148](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L148)
 
 ___
 
@@ -212,7 +214,7 @@ Options for generating a report or controller notice using the [generateAdvanced
 
 #### Defined in
 
-[src/lib/generate.ts:108](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L108)
+[src/lib/generate.ts:114](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L114)
 
 ___
 
@@ -570,7 +572,7 @@ The generated document as a PDF file.
 
 #### Defined in
 
-[src/lib/generate.ts:186](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L186)
+[src/lib/generate.ts:192](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L192)
 
 ___
 

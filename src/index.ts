@@ -177,6 +177,8 @@ export const generate = (options: GenerateOptions) => {
 
                 platform: platformMapping[app.platform],
             },
+            trafficCollectionOptions: har.log._tweasel.options,
+            device: har.log._tweasel.device,
             platformVersion: har.log._tweasel.device.osVersion,
             har: har,
             harMd5,
