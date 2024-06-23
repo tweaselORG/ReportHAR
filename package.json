@@ -1,11 +1,11 @@
 {
-    "name": "complaint-generator",
+    "name": "reporthar",
     "version": "0.0.0",
-    "description": "TODO",
-    "bugs": "https://github.com/tweaselORG/complaint-generator/issues",
+    "description": "Library for generating technical reports, notices, and GDPR complaints concerning tracking by mobile apps for the tweasel project.",
+    "bugs": "https://github.com/tweaselORG/ReportHAR/issues",
     "repository": {
         "type": "git",
-        "url": "https://github.com/tweaselORG/complaint-generator.git"
+        "url": "https://github.com/tweaselORG/ReportHAR.git"
     },
     "license": "MIT",
     "author": "Benjamin Altpeter <hi@bn.al>",
@@ -38,20 +38,31 @@
         ]
     },
     "prettier": "@baltpeter/prettier-config",
-    "dependencies": {},
+    "dependencies": {
+        "@myriaddreamin/typst-ts-web-compiler": "^0.4.1",
+        "@myriaddreamin/typst.ts": "^0.4.1",
+        "@tweasel/nunjucks": "^3.2.4-tweasel1",
+        "hexy": "^0.3.5",
+        "papaparse": "^5.4.1",
+        "safe-buffer": "^5.2.1",
+        "trackhar": "^0.5.1"
+    },
     "devDependencies": {
-        "@baltpeter/eslint-config": "2.1.2",
+        "@baltpeter/eslint-config": "2.2.0",
         "@baltpeter/prettier-config": "2.0.0",
         "@baltpeter/tsconfig": "3.0.0",
-        "@parcel/packager-ts": "2.9.3",
-        "@parcel/transformer-typescript-types": "2.9.3",
+        "@parcel/packager-ts": "2.12.0",
+        "@parcel/transformer-typescript-types": "2.12.0",
+        "@types/har-format": "^1.2.15",
+        "@types/node": "^20.10.4",
+        "@types/papaparse": "^5.3.14",
         "@typescript-eslint/eslint-plugin": "5.60.1",
         "eslint": "8.43.0",
         "eslint-plugin-eslint-comments": "3.2.0",
         "eslint-plugin-import": "2.27.5",
         "husky": "4.3.7",
-        "lint-staged": "13.2.3",
-        "parcel": "2.9.3",
+        "lint-staged": "15.2.7",
+        "parcel": "2.12.0",
         "prettier": "2.8.8",
         "typedoc": "0.24.8",
         "typedoc-plugin-markdown": "3.15.3",
