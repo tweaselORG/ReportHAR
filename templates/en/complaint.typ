@@ -232,6 +232,7 @@ As a data subject, I have no insights into the internal processes and data proce
 
 The burden of proof that their processing is in line with the GDPR falls on the controller as per Art. 5(2) GDPR.#footnote[with additional references: Schantz in BeckOK Datenschutzrecht, 45. edition, 2023, Art. 5, mn. 39] It was further explicitly confirmed by the European Court of Justice.#footnote[European Court of Justice, Judgment of 24 February 2022, Case C-175/20, https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:62020CJ0175]
 
+{% if complaintOptions.nationalEPrivacyLaw === 'TTDSG' %}
 == §~25 TTDSG: Privacy protection for terminal equipment
 
 In addition to the GDPR, I believe that the controller has also violated §~25 TTDSG as the transposition of Art. 5(3) ePrivacy Directive into German law.
@@ -246,6 +247,7 @@ While the TTDSG does list two exceptions to that rule in §~25(2) TTDSG, neither
 + Likewise, the controller cannot claim that the access was absolutely necessary to provide a telemedia service expressly requested by me. The exception has to be interpreted narrowly, with tracking and advertising not being strictly necessary.#footnote[Article 29 Data Protection Working Party, WP 194, Opinion 04/2012 on Cookie Consent Exemption, https://ec.europa.eu/justice/article-29/documentation/opinion-recommendation/files/2012/wp194_en.pdf; Datenschutzkonferenz, Orientierungshilfe der Aufsichtsbehörden für Anbieter:innen von Telemedien ab dem 1. Dezember 2021 (OH Telemedien 2021), Version 1.1, 2022, https://www.datenschutzkonferenz-online.de/media/oh/20221130_OH_Telemedien_2021_Version_1_1.pdf, Section III. 3. c); Der Landesbeauftragte für Datenschutz und Informationsfreiheit Baden-Württemberg, FAQ: Cookies und Tracking durch Betreiber von Webseiten und Hersteller von Smartphone-Apps, Version 2.0.1, 2022, https://www.baden-wuerttemberg.datenschutz.de/wp-content/uploads/2022/03/FAQ-Tracking-online.pdf, Section A.1.4; Schneider in Assion, TTDSG, 2022, § 25 TTDSG, mn. 36, 44; Nolte in Säcker/Körber, TKG – TTDSG, 4. edition, 2023, §~25 TTDSG, mn. 37; Burkhardt/Reif/Schwartmann in Schwartmann/Jaspers/Eckhardt, TTDSG, 1. edition, 2022, §~25 TTDSG, mn. 127, 140; Ettig in Taeger/Gabel, DSGVO - BDSG - TTDSG, 4. edition, 2022, § 25 TTDSG, mn. 56] Thus, §~25(2)(2) TTDSG is not applicable either.
 
 However, the controller has not obtained consent as there was no interaction with the app at all. §~25(1) TTDSG defers to the GDPR for conditions on consent. As such, the same reasoning as in @no-legal-basis applies here as well.
+{% endif %}
 
 = Requests and suggestions
 
