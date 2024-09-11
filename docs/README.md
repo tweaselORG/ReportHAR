@@ -126,7 +126,7 @@ Additional information required for generating an informal complaint to a data p
 | `controllerAddressSourceUrl` | `string` | The URL of the source where the controller's postal address was found. |
 | `controllerResponse` | ``"none"`` \| ``"denial"`` \| ``"broken-promise"`` | How the controller responded to the notice, with the following possible values: - `none`: The controller did not respond. - `denial`: The controller denied the claims made in the notice. - `broken-promise`: The controller promised to make changes, but did not actually do so. |
 | `date` | `Date` | The date the complaint is being made. |
-| `nationalEPrivacyLaw` | ``"TTDSG"`` \| ``false`` | If the complaint should also reference the ePrivacy directive, the name of the national law implementing it. Supported values: - `TTDSG`: Germany. |
+| `nationalEPrivacyLaw` | ``"TDDDG"`` \| ``false`` | If the complaint should also reference the ePrivacy directive, the name of the national law implementing it. Supported values: - `TDDDG`: Germany (previously TTDSG). |
 | `noticeDate` | `Date` | The date the notice to the controller was sent. |
 | `reference` | `string` | The complaint's reference number, to be used in any further communication about this complaint. |
 
