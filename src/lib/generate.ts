@@ -70,9 +70,9 @@ export type ComplaintOptionsInformal = {
      * If the complaint should also reference the ePrivacy directive, the name of the national law implementing it.
      * Supported values:
      *
-     * - `TTDSG`: Germany.
+     * - `TDDDG`: Germany (previously TTDSG).
      */
-    nationalEPrivacyLaw: 'TTDSG' | false;
+    nationalEPrivacyLaw: 'TDDDG' | false;
 
     /** The complainant's postal address. */
     complainantAddress: string;

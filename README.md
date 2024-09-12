@@ -141,7 +141,7 @@ import { generate, parseNetworkActivityReport } from 'reporthar';
             reference: '2024-1ONO079C',
             noticeDate: new Date('2023-12-01'),
 
-            nationalEPrivacyLaw: 'TTDSG',
+            nationalEPrivacyLaw: 'TDDDG',
 
             complainantAddress: 'Kim Mustermensch, Musterstraße 123, 12345 Musterstadt, Musterland',
             controllerAddress: 'Musterfirma, Musterstraße 123, 12345 Musterstadt, Musterland',
@@ -264,7 +264,7 @@ const complaint = await generateAdvanced({
         reference: '2024-1ONO079C',
         noticeDate: new Date('2023-12-01'),
 
-        nationalEPrivacyLaw: 'TTDSG',
+        nationalEPrivacyLaw: 'TDDDG',
 
         complainantAddress: 'Kim Mustermensch, Musterstraße 123, 12345 Musterstadt, Musterland',
         controllerAddress: 'Musterfirma, Musterstraße 123, 12345 Musterstadt, Musterland',
