@@ -65,5 +65,3 @@ Given the above, I conclude that you have violated my data protection rights as 
 The data protection authorities have investigative and corrective powers according to Art. 58 GDPR. In particular, they can issue fines of up to 20~Million~EUR or 4~% of your total worldwide annual turnover, whichever is higher, against you for violations according to Art. 83(5) GDPR.
 
 However, in the interest of avoiding unnecessary work for you, the data protection authorities, and myself, I am giving you a voluntary grace period of 60 days from the date of this notice. If you remedy the violations detailed herein and ensure that the app is fully compliant with the GDPR and ePrivacy Directive within this period, I plan to refrain from filing a complaint against you in this matter.
-
-I would like to receive updates and information on your process to resolve these violations. Please inform me, if you believe the problems no longer persist.
