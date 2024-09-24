@@ -61,7 +61,7 @@ Information about a network traffic analysis that was performed.
 
 #### Defined in
 
-[src/lib/generate.ts:27](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L27)
+[src/lib/generate.ts:27](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L27)
 
 ___
 
@@ -84,7 +84,7 @@ Information about an app.
 
 #### Defined in
 
-[src/lib/generate.ts:11](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L11)
+[src/lib/generate.ts:11](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L11)
 
 ___
 
@@ -105,7 +105,7 @@ Additional information for formal complaints to a data protection authority.
 
 #### Defined in
 
-[src/lib/generate.ts:99](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L99)
+[src/lib/generate.ts:99](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L99)
 
 ___
 
@@ -132,7 +132,7 @@ Additional information required for generating an informal complaint to a data p
 
 #### Defined in
 
-[src/lib/generate.ts:60](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L60)
+[src/lib/generate.ts:60](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L60)
 
 ___
 
@@ -152,7 +152,7 @@ The options type is a discriminated union based on the `type` property:
 
 #### Defined in
 
-[src/lib/generate.ts:179](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L179)
+[src/lib/generate.ts:179](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L179)
 
 ___
 
@@ -174,7 +174,7 @@ Options for generating a formal complaint using the [generateAdvanced](README.md
 
 #### Defined in
 
-[src/lib/generate.ts:132](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L132)
+[src/lib/generate.ts:132](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L132)
 
 ___
 
@@ -196,7 +196,7 @@ Options for generating a formal or in informal complaint using the [generateAdva
 
 #### Defined in
 
-[src/lib/generate.ts:151](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L151)
+[src/lib/generate.ts:151](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L151)
 
 ___
 
@@ -216,7 +216,7 @@ Options for generating a report or controller notice using the [generateAdvanced
 
 #### Defined in
 
-[src/lib/generate.ts:117](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L117)
+[src/lib/generate.ts:117](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L117)
 
 ___
 
@@ -236,7 +236,7 @@ The options type is a discriminated union based on the `type` property:
 
 #### Defined in
 
-[src/index.ts:123](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L123)
+[src/index.ts:123](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L123)
 
 ___
 
@@ -262,7 +262,7 @@ Options for generating a formal complaint using the [generate](README.md#generat
 
 #### Defined in
 
-[src/index.ts:34](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L34)
+[src/index.ts:34](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L34)
 
 ___
 
@@ -288,7 +288,7 @@ Options for generating an informal complaint using the [generate](README.md#gene
 
 #### Defined in
 
-[src/index.ts:74](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L74)
+[src/index.ts:74](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L74)
 
 ___
 
@@ -310,7 +310,7 @@ Options for generating a report or controller notice using the [generate](README
 
 #### Defined in
 
-[src/index.ts:12](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L12)
+[src/index.ts:12](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L12)
 
 ___
 
@@ -341,7 +341,7 @@ https://developer.apple.com/documentation/network/privacy_management/inspecting_
 
 #### Defined in
 
-[src/lib/user-network-activity.ts:28](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/user-network-activity.ts#L28)
+[src/lib/user-network-activity.ts:28](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/user-network-activity.ts#L28)
 
 ___
 
@@ -354,7 +354,7 @@ device.
 
 #### Defined in
 
-[src/lib/user-network-activity.ts:7](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/user-network-activity.ts#L7)
+[src/lib/user-network-activity.ts:7](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/user-network-activity.ts#L7)
 
 ___
 
@@ -366,7 +366,7 @@ A language that translations and templates are available for.
 
 #### Defined in
 
-[src/lib/translations.ts:27](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/translations.ts#L27)
+[src/lib/translations.ts:27](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L27)
 
 ___
 
@@ -380,7 +380,7 @@ Exports across all apps contain more fields than exports for just one app.
 
 #### Defined in
 
-[src/lib/user-network-activity.ts:60](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/user-network-activity.ts#L60)
+[src/lib/user-network-activity.ts:60](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/user-network-activity.ts#L60)
 
 ## Variables
 
@@ -392,7 +392,7 @@ The languages that translations and templates are available for.
 
 #### Defined in
 
-[src/lib/translations.ts:22](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/translations.ts#L22)
+[src/lib/translations.ts:22](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L22)
 
 ___
 
@@ -414,7 +414,7 @@ The Typst template files.
 
 #### Defined in
 
-[src/lib/translations.ts:12](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/translations.ts#L12)
+[src/lib/translations.ts:12](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L12)
 
 ___
 
@@ -514,7 +514,7 @@ The string translations.
 
 #### Defined in
 
-[src/lib/translations.ts:5](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/translations.ts#L5)
+[src/lib/translations.ts:5](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L5)
 
 ## Functions
 
@@ -544,7 +544,7 @@ The generated document as a PDF file.
 
 #### Defined in
 
-[src/index.ts:144](https://github.com/tweaselORG/complaint-generator/blob/main/src/index.ts#L144)
+[src/index.ts:144](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L144)
 
 ___
 
@@ -574,7 +574,7 @@ The generated document as a PDF file.
 
 #### Defined in
 
-[src/lib/generate.ts:195](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/generate.ts#L195)
+[src/lib/generate.ts:195](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L195)
 
 ___
 
@@ -600,4 +600,4 @@ The parsed report as a [NetworkActivityReport](README.md#networkactivityreport).
 
 #### Defined in
 
-[src/lib/user-network-activity.ts:94](https://github.com/tweaselORG/complaint-generator/blob/main/src/lib/user-network-activity.ts#L94)
+[src/lib/user-network-activity.ts:94](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/user-network-activity.ts#L94)

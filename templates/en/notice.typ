@@ -46,7 +46,7 @@ As explained, the transmissions detailed above happened without any interaction 
 
 Processing that can only rely on consent as a legal basis may only happen after consent has been given, and you, as the controller, need to be able to demonstrate that consent has been given (Art. 7(1) GDPR).
 
-In addition, Art. 5(1)(c) GDPR mandates the principle of data minimisation, requiring you to only process data to the extent necessary for the particular purpose. Further, Art. 25(1) GDPR prescribes the principle of data protection by design and by default.
+In addition, Art. 5(1)(c) GDPR mandates the principle of data minimization, requiring you to only process data to the extent necessary for the particular purpose. Further, Art. 25(1) GDPR prescribes the principle of data protection by design and by default.
 
 According to Art. 5(2), 7(1), and 24(1) GDPR, you have the burden to prove that all your processing is performed in accordance with the GDPR. This was explicitly confirmed by the European Court of Justice in case C-175/20.
 
@@ -64,4 +64,4 @@ Given the above, I conclude that you have violated my data protection rights as 
 
 The data protection authorities have investigative and corrective powers according to Art. 58 GDPR. In particular, they can issue fines of up to 20~Million~EUR or 4~% of your total worldwide annual turnover, whichever is higher, against you for violations according to Art. 83(5) GDPR.
 
-However, in the interest of avoiding unneccesary work for you, the data protection authorities, and myself, I am giving you a voluntary grace period of 60 days from the date of this notice. If you remedy the violations detailed herein and ensure that the app is fully compliant with the GDPR and ePrivacy Directive within this period, I plan to refrain from filing a complaint against you in this matter.
+However, in the interest of avoiding unnecessary work for you, the data protection authorities, and myself, I am giving you a voluntary grace period of 60 days from the date of this notice. If you remedy the violations detailed herein and ensure that the app is fully compliant with the GDPR and ePrivacy Directive within this period, I plan to refrain from filing a complaint against you in this matter.
