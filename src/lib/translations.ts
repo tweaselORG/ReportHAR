@@ -6,6 +6,10 @@ export const translations = {
     en: JSON.parse(
         fs.readFileSync(__dirname + '/../../node_modules/trackhar/i18n/en.json', 'utf-8')
     ) as typeof trackHarTranslationsEn,
+    // TODO (block merge): German TrackHAR translations are not released yet.
+    de: JSON.parse(
+        fs.readFileSync(__dirname + '/../../node_modules/trackhar/i18n/de.json', 'utf-8')
+    ) as typeof trackHarTranslationsEn,
 };
 
 /** The Typst template files. */
@@ -15,6 +19,12 @@ export const templates = {
         notice: fs.readFileSync(__dirname + '/../../templates/en/notice.typ', 'utf-8'),
         complaint: fs.readFileSync(__dirname + '/../../templates/en/complaint.typ', 'utf-8'),
         style: fs.readFileSync(__dirname + '/../../templates/en/style.typ', 'utf-8'),
+    },
+    de: {
+        report: fs.readFileSync(__dirname + '/../../templates/de/report.typ', 'utf-8'),
+        notice: fs.readFileSync(__dirname + '/../../templates/de/notice.typ', 'utf-8'),
+        complaint: fs.readFileSync(__dirname + '/../../templates/de/complaint.typ', 'utf-8'),
+        style: fs.readFileSync(__dirname + '/../../templates/de/style.typ', 'utf-8'),
     },
 };
 
