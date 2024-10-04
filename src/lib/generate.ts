@@ -244,7 +244,7 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
                     harEntries
                         .map((e, index) => ({ ...e, index }))
                         .filter((e) => trackHarResult.some((r) => r.harIndex === e.index)),
-                    { includeResponses: false, truncateContent: 4096 }
+                    { includeResponses: false, truncateContent: 4096, language: options.language }
                 ),
             }),
         },
