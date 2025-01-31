@@ -32,7 +32,7 @@ A full API reference can be found in the [`docs` folder](/docs/README.md).
 
 ## Example usage
 
-ReportHAR provides two main functions for generating documents: `generate()` and `generateAdvanced()`.
+ReportHAR provides two main functions for generating documents: `generate()` and `generateAdvanced()`. 
 
 ### Usage with tweasel HAR files
 
@@ -283,6 +283,10 @@ const complaint = await generateAdvanced({
     },
 });
 ```
+
+## Testing
+
+For a test case, you can run `yarn test -l <language> -p <platform (ios or android)> --ePrivacyLaw <national e-privacy law>` to test different variations of the templates with example data. The results will be written to `test/results`.
 
 ## License
 
