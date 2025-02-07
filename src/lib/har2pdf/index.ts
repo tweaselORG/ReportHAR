@@ -22,12 +22,16 @@ export type RenderOptions = {
     truncateContent?: number;
     /** Whether to include responses as well (default: `true`). */
     includeResponses?: boolean;
+    /** What level the highest level generated heading should be at (default: `2`) */
+    topHeadingLevel?: number;
 };
 
 export const generateTyp = (entries: (HarEntry & { index?: number })[], options?: RenderOptions) => {
     const translation = translations[options?.language ?? 'en'];
     if (!translation) throw new Error(`Unsupported language: ${options?.language}`);
     const _ = getTranslator(translation, translationsEn);
+
+    const topHeadingLevel = options?.topHeadingLevel && options.topHeadingLevel > 0 ? options.topHeadingLevel : 2;
 
     /**
      * Wrap content in a raw/code block, properly escaping user input (cf.
@@ -155,7 +159,7 @@ ${renderContent(r.response.content)}
 `;
     })
     .join('\n')}
-`;
+`.replaceAll(/^==/gm, '='.repeat(topHeadingLevel));
 };
 
 export const har2Pdf = async (har: Har, options?: RenderOptions) => {
