@@ -1,6 +1,6 @@
 {
     "name": "reporthar",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "Library for generating technical reports, notices, and GDPR complaints concerning tracking by mobile apps for the tweasel project.",
     "bugs": "https://github.com/tweaselORG/ReportHAR/issues",
     "repository": {
