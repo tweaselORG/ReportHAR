@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { join } from 'path';
 import type trackHarTranslationsDe from 'trackhar/i18n/de.json';
 import type trackHarTranslationsEn from 'trackhar/i18n/en.json';
 
@@ -12,19 +13,37 @@ export const translations = {
     ) as typeof trackHarTranslationsDe,
 };
 
+const templateFolder = join(__dirname, '/../../templates');
+
 /** The Typst template files. */
 export const templates = {
-    en: {
-        report: fs.readFileSync(__dirname + '/../../templates/en/report.typ', 'utf-8'),
-        notice: fs.readFileSync(__dirname + '/../../templates/en/notice.typ', 'utf-8'),
-        complaint: fs.readFileSync(__dirname + '/../../templates/en/complaint.typ', 'utf-8'),
-        style: fs.readFileSync(__dirname + '/../../templates/en/style.typ', 'utf-8'),
+    mobile: {
+        en: {
+            report: fs.readFileSync(join(templateFolder, 'mobile/en/report.typ'), 'utf-8'),
+            notice: fs.readFileSync(join(templateFolder, 'mobile/en/notice.typ'), 'utf-8'),
+            complaint: fs.readFileSync(join(templateFolder, 'mobile/en/complaint.typ'), 'utf-8'),
+            style: fs.readFileSync(join(templateFolder, 'mobile/en/style.typ'), 'utf-8'),
+        },
+        de: {
+            report: fs.readFileSync(join(templateFolder, 'mobile/de/report.typ'), 'utf-8'),
+            notice: fs.readFileSync(join(templateFolder, 'mobile/de/notice.typ'), 'utf-8'),
+            complaint: fs.readFileSync(join(templateFolder, 'mobile/de/complaint.typ'), 'utf-8'),
+            style: fs.readFileSync(join(templateFolder, 'mobile/de/style.typ'), 'utf-8'),
+        },
     },
-    de: {
-        report: fs.readFileSync(__dirname + '/../../templates/de/report.typ', 'utf-8'),
-        notice: fs.readFileSync(__dirname + '/../../templates/de/notice.typ', 'utf-8'),
-        complaint: fs.readFileSync(__dirname + '/../../templates/de/complaint.typ', 'utf-8'),
-        style: fs.readFileSync(__dirname + '/../../templates/de/style.typ', 'utf-8'),
+    web: {
+        en: {
+            report: fs.readFileSync(join(templateFolder, 'web/en/report.typ'), 'utf-8'),
+            notice: fs.readFileSync(join(templateFolder, 'web/en/notice.typ'), 'utf-8'),
+            complaint: fs.readFileSync(join(templateFolder, 'web/en/complaint.typ'), 'utf-8'),
+            style: fs.readFileSync(join(templateFolder, 'web/en/style.typ'), 'utf-8'),
+        },
+        de: {
+            report: fs.readFileSync(join(templateFolder, 'web/de/report.typ'), 'utf-8'),
+            notice: fs.readFileSync(join(templateFolder, 'web/de/notice.typ'), 'utf-8'),
+            complaint: fs.readFileSync(join(templateFolder, 'web/de/complaint.typ'), 'utf-8'),
+            style: fs.readFileSync(join(templateFolder, 'web/de/style.typ'), 'utf-8'),
+        },
     },
 };
 

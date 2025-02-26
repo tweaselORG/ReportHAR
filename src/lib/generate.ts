@@ -95,8 +95,8 @@ export type ComplaintOptionsInformal = {
     /** Whether the complainant agrees to the DPA communicating with them via unencrypted email. */
     complainantAgreesToUnencryptedCommunication: boolean;
 };
-/** Additional information for formal complaints to a data protection authority. */
-export type ComplaintOptionsFormal = {
+/** Additional information for formal complaints about mobile apps to a data protection authority. */
+export type ComplaintOptionsFormalMobile = {
     /** The app store the app was installed through on the user's device. */
     userDeviceAppStore?: string;
     /** Whether the user is logged into this app store account on their device. */
@@ -112,6 +112,10 @@ export type ComplaintOptionsFormal = {
      */
     userNetworkActivity: NetworkActivityReport;
 };
+/** Additional information for formal complaints about websites to a data protection authority. */
+export type ComplaintOptionsFormalWeb = {
+    interactionNoConsent: boolean;
+};
 
 /** Options for generating a report or controller notice using the {@link generateAdvanced} function. */
 export type GenerateAdvancedOptionsDefault = {
@@ -122,20 +126,58 @@ export type GenerateAdvancedOptionsDefault = {
      * - `notice`: Generate a notice to the controller.
      */
     type: 'report' | 'notice';
+
     /** The language the generated document should be in. */
     language: SupportedLanguage;
 
-    /** Information about the network traffic analyis that the document should be based on. */
+    /** Information about the network traffic analysis that the document should be based on. */
     analysis: Analysis;
-};
-/** Options for generating a formal complaint using the {@link generateAdvanced} function. */
-export type GenerateAdvancedOptionsComplaintFormal = {
+} & (
+    | {
+          /**
+           * Which toolchain collected the HAR, with the following possible values:
+           *
+           * - `web` for HARs originating from the TweaselForWeb addon.
+           * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+           */
+          analysisSource: 'web';
+          /**
+           * Information about the network traffic analysis which might contain interaction triggered traffic that will
+           * be the basis for the complaint.
+           */
+          analysisInteraction: Analysis;
+      }
+    | {
+          /**
+           * Which toolchain collected the HAR, with the following possible values:
+           *
+           * - `web` for HARs originating from the TweaselForWeb addon.
+           * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+           */
+          analysisSource: 'mobile';
+          /**
+           * Information about the second network traffic analysis which might contain interaction triggered traffic
+           * that will be the basis for the complaint.
+           */
+          analysisInteraction: never;
+      }
+);
+
+/** Options for generating a formal complaint for mobiles apps using the {@link generateAdvanced} function. */
+export type GenerateAdvancedOptionsComplaintFormalMobile = {
     /**
      * The type of document to generate, with the following possible values:
      *
      * - `complaint`: Generate a formal complaint to a data protection authority.
      */
     type: 'complaint';
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'mobile';
     /** The language the generated document should be in. */
     language: SupportedLanguage;
 
@@ -145,16 +187,61 @@ export type GenerateAdvancedOptionsComplaintFormal = {
     analysis: Analysis;
 
     /** Additional metadata for formal complaints. */
-    complaintOptions: ComplaintOptionsInformal & ComplaintOptionsFormal;
+    complaintOptions: ComplaintOptionsInformal & ComplaintOptionsFormalMobile;
 };
+
+/** Options for generating a formal complaint for websites using the {@link generateAdvanced} function. */
+export type GenerateAdvancedOptionsComplaintFormalWeb = {
+    /**
+     * The type of document to generate, with the following possible values:
+     *
+     * - `complaint`: Generate a formal complaint to a data protection authority.
+     */
+    type: 'complaint';
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'web';
+    /** The language the generated document should be in. */
+    language: SupportedLanguage;
+
+    /** Information about the initial network traffic analysis that the notice to the controller was based on. */
+    initialAnalysis: Analysis;
+    /**
+     * Information about the initial network traffic analysis which might contain interaction triggered traffic that the
+     * notice to the controller was based on.
+     */
+    initialAnalysisInteraction: Analysis;
+    /** Information about the second network traffic analysis that will be the basis for the complaint. */
+    analysis: Analysis;
+    /**
+     * Information about the second network traffic analysis which might contain interaction triggered traffic that will
+     * be the basis for the complaint.
+     */
+    analysisInteraction: Analysis;
+
+    /** Additional metadata for formal complaints. */
+    complaintOptions: ComplaintOptionsInformal & ComplaintOptionsFormalWeb;
+};
+
 /** Options for generating a formal or in informal complaint using the {@link generateAdvanced} function. */
-export type GenerateAdvancedOptionsComplaintInformal = {
+export type GenerateAdvancedOptionsComplaintInformalMobile = {
     /**
      * The type of document to generate, with the following possible values:
      *
      * - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority.
      */
     type: 'complaint-informal';
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'mobile';
     /** The language the generated document should be in. */
     language: SupportedLanguage;
 
@@ -162,6 +249,43 @@ export type GenerateAdvancedOptionsComplaintInformal = {
     initialAnalysis: Analysis;
     /** Information about the second network traffic analyis that will be the basis for the complaint. */
     analysis: Analysis;
+
+    /** Additional metadata for complaints. */
+    complaintOptions: ComplaintOptionsInformal;
+};
+
+/** Options for generating a formal or in informal complaint using the {@link generateAdvanced} function. */
+export type GenerateAdvancedOptionsComplaintInformalWeb = {
+    /**
+     * The type of document to generate, with the following possible values:
+     *
+     * - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority.
+     */
+    type: 'complaint-informal';
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'web';
+    /** The language the generated document should be in. */
+    language: SupportedLanguage;
+
+    /** Information about the initial network traffic analysis that the notice to the controller was based on. */
+    initialAnalysis: Analysis;
+    /**
+     * Information about the initial network traffic analysis which might contain interaction triggered traffic that the
+     * notice to the controller was based on.
+     */
+    initialAnalysisInteraction: Analysis;
+    /** Information about the second network traffic analysis that will be the basis for the complaint. */
+    analysis: Analysis;
+    /**
+     * Information about the second network traffic analysis which might contain interaction triggered traffic that will
+     * be the basis for the complaint.
+     */
+    analysisInteraction: Analysis;
 
     /** Additional metadata for complaints. */
     complaintOptions: ComplaintOptionsInformal;
@@ -178,8 +302,10 @@ export type GenerateAdvancedOptionsComplaintInformal = {
  */
 export type GenerateAdvancedOptions =
     | GenerateAdvancedOptionsDefault
-    | GenerateAdvancedOptionsComplaintFormal
-    | GenerateAdvancedOptionsComplaintInformal;
+    | GenerateAdvancedOptionsComplaintFormalMobile
+    | GenerateAdvancedOptionsComplaintFormalWeb
+    | GenerateAdvancedOptionsComplaintInformalMobile
+    | GenerateAdvancedOptionsComplaintInformalWeb;
 
 /**
  * Generate a technical report, controller notice or DPA complaint based on a network traffic analysis, manually
@@ -198,7 +324,7 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
         har: options.analysis.har,
         trackHarResult: options.analysis.trackHarResult,
     };
-    if (options.type === 'complaint') {
+    if (options.type === 'complaint' && options.analysisSource === 'mobile') {
         options.complaintOptions.userNetworkActivity = options.complaintOptions.userNetworkActivity.filter(
             (e) => e.appId === undefined || e.appId === options.analysis.app.id
         );
@@ -217,7 +343,7 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
     // Render Nunjucks template.
     const typSource = renderNunjucks({
         template:
-            templates[options.language][
+            templates[options.analysisSource][options.language][
                 options.type === 'complaint' || options.type === 'complaint-informal' ? 'complaint' : options.type
             ],
         language: options.language,
@@ -238,7 +364,7 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
     return compileTypst({
         mainContent: typSource,
         additionalFiles: {
-            '/style.typ': templates[options.language].style,
+            '/style.typ': templates[options.analysisSource][options.language].style,
             ...(options.type === 'report' && {
                 '/har.typ': generateTypForHar(
                     harEntries

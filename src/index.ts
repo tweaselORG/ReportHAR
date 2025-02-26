@@ -1,7 +1,8 @@
 import { type processRequest } from 'trackhar';
 import {
     generateAdvanced,
-    type ComplaintOptionsFormal,
+    type ComplaintOptionsFormalMobile,
+    type ComplaintOptionsFormalWeb,
     type ComplaintOptionsInformal,
     type GenerateAdvancedOptions,
 } from './lib/generate';
@@ -29,87 +30,205 @@ export type GenerateOptionsDefault = {
     harMd5?: string;
     /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR. */
     trackHarResult: ReturnType<typeof processRequest>[];
+} & (
+    | {
+          /**
+           * Which toolchain collected the HAR, with the following possible values:
+           *
+           * - `web` for HARs originating from the TweaselForWeb addon.
+           * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+           */
+          analysisSource: 'mobile';
+          /**
+           * The HAR containing the recorded network traffic where interaction with the website was allowed. Can be a
+           * tweasel HAR with metadata. This option is disabled for the mobile toolchain.
+           */
+          harInteraction: never;
+          /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR. */
+          trackHarResultInteraction: never;
+          /**
+           * The MD5 hash of the HAR file such that recipients of the report can verify the integrity of the attached
+           * HAR file.
+           */
+          harInteractionMd5: never;
+      }
+    | {
+          /**
+           * Which toolchain collected the HAR, with the following possible values:
+           *
+           * - `web` for HARs originating from the TweaselForWeb addon.
+           * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+           */
+          analysisSource: 'web';
+          /**
+           * The HAR containing the recorded network traffic where interaction with the website was allowed. Can be a
+           * tweasel HAR with metadata. This option is disabled for the mobile toolchain.
+           */
+          harInteraction: TweaselHar;
+          /**
+           * The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR where interaction with
+           * the website was allowed.
+           */
+          trackHarResultInteraction: ReturnType<typeof processRequest>[];
+          /**
+           * The MD5 hash of the HAR file such that recipients of the report can verify the integrity of the attached
+           * HAR file.
+           */
+          harInteractionMd5?: string;
+      }
+);
+
+export type GenerateOptionsComplaintCommon = {
+    /** The language the generated document should be in. */
+    language: SupportedLanguage;
+
+    /**
+     * The HAR containing the recorded network traffic of the initial analysis that the notice to the controller was
+     * based on. Must be a tweasel HAR with metadata.
+     */
+    initialHar: TweaselHar;
+    /**
+     * The MD5 hash of the initial HAR file such that recipients of the report can verify the integrity of the attached
+     * HAR file.
+     */
+    initialHarMd5?: string;
+    /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the initial HAR. */
+    initialTrackHarResult: ReturnType<typeof processRequest>[];
+
+    /**
+     * The HAR containing the recorded network traffic of second analysis, that will be the basis for the complaint.
+     * Must be a tweasel HAR with metadata.
+     */
+    har: TweaselHar;
+    /**
+     * The MD5 hash of the second HAR file such that recipients of the report can verify the integrity of the attached
+     * HAR file.
+     */
+    harMd5?: string;
+    /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the second HAR. */
+    trackHarResult: ReturnType<typeof processRequest>[];
 };
-/** Options for generating a formal complaint using the {@link generate} function. */
-export type GenerateOptionsComplaintFormal = {
+
+/** Options for generating a formal complaint for mobile devices using the {@link generate} function. */
+export type GenerateOptionsComplaintFormalMobile = {
     /**
      * The type of document to generate, with the following possible values:
      *
      * - `complaint`: Generate a complaint to a data protection authority.
      */
     type: 'complaint';
-    /** The language the generated document should be in. */
-    language: SupportedLanguage;
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'mobile';
+    /** Additional metadata for formal complaints. */
+    complaintOptions: ComplaintOptionsInformal & ComplaintOptionsFormalMobile;
+} & GenerateOptionsComplaintCommon;
+
+/** Options for generating a formal complaint for websites using the {@link generate} function. */
+export type GenerateOptionsComplaintFormalWeb = {
+    /**
+     * The type of document to generate, with the following possible values:
+     *
+     * - `complaint`: Generate a complaint to a data protection authority.
+     */
+    type: 'complaint';
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'web';
+    /** Additional metadata for formal complaints. */
+    complaintOptions: ComplaintOptionsInformal & ComplaintOptionsFormalWeb;
+
+    /**
+     * The HAR containing the recorded network traffic where interaction with the website was allowed. Can be a tweasel
+     * HAR with metadata. This option is disabled for the mobile toolchain.
+     */
+    harInteraction: TweaselHar;
+    /**
+     * The MD5 hash of the HAR file such that recipients of the report can verify the integrity of the attached HAR
+     * file.
+     */
+    harInteractionMd5?: string;
 
     /**
      * The HAR containing the recorded network traffic of the initial analysis that the notice to the controller was
      * based on. Must be a tweasel HAR with metadata.
      */
-    initialHar: TweaselHar;
+    initialHarInteraction: TweaselHar;
     /**
      * The MD5 hash of the initial HAR file such that recipients of the report can verify the integrity of the attached
      * HAR file.
      */
-    initialHarMd5?: string;
-    /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the initial HAR. */
-    initialTrackHarResult: ReturnType<typeof processRequest>[];
-
-    /**
-     * The HAR containing the recorded network traffic of second analysis, that will be the basis for the complaint.
-     * Must be a tweasel HAR with metadata.
-     */
-    har: TweaselHar;
-    /**
-     * The MD5 hash of the second HAR file such that recipients of the report can verify the integrity of the attached
-     * HAR file.
-     */
-    harMd5?: string;
-    /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the second HAR. */
-    trackHarResult: ReturnType<typeof processRequest>[];
-
-    /** Additional metadata for formal complaints. */
-    complaintOptions: ComplaintOptionsInformal & ComplaintOptionsFormal;
-};
-/** Options for generating an informal complaint using the {@link generate} function. */
-export type GenerateOptionsComplaintInformal = {
+    initialHarInteractionMd5?: string;
+} & GenerateOptionsComplaintCommon;
+/** Options for generating an informal complaint for mobile devices using the {@link generate} function. */
+export type GenerateOptionsComplaintInformalMobile = {
     /**
      * The type of document to generate, with the following possible values:
      *
      * - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority.
      */
     type: 'complaint-informal';
-    /** The language the generated document should be in. */
-    language: SupportedLanguage;
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'mobile';
+
+    /** Additional metadata for informal complaints. */
+    complaintOptions: ComplaintOptionsInformal;
+} & GenerateOptionsComplaintCommon;
+
+/** Options for generating an informal complaint for websites using the {@link generate} function. */
+export type GenerateOptionsComplaintInformalWeb = {
+    /**
+     * The type of document to generate, with the following possible values:
+     *
+     * - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority.
+     */
+    type: 'complaint-informal';
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'web';
+
+    /** Additional metadata for informal complaints. */
+    complaintOptions: ComplaintOptionsInformal;
+
+    /**
+     * The HAR containing the recorded network traffic where interaction with the website was allowed. Can be a tweasel
+     * HAR with metadata. This option is disabled for the mobile toolchain.
+     */
+    harInteraction: TweaselHar;
+    /**
+     * The MD5 hash of the HAR file such that recipients of the report can verify the integrity of the attached HAR
+     * file.
+     */
+    harInteractionMd5?: string;
 
     /**
      * The HAR containing the recorded network traffic of the initial analysis that the notice to the controller was
      * based on. Must be a tweasel HAR with metadata.
      */
-    initialHar: TweaselHar;
+    initialHarInteraction: TweaselHar;
     /**
      * The MD5 hash of the initial HAR file such that recipients of the report can verify the integrity of the attached
      * HAR file.
      */
-    initialHarMd5?: string;
-    /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the initial HAR. */
-    initialTrackHarResult: ReturnType<typeof processRequest>[];
-
-    /**
-     * The HAR containing the recorded network traffic of second analysis, that will be the basis for the complaint.
-     * Must be a tweasel HAR with metadata.
-     */
-    har: TweaselHar;
-    /**
-     * The MD5 hash of the second HAR file such that recipients of the report can verify the integrity of the attached
-     * HAR file.
-     */
-    harMd5?: string;
-    /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the second HAR. */
-    trackHarResult: ReturnType<typeof processRequest>[];
-
-    /** Additional metadata for informal complaints. */
-    complaintOptions: ComplaintOptionsInformal;
-};
+    initialHarInteractionMd5?: string;
+} & GenerateOptionsComplaintCommon;
 /**
  * Options for the {@link generate} function.
  *
@@ -122,8 +241,10 @@ export type GenerateOptionsComplaintInformal = {
  */
 export type GenerateOptions =
     | GenerateOptionsDefault
-    | GenerateOptionsComplaintFormal
-    | GenerateOptionsComplaintInformal;
+    | GenerateOptionsComplaintFormalWeb
+    | GenerateOptionsComplaintFormalMobile
+    | GenerateOptionsComplaintInformalMobile
+    | GenerateOptionsComplaintInformalWeb;
 
 const platformMapping = {
     android: 'Android',
@@ -189,8 +310,17 @@ export const generate = (options: GenerateOptions) => {
         };
     };
 
+    let generateAdvancedOptions: Partial<GenerateAdvancedOptions> = {
+        type: options.type,
+        analysisSource: options.analysisSource,
+        language: options.language,
+
+        analysis: getAnalysisMeta(options.har, options.trackHarResult, options.harMd5),
+    };
+
     if (options.type === 'complaint' || options.type === 'complaint-informal')
-        return generateAdvanced({
+        generateAdvancedOptions = {
+            ...generateAdvancedOptions,
             type: options.type as 'complaint-informal',
             language: options.language,
 
@@ -198,20 +328,27 @@ export const generate = (options: GenerateOptions) => {
             initialAnalysis: getAnalysisMeta(options.initialHar, options.initialTrackHarResult, options.initialHarMd5),
 
             complaintOptions: options.complaintOptions,
-        });
-    return generateAdvanced({
-        type: options.type,
-        language: options.language,
+        };
+    else if (options.analysisSource === 'web')
+        generateAdvancedOptions = {
+            ...generateAdvancedOptions,
+            analysisInteraction: getAnalysisMeta(
+                options.harInteraction,
+                options.trackHarResultInteraction,
+                options.harInteractionMd5
+            ),
+        };
 
-        analysis: getAnalysisMeta(options.har, options.trackHarResult, options.harMd5),
-    });
+    return generateAdvanced(generateAdvancedOptions);
 };
 
 export type {
     Analysis,
     App,
-    GenerateAdvancedOptionsComplaintFormal,
-    GenerateAdvancedOptionsComplaintInformal,
+    GenerateAdvancedOptionsComplaintFormalMobile,
+    GenerateAdvancedOptionsComplaintFormalWeb,
+    GenerateAdvancedOptionsComplaintInformalMobile,
+    GenerateAdvancedOptionsComplaintInformalWeb,
     GenerateAdvancedOptionsDefault,
 } from './lib/generate';
 export { prepareTraffic, type PrepareTrafficOptions } from './lib/traffic';

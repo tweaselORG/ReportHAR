@@ -38,7 +38,7 @@ The following information was detected as being transmitted through this request
 
 == Network traffic with interaction
 
-The requests described in this section happened after a period of {{ periodWithoutInteraction | durationFormat }} without any interaction with the website or any potential consent dialogs. The traffic in this section can therefore be a result of my interaction with the website.{% if analysis.interactionNoConsent %} However, I assure that I did not consciously interact with any elements on the website, in particular consent dialogs, in a way which could have been interpreted as consent by the controller.{% endif %}
+The requests described in this section happened after a period of {{ analysis.periodWithoutInteraction | durationFormat }} without any interaction with the website or any potential consent dialogs. The traffic in this section can therefore be a result of my interaction with the website.
 
 In total, there were {{ trackHarResultInteraction.length }} requests detected that transmitted data to {{ findingsInteraction | length }} tracker(s) in the second period with interaction{% if analysis.interactionNoConsent %} but without explicit consent{% endif %}.
 
@@ -73,6 +73,10 @@ The traffic was collected using the TweaselForWeb addon#footnote[#link("https://
   columns: (auto, auto),
   [*Browser*], [{{ analysis.environment.browser }} {{ analysis.environment.browserVersion }}],
   [*Addon version*], [{{ analysis.environment.addonVersion }}],
+  [*Operating system*], [{{ analysis.device.platform }} {{ analysis.device.osVersion }}],
+  {% if analysis.device.osBuild %}[*Build string*], [{{ analysis.device.osBuild }}],{% endif %}
+  {% if analysis.deviceManufacturer %}[*Manufacturer*], [{{ analysis.deviceManufacturer }}],{% endif %}
+  {% if analysis.deviceModel %}[*Model*], [{{ analysis.deviceModel }}],{% endif %}
 )
 
 The analysis was performed using the following versions of the tools and libraries:
@@ -87,9 +91,9 @@ The analysis was performed using the following versions of the tools and librari
 
 == Analysis steps
 
-To collect, record and analyze the data, the Tweasel toolchain#footnote[An overview of the tools can be found here: #link("https://docs.tweasel.org")] was used.
+To collect, record and analyze the data, the TweaselForWeb addon #footnote[An overview of the addon functionality can be found here: #link("https://docs.tweasel.org")] was used.
 
-TODO
+To start an analysis, the addon opens the website in a new browsing context via the web extension `contextualidentities` API#footnote[#link("https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/contextualIdentities")], also know as "containers". This ensures that no site-related data#footnote[Site-related data includes among others cookies, localStorage, indexedDB, HTTP Cache and Image Cache. See #link("https://support.mozilla.org/en-US/questions/1283528") for more details.] from previous browsing which might have stored consent information is available to the website. In the first {{ analysis.periodWithoutInteraction | durationFormat }}, the website is loading in a hidden tab, disabling user interaction. After this period, the tab is unhidden and interaction with the website is possible. Using the `webRequests` API, HTTP request data is intercepted and collected and saved in the HAR format. Request data is split in data for the hidden tab, which is guaranteed to not have been interacted with, and requests after the tab was shown, which may contain interactions.
 
 The transmitted tracking data was identified using TrackHAR#footnote[#link("https://github.com/tweaselORG/TrackHAR")], which in principle supports both a traditional indicator matching and an adapter-based matching approach. Indicator matching identifies transmitted data by checking the recorded traffic for known character sequences. For this analysis however, only the adapters were used, which are schemas of how to decode and interpret specific requests for each contacted endpoint. These adapters are the result of previous research and the reasoning for why a data type is assigned to a value is documented with the adapter and given in this report. Adapter-based matching can only find data transmissions which have gone to already known endpoints and cannot find unexpected transmissions.
 
