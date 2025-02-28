@@ -385,6 +385,23 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
         findings,
     };
 
+    const additionalFiles: Record<string, string> = {
+        '/style.typ': templates[options.analysisSource][options.language].style,
+        ...(options.type === 'report' && {
+            '/har.typ': generateTypForHar(
+                harEntries
+                    .map((e, index) => ({ ...e, index }))
+                    .filter((e) => trackHarResult.some((r) => r.harIndex === e.index)),
+                {
+                    includeResponses: false,
+                    truncateContent: 4096,
+                    language: options.language,
+                    topHeadingLevel: options.analysisSource === 'web' ? 3 : 2,
+                }
+            ),
+        }),
+    };
+
     if (options.analysisSource === 'web') {
         const {
             harEntries: harEntriesInteraction,
@@ -402,6 +419,20 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
             findingsInteraction,
             analysisInteraction: options.analysisInteraction,
         };
+
+        if (options.type === 'report')
+            additionalFiles['/har-interaction.typ'] = generateTypForHar(
+                harEntriesInteraction
+                    .map((e, index) => ({ ...e, index }))
+                    .filter((e) => trackHarResultInteraction.some((r) => r.harIndex === e.index)),
+                {
+                    includeResponses: false,
+                    truncateContent: 4096,
+                    language: options.language,
+                    topHeadingLevel: 3,
+                    key: 'interaction',
+                }
+            );
     }
 
     // Render Nunjucks template.
@@ -417,29 +448,6 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
     // Compile Typst to PDF.
     return compileTypst({
         mainContent: typSource,
-        additionalFiles: {
-            '/style.typ': templates[options.analysisSource][options.language].style,
-            ...(options.type === 'report' && {
-                '/har.typ': generateTypForHar(
-                    harEntries
-                        .map((e, index) => ({ ...e, index }))
-                        .filter((e) => trackHarResult.some((r) => r.harIndex === e.index)),
-                    {
-                        includeResponses: false,
-                        truncateContent: 4096,
-                        language: options.language,
-                        topHeadingLevel: options.analysisSource === 'web' ? 3 : 2,
-                    }
-                ),
-                ...(options.analysisSource === 'web' && {
-                    '/har-interaction.typ': generateTypForHar(
-                        harEntries
-                            .map((e, index) => ({ ...e, index }))
-                            .filter((e) => trackHarResult.some((r) => r.harIndex === e.index)),
-                        { includeResponses: false, truncateContent: 4096, language: options.language }
-                    ),
-                }),
-            }),
-        },
+        additionalFiles,
     });
 };

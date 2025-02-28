@@ -165,7 +165,7 @@ export type GenerateOptionsComplaintFormalWeb = {
      * The initial [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR where interaction
      * with the website was allowed.
      */
-    intialTrackHarResultInteraction: ReturnType<typeof processRequest>[];
+    initialTrackHarResultInteraction: ReturnType<typeof processRequest>[];
 } & GenerateOptionsComplaintCommon;
 /** Options for generating an informal complaint for mobile devices using the {@link generate} function. */
 export type GenerateOptionsComplaintInformalMobile = {
@@ -236,7 +236,7 @@ export type GenerateOptionsComplaintInformalWeb = {
      * The initial [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR where interaction
      * with the website was allowed.
      */
-    intialTrackHarResultInteraction: ReturnType<typeof processRequest>[];
+    initialTrackHarResultInteraction: ReturnType<typeof processRequest>[];
 } & GenerateOptionsComplaintCommon;
 /**
  * Options for the {@link generate} function.
@@ -401,7 +401,7 @@ export const generate = (options: GenerateOptions) => {
                 ),
                 initialAnalysisInteraction: getAnalysisMeta(
                     options.initialHarInteraction,
-                    options.intialTrackHarResultInteraction,
+                    options.initialTrackHarResultInteraction,
                     options.initialHarInteractionMd5
                 ),
 

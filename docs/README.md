@@ -305,7 +305,7 @@ ___
 
 ### GenerateOptionsComplaintFormalWeb
 
-Ƭ **GenerateOptionsComplaintFormalWeb**: { `analysisSource`: ``"web"`` ; `complaintOptions`: [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) & [`ComplaintOptionsFormalWeb`](README.md#complaintoptionsformalweb) ; `harInteraction`: `TweaselHar` ; `harInteractionMd5?`: `string` ; `initialHarInteraction`: `TweaselHar` ; `initialHarInteractionMd5?`: `string` ; `intialTrackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `trackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `type`: ``"complaint"``  } & `GenerateOptionsComplaintCommon`
+Ƭ **GenerateOptionsComplaintFormalWeb**: { `analysisSource`: ``"web"`` ; `complaintOptions`: [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) & [`ComplaintOptionsFormalWeb`](README.md#complaintoptionsformalweb) ; `harInteraction`: `TweaselHar` ; `harInteractionMd5?`: `string` ; `initialHarInteraction`: `TweaselHar` ; `initialHarInteractionMd5?`: `string` ; `initialTrackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `trackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `type`: ``"complaint"``  } & `GenerateOptionsComplaintCommon`
 
 Options for generating a formal complaint for websites using the [generate](README.md#generate) function.
 
@@ -329,7 +329,7 @@ ___
 
 ### GenerateOptionsComplaintInformalWeb
 
-Ƭ **GenerateOptionsComplaintInformalWeb**: { `analysisSource`: ``"web"`` ; `complaintOptions`: [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) ; `harInteraction`: `TweaselHar` ; `harInteractionMd5?`: `string` ; `initialHarInteraction`: `TweaselHar` ; `initialHarInteractionMd5?`: `string` ; `intialTrackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `trackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `type`: ``"complaint-informal"``  } & `GenerateOptionsComplaintCommon`
+Ƭ **GenerateOptionsComplaintInformalWeb**: { `analysisSource`: ``"web"`` ; `complaintOptions`: [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) ; `harInteraction`: `TweaselHar` ; `harInteractionMd5?`: `string` ; `initialHarInteraction`: `TweaselHar` ; `initialHarInteractionMd5?`: `string` ; `initialTrackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `trackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `type`: ``"complaint-informal"``  } & `GenerateOptionsComplaintCommon`
 
 Options for generating an informal complaint for websites using the [generate](README.md#generate) function.
 

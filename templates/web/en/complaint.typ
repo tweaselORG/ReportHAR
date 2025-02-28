@@ -63,7 +63,7 @@ As far as I can tell, the website is operated by {{ complaintOptions.controllerA
 
 == Preliminary remarks
 
-To understand how the website is processing my data, I used the TweaselForWeb addon#footnote[https://docs.tweasel.org/], operated by Datenanfragen.de e.~V., to perform an automated analysis of the website's network traffic. The analysis was performed on {{ initialAnalysis.date | dateFormat }}, using {{ analysis.environment.browser }} {{ analysis.environment.browserVersion }}. The website was opened in a clean, new browsing context containing no cookies or other site-related data.
+To understand how the website is processing my data, I used the TweaselForWeb addon#footnote[https://docs.tweasel.org/], operated by Datenanfragen.de e.~V., to perform an automated analysis of the website's network traffic. The analysis was performed on {{ initialAnalysis.date | dateFormat }}, using {{ analysis.browser }} {{ analysis.browserVersion }}. The website was opened in a clean, new browsing context containing no cookies or other site-related data.
 
 During this analysis, the website was, for the first {{ analysis.periodWithoutInteraction | durationFormat }}, loaded _without any user input_ (i.e. there was no interaction with the website at all) and its network traffic was recorded. After this period of no interaction, I also collected traffic while interacting with the website.{% if analysis.interactionNoConsent %} However, I assure that I did not consciously interact with any elements on the website, in particular consent dialogs, in a way which could have been interpreted as consent by the controller.{% endif %} The recorded traffic was then analyzed for tracking and similar data transmissions. Based on that, the Tweasel tools produced a technical report.
 
@@ -85,7 +85,7 @@ In the interest of avoiding unnecessary work for the data protection authorities
 
 I am attaching my notice to the controller{% if complaintOptions.controllerResponse !== "none" %} as well as any communication I have received from them in this matter{% endif %}.
 
-On {{ analysis.date | dateFormat }}, {% if complaintOptions.controllerResponse === "none" %}and thus after the expiration of the voluntary grace period{% else %}after the controller had responded{% endif %}, I retested the website using the TweaselForWeb addon. The analysis was performed on  {{ initialAnalysis.date | dateFormat }}, using {{ analysis.environment.browser }} {{ analysis.environment.browserVersion }}. Unfortunately, I had to find that the website still performs tracking in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}. Both this second technical report and the traffic recording are also attached.
+On {{ analysis.date | dateFormat }}, {% if complaintOptions.controllerResponse === "none" %}and thus after the expiration of the voluntary grace period{% else %}after the controller had responded{% endif %}, I retested the website using the TweaselForWeb addon. The analysis was performed on  {{ initialAnalysis.date | dateFormat }}, using {{ analysis.browser }} {{ analysis.browserVersion }}. Unfortunately, I had to find that the website still performs tracking in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}. Both this second technical report and the traffic recording are also attached.
 
 == Tracking <tracking>
 
@@ -122,6 +122,8 @@ Through these request(s), at least the following information was transmitted:
 The full content of these request(s) and the method used for decoding the request(s) and extracting this information is documented in the attached technical report.
 {% endfor %}
 
+{% if findingsWithInteraction.length > 0 %}
+
 === Tracking with interaction
 
 Tracking in this section was performed after a period of {{ analysis.periodWithoutInteraction | durationFormat }}, in which I did not interact with the website. It therefore may be a result of my interaction with the website.{% if complaintOptions.interactionNoConsent %} However, I assure that I did not consciously interact with any elements on the website, in particular consent dialogs, in a way which could have been interpreted as consent by the controller.{% endif %}
@@ -152,6 +154,8 @@ Through these request(s), at least the following information was transmitted:
 
 The full content of these request(s) and the method used for decoding the request(s) and extracting this information is documented in the attached technical report.
 {% endfor %}
+
+{% endif %}
 
 = Context: Online tracking <context-online-tracking>
 

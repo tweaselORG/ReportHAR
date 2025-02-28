@@ -9,7 +9,7 @@ This report details the findings and methodology of an automated analysis concer
 
 = Findings
 
-During the analysis, the network traffic initiated by the website was recorded. In total, {{ harEntries.length }} requests were recorded without interaction between {{ harEntries[0].startTime | dateFormat }} and {{ harEntries[harEntries.length - 1].startTime | dateFormat }} and {{ harEntriesInteraction.length }} requests were recorded with interaction possible between {{ harEntriesInteraction[0].startTime | dateFormat }} and {{ harEntriesInteraction[harEntriesInteraction.length - 1].startTime | dateFormat }}. The recorded traffic is attached as two HAR files{% if analysis.harMd5 %} (MD5 checksum of the HAR files: {{ analysis.harMd5 | code }} without interaction, {{ analysis.harInteractionMd5 | code }} with possible interaction){% endif %}, a standard format used by HTTP(S) monitoring tools to export collected data.#footnote[#link("http://www.softwareishard.com/blog/har-12-spec/")] HAR files can be viewed using Firefox or Chrome, for example.#footnote[https://docs.tweasel.org/background/har-tutorial/] The contents of the recorded traffic are also reproduced in @har2pdf[Appendix]
+During the analysis, the network traffic initiated by the website was recorded. In total, {{ harEntries.length }} requests were recorded without interaction between {{ harEntries[0].startTime | dateFormat }} and {{ harEntries[harEntries.length - 1].startTime | dateFormat }} and {{ harEntriesInteraction.length }} requests were recorded with interaction possible between {{ harEntriesInteraction[0].startTime | dateFormat }} and {{ harEntriesInteraction[harEntriesInteraction.length - 1].startTime | dateFormat }}. The recorded traffic is attached as two HAR files{% if analysis.harMd5 and analysis.harInteractionMd5 %} (MD5 checksum of the HAR files: {{ analysis.harMd5 | code }} without interaction, {{ analysis.harInteractionMd5 | code }} with possible interaction){% endif %}, a standard format used by HTTP(S) monitoring tools to export collected data.#footnote[#link("http://www.softwareishard.com/blog/har-12-spec/")] HAR files can be viewed using Firefox or Chrome, for example.#footnote[https://docs.tweasel.org/background/har-tutorial/] The contents of the recorded traffic are also reproduced in @har2pdf[Appendix]
 
 == Network traffic without any interaction
 
@@ -36,6 +36,8 @@ The following information was detected as being transmitted through this request
 {% endfor %}
 {% endfor %}
 
+{% if findingsWithInteraction.length > 0 %}
+
 == Network traffic with interaction
 
 The requests described in this section happened after a period of {{ analysis.periodWithoutInteraction | durationFormat }} without any interaction with the website or any potential consent dialogs. The traffic in this section can therefore be a result of my interaction with the website.
@@ -51,7 +53,7 @@ The website sent the following {{ adapterResult.requests.length }} request(s) to
 {% set harEntry = harEntriesInteraction[request.harIndex] %}
 ==== {{ harEntry.request.method | code }} request to {{ harEntry.request.host | code }} ({{ harEntry.startTime | timeFormat }})
 
-On {{ harEntry.startTime | dateFormat }}, the website sent a {{ harEntry.request.method | code }} request to {{ harEntry.request.host | code }}. This request is reproduced in @har2pdf-e{{ request.harIndex | safe }}[Appendix].
+On {{ harEntry.startTime | dateFormat }}, the website sent a {{ harEntry.request.method | code }} request to {{ harEntry.request.host | code }}. This request is reproduced in @har2pdf-e{{ request.harIndex | safe }}-interaction[Appendix].
 
 The following information was detected as being transmitted through this request:
 
@@ -61,9 +63,11 @@ The following information was detected as being transmitted through this request
 {% endfor %}
 {% endfor %}
 
+{% endif %}
+
 = Method
 
-The analysis was performed on {{ analysis.date | dateFormat }} using {{ analysis.environment.browser }}.
+The analysis was performed on {{ analysis.date | dateFormat }} using {{ analysis.browser }}.
 
 == Analysis environment
 
