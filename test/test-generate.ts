@@ -5,7 +5,7 @@ import { dirname, join } from 'path';
 import { process as processHar } from 'trackhar';
 import { fileURLToPath } from 'url';
 import { parseArgs } from 'util';
-import type { ComplaintOptionsFormal, ComplaintOptionsInformal, SupportedLanguage } from '../dist';
+import type { ComplaintOptionsFormalMobile, ComplaintOptionsInformal, SupportedLanguage } from '../dist';
 import { generate, parseNetworkActivityReport, templates } from '../dist';
 import { type TweaselHar } from '../src/lib/tweasel-har';
 
@@ -57,7 +57,7 @@ const userNetworkActivity =
 
 const reference = '2024-1ONO079C';
 
-const complaintOptions: ComplaintOptionsFormal & ComplaintOptionsInformal = {
+const complaintOptions: ComplaintOptionsFormalMobile & ComplaintOptionsInformal = {
     date: new Date(),
     reference,
     noticeDate: new Date(),
@@ -89,6 +89,7 @@ const complaintOptions: ComplaintOptionsFormal & ComplaintOptionsInformal = {
 
     const initialReport = await generate({
         type: 'report',
+        analysisSource: 'mobile',
         language,
 
         har: initialHar,
@@ -97,6 +98,7 @@ const complaintOptions: ComplaintOptionsFormal & ComplaintOptionsInformal = {
     writeFileSync(join(resultsDir, 'initial-report.pdf'), initialReport);
     const notice = await generate({
         type: 'notice',
+        analysisSource: 'mobile',
         language,
 
         har: initialHar,
@@ -109,6 +111,7 @@ const complaintOptions: ComplaintOptionsFormal & ComplaintOptionsInformal = {
 
     const secondReport = await generate({
         type: 'report',
+        analysisSource: 'mobile',
         language,
 
         har: secondHar,
@@ -117,6 +120,7 @@ const complaintOptions: ComplaintOptionsFormal & ComplaintOptionsInformal = {
     writeFileSync(join(resultsDir, 'second-report.pdf'), secondReport);
     const complaint = await generate({
         type: 'complaint',
+        analysisSource: 'mobile',
         language,
 
         initialHar,
@@ -129,6 +133,7 @@ const complaintOptions: ComplaintOptionsFormal & ComplaintOptionsInformal = {
     writeFileSync(join(resultsDir, 'complaint.pdf'), complaint);
     const informalComplaint = await generate({
         type: 'complaint-informal',
+        analysisSource: 'mobile',
         language,
 
         initialHar,

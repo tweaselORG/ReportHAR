@@ -9,7 +9,7 @@ This report details the findings and methodology of an automated analysis concer
 
 = Findings
 
-During the analysis, the network traffic initiated by the website was recorded. In total, {{ harEntries.length }} requests were recorded between {{ harEntries[0].startTime | dateFormat }} and {{ harEntries[harEntries.length - 1].startTime | dateFormat }}. The recorded traffic is attached as a HAR file{% if analysis.harMd5 %} (MD5 checksum of the HAR file: {{ analysis.harMd5 | code }}){% endif %}, a standard format used by HTTP(S) monitoring tools to export collected data.#footnote[#link("http://www.softwareishard.com/blog/har-12-spec/")] HAR files can be viewed using Firefox or Chrome, for example.#footnote[https://docs.tweasel.org/background/har-tutorial/] The contents of the recorded traffic are also reproduced in @har2pdf[Appendix]
+During the analysis, the network traffic initiated by the website was recorded. In total, {{ harEntries.length }} requests were recorded without interaction between {{ harEntries[0].startTime | dateFormat }} and {{ harEntries[harEntries.length - 1].startTime | dateFormat }} and {{ harEntriesInteraction.length }} requests were recorded with interaction possible between {{ harEntriesInteraction[0].startTime | dateFormat }} and {{ harEntriesInteraction[harEntriesInteraction.length - 1].startTime | dateFormat }}. The recorded traffic is attached as two HAR files{% if analysis.harMd5 %} (MD5 checksum of the HAR files: {{ analysis.harMd5 | code }} without interaction, {{ analysis.harInteractionMd5 | code }} with possible interaction){% endif %}, a standard format used by HTTP(S) monitoring tools to export collected data.#footnote[#link("http://www.softwareishard.com/blog/har-12-spec/")] HAR files can be viewed using Firefox or Chrome, for example.#footnote[https://docs.tweasel.org/background/har-tutorial/] The contents of the recorded traffic are also reproduced in @har2pdf[Appendix]
 
 == Network traffic without any interaction
 
@@ -40,7 +40,7 @@ The following information was detected as being transmitted through this request
 
 The requests described in this section happened after a period of {{ analysis.periodWithoutInteraction | durationFormat }} without any interaction with the website or any potential consent dialogs. The traffic in this section can therefore be a result of my interaction with the website.
 
-In total, there were {{ trackHarResultInteraction.length }} requests detected that transmitted data to {{ findingsInteraction | length }} tracker(s) in the second period with interaction{% if analysis.interactionNoConsent %} but without explicit consent{% endif %}.
+In total, there were {{ trackHarResultInteraction.length }} requests detected that transmitted data to {{ findingsInteraction | length }} tracker(s) in the second period with interaction.
 
 {% for adapterSlug, adapterResult in findingsInteraction %}
 === {{ adapterResult.adapter.name }}
@@ -48,7 +48,7 @@ In total, there were {{ trackHarResultInteraction.length }} requests detected th
 The website sent the following {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterResult.adapter.name }}", operated by "{{ adapterResult.adapter.tracker.name }}". For details on how the requests to this tracker were decoded and the reasoning for how the transmitted information was determined, see the documentation in the Tweasel Tracker Wiki#footnote[The documentation for "{{ adapterResult.adapter.name }}" is available at: #link("https://trackers.tweasel.org/t/{{ adapterSlug | safe }}")].
 
 {% for request in adapterResult.requests %}
-{% set harEntry = harEntries[request.harIndex] %}
+{% set harEntry = harEntriesInteraction[request.harIndex] %}
 ==== {{ harEntry.request.method | code }} request to {{ harEntry.request.host | code }} ({{ harEntry.startTime | timeFormat }})
 
 On {{ harEntry.startTime | dateFormat }}, the website sent a {{ harEntry.request.method | code }} request to {{ harEntry.request.host | code }}. This request is reproduced in @har2pdf-e{{ request.harIndex | safe }}[Appendix].
@@ -71,10 +71,10 @@ The traffic was collected using the TweaselForWeb addon#footnote[#link("https://
 
 #table(
   columns: (auto, auto),
-  [*Browser*], [{{ analysis.environment.browser }} {{ analysis.environment.browserVersion }}],
-  [*Addon version*], [{{ analysis.environment.addonVersion }}],
-  [*Operating system*], [{{ analysis.device.platform }} {{ analysis.device.osVersion }}],
-  {% if analysis.device.osBuild %}[*Build string*], [{{ analysis.device.osBuild }}],{% endif %}
+  [*Browser*], [{{ analysis.browser }} {{ analysis.browserVersion }}],
+  [*Addon Version*], [{{ analysis.addonVersion }}],
+  [*Operating system*], [{{ analysis.platform }} {{ analysis.platformVersion }}],
+  {% if analysis.platformBuildString %}[*Build string*], [{{ analysis.platformBuildString }}],{% endif %}
   {% if analysis.deviceManufacturer %}[*Manufacturer*], [{{ analysis.deviceManufacturer }}],{% endif %}
   {% if analysis.deviceModel %}[*Model*], [{{ analysis.deviceModel }}],{% endif %}
 )
@@ -113,7 +113,7 @@ Below is a reproduction of the recorded network requests that are mentioned in t
 
 == Traffic before any interaction
 
-#include "har-no-interaction.typ"
+#include "har.typ"
 
 == Traffic with interaction
 

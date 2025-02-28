@@ -8,15 +8,20 @@ reporthar
 
 - [Analysis](README.md#analysis)
 - [App](README.md#app)
-- [ComplaintOptionsFormal](README.md#complaintoptionsformal)
+- [ComplaintOptionsFormalMobile](README.md#complaintoptionsformalmobile)
+- [ComplaintOptionsFormalWeb](README.md#complaintoptionsformalweb)
 - [ComplaintOptionsInformal](README.md#complaintoptionsinformal)
 - [GenerateAdvancedOptions](README.md#generateadvancedoptions)
-- [GenerateAdvancedOptionsComplaintFormal](README.md#generateadvancedoptionscomplaintformal)
-- [GenerateAdvancedOptionsComplaintInformal](README.md#generateadvancedoptionscomplaintinformal)
+- [GenerateAdvancedOptionsComplaintFormalMobile](README.md#generateadvancedoptionscomplaintformalmobile)
+- [GenerateAdvancedOptionsComplaintFormalWeb](README.md#generateadvancedoptionscomplaintformalweb)
+- [GenerateAdvancedOptionsComplaintInformalMobile](README.md#generateadvancedoptionscomplaintinformalmobile)
+- [GenerateAdvancedOptionsComplaintInformalWeb](README.md#generateadvancedoptionscomplaintinformalweb)
 - [GenerateAdvancedOptionsDefault](README.md#generateadvancedoptionsdefault)
 - [GenerateOptions](README.md#generateoptions)
-- [GenerateOptionsComplaintFormal](README.md#generateoptionscomplaintformal)
-- [GenerateOptionsComplaintInformal](README.md#generateoptionscomplaintinformal)
+- [GenerateOptionsComplaintFormalMobile](README.md#generateoptionscomplaintformalmobile)
+- [GenerateOptionsComplaintFormalWeb](README.md#generateoptionscomplaintformalweb)
+- [GenerateOptionsComplaintInformalMobile](README.md#generateoptionscomplaintinformalmobile)
+- [GenerateOptionsComplaintInformalWeb](README.md#generateoptionscomplaintinformalweb)
 - [GenerateOptionsDefault](README.md#generateoptionsdefault)
 - [IosAppPrivacyReportNetworkActivityEntry](README.md#iosappprivacyreportnetworkactivityentry)
 - [NetworkActivityReport](README.md#networkactivityreport)
@@ -39,25 +44,9 @@ reporthar
 
 ### Analysis
 
-Ƭ **Analysis**: `Object`
+Ƭ **Analysis**: { `date`: `Date` ; `dependencies`: `Record`<`string`, `string`\> ; `deviceManufacturer?`: `string` ; `deviceModel?`: `string` ; `deviceType`: ``"device"`` \| ``"emulator"`` ; `har`: `Har` ; `harMd5?`: `string` ; `platform`: `string` ; `platformBuildString?`: `string` ; `platformVersion`: `string` ; `trackHarResult`: `ReturnType`<typeof `processRequest`\>[]  } & { `app`: [`App`](README.md#app) ; `source`: ``"mobile"``  } \| { `addonName`: `string` ; `addonVersion`: `string` ; `browser`: `string` ; `browserVersion`: `string` ; `periodWithoutInteraction`: `number` ; `source`: ``"web"`` ; `website`: { `name`: `string` ; `url`: `string`  }  }
 
 Information about a network traffic analysis that was performed.
-
-#### Type declaration
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `app` | [`App`](README.md#app) | Information about the analyzed app. |
-| `date` | `Date` | The date and time the analysis was performed. |
-| `dependencies` | `Record`<`string`, `string`\> | The versions of the dependencies used in the analysis. |
-| `deviceManufacturer?` | `string` | The manufacturer of the device/emulator the analysis was performed on. |
-| `deviceModel?` | `string` | The model of the device/emulator the analysis was performed on. |
-| `deviceType` | ``"device"`` \| ``"emulator"`` | Whether the analysis was run on an emulator or a physical device. |
-| `har` | `Har` | The recorded network traffic in HAR format. |
-| `harMd5?` | `string` | The MD5 hash of the HAR file such that recipients of the report can verify the integrity of the attached HAR file. |
-| `platformBuildString?` | `string` | The OS build string of the device/emulator the analysis was performed on. |
-| `platformVersion` | `string` | The operating system version of the device/emulator the analysis was performed on. |
-| `trackHarResult` | `ReturnType`<typeof `processRequest`\>[] | The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR. |
 
 #### Defined in
 
@@ -88,11 +77,11 @@ Information about an app.
 
 ___
 
-### ComplaintOptionsFormal
+### ComplaintOptionsFormalMobile
 
-Ƭ **ComplaintOptionsFormal**: `Object`
+Ƭ **ComplaintOptionsFormalMobile**: `Object`
 
-Additional information for formal complaints to a data protection authority.
+Additional information for formal complaints about mobile apps to a data protection authority.
 
 #### Type declaration
 
@@ -105,7 +94,25 @@ Additional information for formal complaints to a data protection authority.
 
 #### Defined in
 
-[src/lib/generate.ts:99](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L99)
+[src/lib/generate.ts:136](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L136)
+
+___
+
+### ComplaintOptionsFormalWeb
+
+Ƭ **ComplaintOptionsFormalWeb**: `Object`
+
+Additional information for formal complaints about websites to a data protection authority.
+
+#### Type declaration
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `interactionNoConsent?` | `boolean` | True, if the user assures that during the interaction they did not knowingly consent to tracking. |
+
+#### Defined in
+
+[src/lib/generate.ts:153](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L153)
 
 ___
 
@@ -132,13 +139,13 @@ Additional information required for generating an informal complaint to a data p
 
 #### Defined in
 
-[src/lib/generate.ts:60](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L60)
+[src/lib/generate.ts:97](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L97)
 
 ___
 
 ### GenerateAdvancedOptions
 
-Ƭ **GenerateAdvancedOptions**: [`GenerateAdvancedOptionsDefault`](README.md#generateadvancedoptionsdefault) \| [`GenerateAdvancedOptionsComplaintFormal`](README.md#generateadvancedoptionscomplaintformal) \| [`GenerateAdvancedOptionsComplaintInformal`](README.md#generateadvancedoptionscomplaintinformal)
+Ƭ **GenerateAdvancedOptions**: [`GenerateAdvancedOptionsDefault`](README.md#generateadvancedoptionsdefault) \| [`GenerateAdvancedOptionsComplaintFormalMobile`](README.md#generateadvancedoptionscomplaintformalmobile) \| [`GenerateAdvancedOptionsComplaintFormalWeb`](README.md#generateadvancedoptionscomplaintformalweb) \| [`GenerateAdvancedOptionsComplaintInformalMobile`](README.md#generateadvancedoptionscomplaintinformalmobile) \| [`GenerateAdvancedOptionsComplaintInformalWeb`](README.md#generateadvancedoptionscomplaintinformalweb)
 
 Options for the [generateAdvanced](README.md#generateadvanced) function.
 
@@ -147,40 +154,66 @@ Options for the [generateAdvanced](README.md#generateadvanced) function.
 The options type is a discriminated union based on the `type` property:
 
 - For `type: 'report' | 'notice'`, provide [GenerateAdvancedOptionsDefault](README.md#generateadvancedoptionsdefault).
-- For `type: 'complaint'`, provide [GenerateAdvancedOptionsComplaintFormal](README.md#generateadvancedoptionscomplaintformal).
-- For `type: 'complaint-informal'`, provide [GenerateAdvancedOptionsComplaintInformal](README.md#generateadvancedoptionscomplaintinformal).
+- For `type: 'complaint'`, provide GenerateAdvancedOptionsComplaintFormal.
+- For `type: 'complaint-informal'`, provide GenerateAdvancedOptionsComplaintInformal.
 
 #### Defined in
 
-[src/lib/generate.ts:179](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L179)
+[src/lib/generate.ts:336](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L336)
 
 ___
 
-### GenerateAdvancedOptionsComplaintFormal
+### GenerateAdvancedOptionsComplaintFormalMobile
 
-Ƭ **GenerateAdvancedOptionsComplaintFormal**: `Object`
+Ƭ **GenerateAdvancedOptionsComplaintFormalMobile**: `Object`
 
-Options for generating a formal complaint using the [generateAdvanced](README.md#generateadvanced) function.
+Options for generating a formal complaint for mobiles apps using the [generateAdvanced](README.md#generateadvanced) function.
 
 #### Type declaration
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `analysis` | [`Analysis`](README.md#analysis) | Information about the second network traffic analyis that will be the basis for the complaint. |
-| `complaintOptions` | [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) & [`ComplaintOptionsFormal`](README.md#complaintoptionsformal) | Additional metadata for formal complaints. |
+| `analysisSource` | ``"mobile"`` | Which toolchain collected the HAR, with the following possible values: - `web` for HARs originating from the TweaselForWeb addon. - `mobile` for HARs collected using the Tweasel mobile toolchain. |
+| `complaintOptions` | [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) & [`ComplaintOptionsFormalMobile`](README.md#complaintoptionsformalmobile) | Additional metadata for formal complaints. |
 | `initialAnalysis` | [`Analysis`](README.md#analysis) | Information about the initial network traffic analyis that the notice to the controller was based on. |
 | `language` | [`SupportedLanguage`](README.md#supportedlanguage) | The language the generated document should be in. |
 | `type` | ``"complaint"`` | The type of document to generate, with the following possible values: - `complaint`: Generate a formal complaint to a data protection authority. |
 
 #### Defined in
 
-[src/lib/generate.ts:132](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L132)
+[src/lib/generate.ts:200](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L200)
 
 ___
 
-### GenerateAdvancedOptionsComplaintInformal
+### GenerateAdvancedOptionsComplaintFormalWeb
 
-Ƭ **GenerateAdvancedOptionsComplaintInformal**: `Object`
+Ƭ **GenerateAdvancedOptionsComplaintFormalWeb**: `Object`
+
+Options for generating a formal complaint for websites using the [generateAdvanced](README.md#generateadvanced) function.
+
+#### Type declaration
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `analysis` | [`Analysis`](README.md#analysis) | Information about the second network traffic analysis that will be the basis for the complaint. |
+| `analysisInteraction` | [`Analysis`](README.md#analysis) | Information about the second network traffic analysis which might contain interaction triggered traffic that will be the basis for the complaint. |
+| `analysisSource` | ``"web"`` | Which toolchain collected the HAR, with the following possible values: - `web` for HARs originating from the TweaselForWeb addon. - `mobile` for HARs collected using the Tweasel mobile toolchain. |
+| `complaintOptions` | [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) & [`ComplaintOptionsFormalWeb`](README.md#complaintoptionsformalweb) | Additional metadata for formal complaints. |
+| `initialAnalysis` | [`Analysis`](README.md#analysis) | Information about the initial network traffic analysis that the notice to the controller was based on. |
+| `initialAnalysisInteraction` | [`Analysis`](README.md#analysis) | Information about the initial network traffic analysis which might contain interaction triggered traffic that the notice to the controller was based on. |
+| `language` | [`SupportedLanguage`](README.md#supportedlanguage) | The language the generated document should be in. |
+| `type` | ``"complaint"`` | The type of document to generate, with the following possible values: - `complaint`: Generate a formal complaint to a data protection authority. |
+
+#### Defined in
+
+[src/lib/generate.ts:227](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L227)
+
+___
+
+### GenerateAdvancedOptionsComplaintInformalMobile
+
+Ƭ **GenerateAdvancedOptionsComplaintInformalMobile**: `Object`
 
 Options for generating a formal or in informal complaint using the [generateAdvanced](README.md#generateadvanced) function.
 
@@ -189,6 +222,7 @@ Options for generating a formal or in informal complaint using the [generateAdva
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `analysis` | [`Analysis`](README.md#analysis) | Information about the second network traffic analyis that will be the basis for the complaint. |
+| `analysisSource` | ``"mobile"`` | Which toolchain collected the HAR, with the following possible values: - `web` for HARs originating from the TweaselForWeb addon. - `mobile` for HARs collected using the Tweasel mobile toolchain. |
 | `complaintOptions` | [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) | Additional metadata for complaints. |
 | `initialAnalysis` | [`Analysis`](README.md#analysis) | Information about the initial network traffic analyis that the notice to the controller was based on. |
 | `language` | [`SupportedLanguage`](README.md#supportedlanguage) | The language the generated document should be in. |
@@ -196,33 +230,50 @@ Options for generating a formal or in informal complaint using the [generateAdva
 
 #### Defined in
 
-[src/lib/generate.ts:151](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L151)
+[src/lib/generate.ts:264](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L264)
 
 ___
 
-### GenerateAdvancedOptionsDefault
+### GenerateAdvancedOptionsComplaintInformalWeb
 
-Ƭ **GenerateAdvancedOptionsDefault**: `Object`
+Ƭ **GenerateAdvancedOptionsComplaintInformalWeb**: `Object`
 
-Options for generating a report or controller notice using the [generateAdvanced](README.md#generateadvanced) function.
+Options for generating a formal or in informal complaint using the [generateAdvanced](README.md#generateadvanced) function.
 
 #### Type declaration
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `analysis` | [`Analysis`](README.md#analysis) | Information about the network traffic analyis that the document should be based on. |
+| `analysis` | [`Analysis`](README.md#analysis) | Information about the second network traffic analysis that will be the basis for the complaint. |
+| `analysisInteraction` | [`Analysis`](README.md#analysis) | Information about the second network traffic analysis which might contain interaction triggered traffic that will be the basis for the complaint. |
+| `analysisSource` | ``"web"`` | Which toolchain collected the HAR, with the following possible values: - `web` for HARs originating from the TweaselForWeb addon. - `mobile` for HARs collected using the Tweasel mobile toolchain. |
+| `complaintOptions` | [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) | Additional metadata for complaints. |
+| `initialAnalysis` | [`Analysis`](README.md#analysis) | Information about the initial network traffic analysis that the notice to the controller was based on. |
+| `initialAnalysisInteraction` | [`Analysis`](README.md#analysis) | Information about the initial network traffic analysis which might contain interaction triggered traffic that the notice to the controller was based on. |
 | `language` | [`SupportedLanguage`](README.md#supportedlanguage) | The language the generated document should be in. |
-| `type` | ``"report"`` \| ``"notice"`` | The type of document to generate, with the following possible values: - `report`: Generate a technical report. - `notice`: Generate a notice to the controller. |
+| `type` | ``"complaint-informal"`` | The type of document to generate, with the following possible values: - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority. |
 
 #### Defined in
 
-[src/lib/generate.ts:117](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L117)
+[src/lib/generate.ts:291](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L291)
+
+___
+
+### GenerateAdvancedOptionsDefault
+
+Ƭ **GenerateAdvancedOptionsDefault**: { `analysis`: [`Analysis`](README.md#analysis) ; `language`: [`SupportedLanguage`](README.md#supportedlanguage) ; `type`: ``"report"`` \| ``"notice"``  } & { `analysisInteraction`: [`Analysis`](README.md#analysis) ; `analysisSource`: ``"web"``  } \| { `analysisSource`: ``"mobile"``  }
+
+Options for generating a report or controller notice using the [generateAdvanced](README.md#generateadvanced) function.
+
+#### Defined in
+
+[src/lib/generate.ts:159](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L159)
 
 ___
 
 ### GenerateOptions
 
-Ƭ **GenerateOptions**: [`GenerateOptionsDefault`](README.md#generateoptionsdefault) \| [`GenerateOptionsComplaintFormal`](README.md#generateoptionscomplaintformal) \| [`GenerateOptionsComplaintInformal`](README.md#generateoptionscomplaintinformal)
+Ƭ **GenerateOptions**: [`GenerateOptionsDefault`](README.md#generateoptionsdefault) \| [`GenerateOptionsComplaintFormalWeb`](README.md#generateoptionscomplaintformalweb) \| [`GenerateOptionsComplaintFormalMobile`](README.md#generateoptionscomplaintformalmobile) \| [`GenerateOptionsComplaintInformalMobile`](README.md#generateoptionscomplaintinformalmobile) \| [`GenerateOptionsComplaintInformalWeb`](README.md#generateoptionscomplaintinformalweb)
 
 Options for the [generate](README.md#generate) function.
 
@@ -231,86 +282,72 @@ Options for the [generate](README.md#generate) function.
 The options type is a discriminated union based on the `type` property:
 
 - For `type: 'report' | 'notice'`, provide [GenerateOptionsDefault](README.md#generateoptionsdefault).
-- For `type: 'complaint'`, provide [GenerateOptionsComplaintFormal](README.md#generateoptionscomplaintformal).
-- For `type: 'complaint-informal'`, provide [GenerateOptionsComplaintInformal](README.md#generateoptionscomplaintinformal).
+- For `type: 'complaint'`, provide GenerateOptionsComplaintFormal.
+- For `type: 'complaint-informal'`, provide GenerateOptionsComplaintInformal.
 
 #### Defined in
 
-[src/index.ts:123](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L123)
+[src/index.ts:251](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L251)
 
 ___
 
-### GenerateOptionsComplaintFormal
+### GenerateOptionsComplaintFormalMobile
 
-Ƭ **GenerateOptionsComplaintFormal**: `Object`
+Ƭ **GenerateOptionsComplaintFormalMobile**: { `analysisSource`: ``"mobile"`` ; `complaintOptions`: [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) & [`ComplaintOptionsFormalMobile`](README.md#complaintoptionsformalmobile) ; `type`: ``"complaint"``  } & `GenerateOptionsComplaintCommon`
 
-Options for generating a formal complaint using the [generate](README.md#generate) function.
-
-#### Type declaration
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `complaintOptions` | [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) & [`ComplaintOptionsFormal`](README.md#complaintoptionsformal) | Additional metadata for formal complaints. |
-| `har` | `TweaselHar` | The HAR containing the recorded network traffic of second analysis, that will be the basis for the complaint. Must be a tweasel HAR with metadata. |
-| `harMd5?` | `string` | The MD5 hash of the second HAR file such that recipients of the report can verify the integrity of the attached HAR file. |
-| `initialHar` | `TweaselHar` | The HAR containing the recorded network traffic of the initial analysis that the notice to the controller was based on. Must be a tweasel HAR with metadata. |
-| `initialHarMd5?` | `string` | The MD5 hash of the initial HAR file such that recipients of the report can verify the integrity of the attached HAR file. |
-| `initialTrackHarResult` | `ReturnType`<typeof `processRequest`\>[] | The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the initial HAR. |
-| `language` | [`SupportedLanguage`](README.md#supportedlanguage) | The language the generated document should be in. |
-| `trackHarResult` | `ReturnType`<typeof `processRequest`\>[] | The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the second HAR. |
-| `type` | ``"complaint"`` | The type of document to generate, with the following possible values: - `complaint`: Generate a complaint to a data protection authority. |
+Options for generating a formal complaint for mobile devices using the [generate](README.md#generate) function.
 
 #### Defined in
 
-[src/index.ts:34](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L34)
+[src/index.ts:102](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L102)
 
 ___
 
-### GenerateOptionsComplaintInformal
+### GenerateOptionsComplaintFormalWeb
 
-Ƭ **GenerateOptionsComplaintInformal**: `Object`
+Ƭ **GenerateOptionsComplaintFormalWeb**: { `analysisSource`: ``"web"`` ; `complaintOptions`: [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) & [`ComplaintOptionsFormalWeb`](README.md#complaintoptionsformalweb) ; `harInteraction`: `TweaselHar` ; `harInteractionMd5?`: `string` ; `initialHarInteraction`: `TweaselHar` ; `initialHarInteractionMd5?`: `string` ; `intialTrackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `trackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `type`: ``"complaint"``  } & `GenerateOptionsComplaintCommon`
 
-Options for generating an informal complaint using the [generate](README.md#generate) function.
-
-#### Type declaration
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `complaintOptions` | [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) | Additional metadata for informal complaints. |
-| `har` | `TweaselHar` | The HAR containing the recorded network traffic of second analysis, that will be the basis for the complaint. Must be a tweasel HAR with metadata. |
-| `harMd5?` | `string` | The MD5 hash of the second HAR file such that recipients of the report can verify the integrity of the attached HAR file. |
-| `initialHar` | `TweaselHar` | The HAR containing the recorded network traffic of the initial analysis that the notice to the controller was based on. Must be a tweasel HAR with metadata. |
-| `initialHarMd5?` | `string` | The MD5 hash of the initial HAR file such that recipients of the report can verify the integrity of the attached HAR file. |
-| `initialTrackHarResult` | `ReturnType`<typeof `processRequest`\>[] | The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the initial HAR. |
-| `language` | [`SupportedLanguage`](README.md#supportedlanguage) | The language the generated document should be in. |
-| `trackHarResult` | `ReturnType`<typeof `processRequest`\>[] | The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the second HAR. |
-| `type` | ``"complaint-informal"`` | The type of document to generate, with the following possible values: - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority. |
+Options for generating a formal complaint for websites using the [generate](README.md#generate) function.
 
 #### Defined in
 
-[src/index.ts:74](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L74)
+[src/index.ts:121](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L121)
+
+___
+
+### GenerateOptionsComplaintInformalMobile
+
+Ƭ **GenerateOptionsComplaintInformalMobile**: { `analysisSource`: ``"mobile"`` ; `complaintOptions`: [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) ; `type`: ``"complaint-informal"``  } & `GenerateOptionsComplaintCommon`
+
+Options for generating an informal complaint for mobile devices using the [generate](README.md#generate) function.
+
+#### Defined in
+
+[src/index.ts:171](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L171)
+
+___
+
+### GenerateOptionsComplaintInformalWeb
+
+Ƭ **GenerateOptionsComplaintInformalWeb**: { `analysisSource`: ``"web"`` ; `complaintOptions`: [`ComplaintOptionsInformal`](README.md#complaintoptionsinformal) ; `harInteraction`: `TweaselHar` ; `harInteractionMd5?`: `string` ; `initialHarInteraction`: `TweaselHar` ; `initialHarInteractionMd5?`: `string` ; `intialTrackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `trackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[] ; `type`: ``"complaint-informal"``  } & `GenerateOptionsComplaintCommon`
+
+Options for generating an informal complaint for websites using the [generate](README.md#generate) function.
+
+#### Defined in
+
+[src/index.ts:191](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L191)
 
 ___
 
 ### GenerateOptionsDefault
 
-Ƭ **GenerateOptionsDefault**: `Object`
+Ƭ **GenerateOptionsDefault**: { `har`: `TweaselHar` ; `harMd5?`: `string` ; `language`: [`SupportedLanguage`](README.md#supportedlanguage) ; `trackHarResult`: `ReturnType`<typeof `processRequest`\>[] ; `type`: ``"report"`` \| ``"notice"``  } & { `analysisSource`: ``"mobile"``  } \| { `analysisSource`: ``"web"`` ; `harInteraction`: `TweaselHar` ; `harInteractionMd5?`: `string` ; `trackHarResultInteraction`: `ReturnType`<typeof `processRequest`\>[]  }
 
 Options for generating a report or controller notice using the [generate](README.md#generate) function.
 
-#### Type declaration
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `har` | `TweaselHar` | The HAR containing the recorded network traffic. Must be a tweasel HAR with metadata. |
-| `harMd5?` | `string` | The MD5 hash of the HAR file such that recipients of the report can verify the integrity of the attached HAR file. |
-| `language` | [`SupportedLanguage`](README.md#supportedlanguage) | The language the generated document should be in. |
-| `trackHarResult` | `ReturnType`<typeof `processRequest`\>[] | The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR. |
-| `type` | ``"report"`` \| ``"notice"`` | The type of document to generate, with the following possible values: - `report`: Generate a technical report. - `notice`: Generate a notice to the controller. |
-
 #### Defined in
 
-[src/index.ts:12](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L12)
+[src/index.ts:14](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L14)
 
 ___
 
@@ -360,13 +397,13 @@ ___
 
 ### SupportedLanguage
 
-Ƭ **SupportedLanguage**: keyof typeof [`templates`](README.md#templates) & keyof typeof [`translations`](README.md#translations)
+Ƭ **SupportedLanguage**: keyof typeof [`templates`](README.md#templates)[``"mobile"``] & keyof typeof [`templates`](README.md#templates)[``"web"``] & keyof typeof [`translations`](README.md#translations)
 
 A language that translations and templates are available for.
 
 #### Defined in
 
-[src/lib/translations.ts:37](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L37)
+[src/lib/translations.ts:56](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L56)
 
 ___
 
@@ -392,7 +429,7 @@ The languages that translations and templates are available for.
 
 #### Defined in
 
-[src/lib/translations.ts:32](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L32)
+[src/lib/translations.ts:51](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L51)
 
 ___
 
@@ -406,20 +443,32 @@ The Typst template files.
 
 | Name | Type |
 | :------ | :------ |
-| `de` | { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  } |
-| `de.complaint` | `string` |
-| `de.notice` | `string` |
-| `de.report` | `string` |
-| `de.style` | `string` |
-| `en` | { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  } |
-| `en.complaint` | `string` |
-| `en.notice` | `string` |
-| `en.report` | `string` |
-| `en.style` | `string` |
+| `mobile` | { `de`: { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  } ; `en`: { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  }  } |
+| `mobile.de` | { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  } |
+| `mobile.de.complaint` | `string` |
+| `mobile.de.notice` | `string` |
+| `mobile.de.report` | `string` |
+| `mobile.de.style` | `string` |
+| `mobile.en` | { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  } |
+| `mobile.en.complaint` | `string` |
+| `mobile.en.notice` | `string` |
+| `mobile.en.report` | `string` |
+| `mobile.en.style` | `string` |
+| `web` | { `de`: { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  } ; `en`: { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  }  } |
+| `web.de` | { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  } |
+| `web.de.complaint` | `string` |
+| `web.de.notice` | `string` |
+| `web.de.report` | `string` |
+| `web.de.style` | `string` |
+| `web.en` | { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  } |
+| `web.en.complaint` | `string` |
+| `web.en.notice` | `string` |
+| `web.en.report` | `string` |
+| `web.en.style` | `string` |
 
 #### Defined in
 
-[src/lib/translations.ts:16](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L16)
+[src/lib/translations.ts:19](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L19)
 
 ___
 
@@ -714,7 +763,7 @@ The string translations.
 
 #### Defined in
 
-[src/lib/translations.ts:6](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L6)
+[src/lib/translations.ts:7](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L7)
 
 ## Functions
 
@@ -744,7 +793,7 @@ The generated document as a PDF file.
 
 #### Defined in
 
-[src/index.ts:144](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L144)
+[src/index.ts:274](https://github.com/tweaselORG/ReportHAR/blob/main/src/index.ts#L274)
 
 ___
 
@@ -774,7 +823,7 @@ The generated document as a PDF file.
 
 #### Defined in
 
-[src/lib/generate.ts:195](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L195)
+[src/lib/generate.ts:354](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/generate.ts#L354)
 
 ___
 

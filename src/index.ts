@@ -1,11 +1,12 @@
 import { type processRequest } from 'trackhar';
-import {
-    generateAdvanced,
-    type ComplaintOptionsFormalMobile,
-    type ComplaintOptionsFormalWeb,
-    type ComplaintOptionsInformal,
-    type GenerateAdvancedOptions,
+import type {
+    Analysis,
+    ComplaintOptionsFormalMobile,
+    ComplaintOptionsFormalWeb,
+    ComplaintOptionsInformal,
+    GenerateAdvancedOptions,
 } from './lib/generate';
+import { generateAdvanced } from './lib/generate';
 import { type SupportedLanguage } from './lib/translations';
 import { type TweaselHar } from './lib/tweasel-har';
 
@@ -39,18 +40,6 @@ export type GenerateOptionsDefault = {
            * - `mobile` for HARs collected using the Tweasel mobile toolchain.
            */
           analysisSource: 'mobile';
-          /**
-           * The HAR containing the recorded network traffic where interaction with the website was allowed. Can be a
-           * tweasel HAR with metadata. This option is disabled for the mobile toolchain.
-           */
-          harInteraction: never;
-          /** The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR. */
-          trackHarResultInteraction: never;
-          /**
-           * The MD5 hash of the HAR file such that recipients of the report can verify the integrity of the attached
-           * HAR file.
-           */
-          harInteractionMd5: never;
       }
     | {
           /**
@@ -156,6 +145,11 @@ export type GenerateOptionsComplaintFormalWeb = {
      * file.
      */
     harInteractionMd5?: string;
+    /**
+     * The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR where interaction with the
+     * website was allowed.
+     */
+    trackHarResultInteraction: ReturnType<typeof processRequest>[];
 
     /**
      * The HAR containing the recorded network traffic of the initial analysis that the notice to the controller was
@@ -167,6 +161,11 @@ export type GenerateOptionsComplaintFormalWeb = {
      * HAR file.
      */
     initialHarInteractionMd5?: string;
+    /**
+     * The initial [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR where interaction
+     * with the website was allowed.
+     */
+    intialTrackHarResultInteraction: ReturnType<typeof processRequest>[];
 } & GenerateOptionsComplaintCommon;
 /** Options for generating an informal complaint for mobile devices using the {@link generate} function. */
 export type GenerateOptionsComplaintInformalMobile = {
@@ -217,6 +216,11 @@ export type GenerateOptionsComplaintInformalWeb = {
      * file.
      */
     harInteractionMd5?: string;
+    /**
+     * The [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR where interaction with the
+     * website was allowed.
+     */
+    trackHarResultInteraction: ReturnType<typeof processRequest>[];
 
     /**
      * The HAR containing the recorded network traffic of the initial analysis that the notice to the controller was
@@ -228,6 +232,11 @@ export type GenerateOptionsComplaintInformalWeb = {
      * HAR file.
      */
     initialHarInteractionMd5?: string;
+    /**
+     * The initial [TrackHAR](https://github.com/tweaselORG/TrackHAR) analysis results for the HAR where interaction
+     * with the website was allowed.
+     */
+    intialTrackHarResultInteraction: ReturnType<typeof processRequest>[];
 } & GenerateOptionsComplaintCommon;
 /**
  * Options for the {@link generate} function.
@@ -275,29 +284,14 @@ export const generate = (options: GenerateOptions) => {
             )
         );
 
-    const getAnalysisMeta = (har: TweaselHar, trackHarResult: ReturnType<typeof processRequest>[], harMd5?: string) => {
-        const apps = har.log._tweasel.apps;
-        if (!apps)
-            throw new Error(errHint('Your HAR file does not contain any metadata on the app that was analyzed.'));
-        const app = apps[0];
-        if (apps.length !== 1 || !app)
-            throw new Error('Your HAR file contains traffic for more than one app. This is not supported.');
-
-        const appVersion = app.version || app.versionCode;
-        if (!appVersion)
-            throw new Error(
-                errHint('Your HAR file does not contain any metadata on the version of the app that was analyzed.')
-            );
-
-        return {
+    const getAnalysisMeta = (
+        har: TweaselHar,
+        trackHarResult: ReturnType<typeof processRequest>[],
+        harMd5?: string
+    ): Analysis => {
+        const metadata = {
             date: new Date(har.log._tweasel.startDate),
-            app: {
-                id: app.id,
-                name: app.name || app.id,
-                version: appVersion,
-
-                platform: platformMapping[app.platform],
-            },
+            platform: har.log._tweasel.device.platform,
             deviceType: har.log._tweasel.device.runTarget,
             platformVersion: har.log._tweasel.device.osVersion,
             platformBuildString: har.log._tweasel.device.osBuild,
@@ -308,38 +302,125 @@ export const generate = (options: GenerateOptions) => {
             trackHarResult: trackHarResult,
             dependencies: har.log._tweasel.versions,
         };
+
+        if (options.analysisSource === 'mobile') {
+            const apps = har.log._tweasel.apps;
+            if (!apps)
+                throw new Error(errHint('Your HAR file does not contain any metadata on the app that was analyzed.'));
+            const app = apps[0];
+            if (apps.length !== 1 || !app)
+                throw new Error('Your HAR file contains traffic for more than one app. This is not supported.');
+
+            const appVersion = app.version || app.versionCode;
+            if (!appVersion)
+                throw new Error(
+                    errHint('Your HAR file does not contain any metadata on the version of the app that was analyzed.')
+                );
+            return {
+                ...metadata,
+                source: 'mobile',
+                app: {
+                    id: app.id,
+                    name: app.name || app.id,
+                    version: appVersion,
+
+                    platform: platformMapping[app.platform],
+                },
+            };
+        } else if (options.analysisSource === 'web') {
+            if (!har.log.browser)
+                throw new Error(errHint('Your HAR file does not contain any metadata on the browser.'));
+
+            const page = har.log.pages?.[0];
+            if (har.log.pages?.length !== 1 || !page)
+                throw new Error(errHint('Your HAR files needs to provide metadata for exactly one page.'));
+
+            if (!page._URL) throw new Error(errHint('Your HAR contains no URL in the website metadata.'));
+
+            if (!har.log._tweasel.periodWithoutInteraction)
+                throw new Error(errHint('Your HAR file must contain metadat on the period without interaction.'));
+
+            return {
+                ...metadata,
+                source: 'web',
+                browser: har.log.browser.name,
+                browserVersion: har.log.browser.version,
+                addonName: har.log.creator.name,
+                addonVersion: har.log.creator.version,
+                website: {
+                    url: page._URL,
+                    name: page.title,
+                },
+                periodWithoutInteraction: har.log._tweasel.periodWithoutInteraction,
+            };
+        }
+
+        throw new Error('Invalid analysisSource');
     };
 
-    let generateAdvancedOptions: Partial<GenerateAdvancedOptions> = {
-        type: options.type,
-        analysisSource: options.analysisSource,
-        language: options.language,
+    if (options.analysisSource === 'mobile') {
+        if (options.type === 'complaint' || options.type === 'complaint-informal')
+            return generateAdvanced({
+                type: options.type as 'complaint-informal',
+                language: options.language,
+                analysisSource: options.analysisSource,
 
-        analysis: getAnalysisMeta(options.har, options.trackHarResult, options.harMd5),
-    };
+                analysis: getAnalysisMeta(options.har, options.trackHarResult, options.harMd5),
+                initialAnalysis: getAnalysisMeta(
+                    options.initialHar,
+                    options.initialTrackHarResult,
+                    options.initialHarMd5
+                ),
 
-    if (options.type === 'complaint' || options.type === 'complaint-informal')
-        generateAdvancedOptions = {
-            ...generateAdvancedOptions,
-            type: options.type as 'complaint-informal',
+                complaintOptions: options.complaintOptions,
+            });
+        return generateAdvanced({
+            type: options.type,
             language: options.language,
+            analysisSource: options.analysisSource,
 
             analysis: getAnalysisMeta(options.har, options.trackHarResult, options.harMd5),
-            initialAnalysis: getAnalysisMeta(options.initialHar, options.initialTrackHarResult, options.initialHarMd5),
+        });
+    } else if (options.analysisSource === 'web')
+        if (options.type === 'complaint' || options.type === 'complaint-informal')
+            return generateAdvanced({
+                type: options.type as 'complaint-informal',
+                language: options.language,
+                analysisSource: options.analysisSource,
 
-            complaintOptions: options.complaintOptions,
-        };
-    else if (options.analysisSource === 'web')
-        generateAdvancedOptions = {
-            ...generateAdvancedOptions,
-            analysisInteraction: getAnalysisMeta(
-                options.harInteraction,
-                options.trackHarResultInteraction,
-                options.harInteractionMd5
-            ),
-        };
+                analysis: getAnalysisMeta(options.har, options.trackHarResult, options.harMd5),
+                analysisInteraction: getAnalysisMeta(
+                    options.harInteraction,
+                    options.trackHarResultInteraction,
+                    options.harInteractionMd5
+                ),
+                initialAnalysis: getAnalysisMeta(
+                    options.initialHar,
+                    options.initialTrackHarResult,
+                    options.initialHarMd5
+                ),
+                initialAnalysisInteraction: getAnalysisMeta(
+                    options.initialHarInteraction,
+                    options.intialTrackHarResultInteraction,
+                    options.initialHarInteractionMd5
+                ),
 
-    return generateAdvanced(generateAdvancedOptions);
+                complaintOptions: options.complaintOptions,
+            });
+        else
+            return generateAdvanced({
+                type: options.type,
+                language: options.language,
+                analysisSource: options.analysisSource,
+
+                analysis: getAnalysisMeta(options.har, options.trackHarResult, options.harMd5),
+                analysisInteraction: getAnalysisMeta(
+                    options.harInteraction,
+                    options.trackHarResultInteraction,
+                    options.harInteractionMd5
+                ),
+            });
+    throw new Error('Invalid analysisSource');
 };
 
 export type {
@@ -361,7 +442,8 @@ export {
 } from './lib/user-network-activity';
 export {
     generateAdvanced,
-    type ComplaintOptionsFormal,
+    type ComplaintOptionsFormalMobile,
+    type ComplaintOptionsFormalWeb,
     type ComplaintOptionsInformal,
     type GenerateAdvancedOptions,
     type SupportedLanguage,

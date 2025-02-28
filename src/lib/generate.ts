@@ -28,11 +28,10 @@ export type Analysis = {
     /** The date and time the analysis was performed. */
     date: Date;
 
-    /** Information about the analyzed app. */
-    app: App;
-
     /** Whether the analysis was run on an emulator or a physical device. */
     deviceType: 'device' | 'emulator';
+    /** The operating system of the device/emulator the analysis as performed on. */
+    platform: string;
     /** The operating system version of the device/emulator the analysis was performed on. */
     platformVersion: string;
     /** The OS build string of the device/emulator the analysis was performed on. */
@@ -55,7 +54,45 @@ export type Analysis = {
 
     /** The versions of the dependencies used in the analysis. */
     dependencies: Record<string, string>;
-};
+} & (
+    | {
+          /** Information about the analyzed app. */
+          app: App;
+          /**
+           * Which toolchain collected the HAR, with the following possible values:
+           *
+           * - `web` for HARs originating from the TweaselForWeb addon.
+           * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+           */
+          source: 'mobile';
+      }
+    | {
+          /**
+           * Which toolchain collected the HAR, with the following possible values:
+           *
+           * - `web` for HARs originating from the TweaselForWeb addon.
+           * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+           */
+          source: 'web';
+          /** Information about the analyzed website. */
+          website: {
+              /** The name or title of the website. */
+              name: string;
+              /** The full URL of the specific (sub-)page which was analyzed. */
+              url: string;
+          };
+          /** Duration in milliseconds for how long the website is guaranteed to have not been interacted with. */
+          periodWithoutInteraction: number;
+          /** The name of the browser the analysis was done in. */
+          browser: string;
+          /** The version of the browser the analysis was done in. */
+          browserVersion: string;
+          /** Name of the addon the traffic was collect with. */
+          addonName: string;
+          /** Version of the addon the traffic was collect with. */
+          addonVersion: string;
+      }
+);
 /** Additional information required for generating an informal complaint to a data protection authority. */
 export type ComplaintOptionsInformal = {
     /** The date the complaint is being made. */
@@ -114,7 +151,8 @@ export type ComplaintOptionsFormalMobile = {
 };
 /** Additional information for formal complaints about websites to a data protection authority. */
 export type ComplaintOptionsFormalWeb = {
-    interactionNoConsent: boolean;
+    /** True, if the user assures that during the interaction they did not knowingly consent to tracking. */
+    interactionNoConsent?: boolean;
 };
 
 /** Options for generating a report or controller notice using the {@link generateAdvanced} function. */
@@ -155,11 +193,6 @@ export type GenerateAdvancedOptionsDefault = {
            * - `mobile` for HARs collected using the Tweasel mobile toolchain.
            */
           analysisSource: 'mobile';
-          /**
-           * Information about the second network traffic analysis which might contain interaction triggered traffic
-           * that will be the basis for the complaint.
-           */
-          analysisInteraction: never;
       }
 );
 
@@ -326,7 +359,7 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
     };
     if (options.type === 'complaint' && options.analysisSource === 'mobile') {
         options.complaintOptions.userNetworkActivity = options.complaintOptions.userNetworkActivity.filter(
-            (e) => e.appId === undefined || e.appId === options.analysis.app.id
+            (e) => e.appId === undefined || options.analysis.source !== 'mobile' || e.appId === options.analysis.app.id
         );
 
         // For complaints, only consider results from adapters for which we know that the user's device contacted at
@@ -340,6 +373,37 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
     }
     const { harEntries, trackHarResult, findings } = prepareTraffic(prepareTrafficOptions);
 
+    let nunjucksContext: Record<string, unknown> = {
+        type: options.type,
+        analysis: options.analysis,
+        initialAnalysis:
+            (options.type === 'complaint' || options.type === 'complaint-informal') && options.initialAnalysis,
+        complaintOptions:
+            (options.type === 'complaint' || options.type === 'complaint-informal') && options.complaintOptions,
+        harEntries,
+        trackHarResult,
+        findings,
+    };
+
+    if (options.analysisSource === 'web') {
+        const {
+            harEntries: harEntriesInteraction,
+            trackHarResult: trackHarResultInteraction,
+            findings: findingsInteraction,
+        } = prepareTraffic({
+            har: options.analysisInteraction.har,
+            trackHarResult: options.analysisInteraction.trackHarResult,
+        });
+
+        nunjucksContext = {
+            ...nunjucksContext,
+            harEntriesInteraction,
+            trackHarResultInteraction,
+            findingsInteraction,
+            analysisInteraction: options.analysisInteraction,
+        };
+    }
+
     // Render Nunjucks template.
     const typSource = renderNunjucks({
         template:
@@ -347,17 +411,7 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
                 options.type === 'complaint' || options.type === 'complaint-informal' ? 'complaint' : options.type
             ],
         language: options.language,
-        context: {
-            type: options.type,
-            analysis: options.analysis,
-            initialAnalysis:
-                (options.type === 'complaint' || options.type === 'complaint-informal') && options.initialAnalysis,
-            complaintOptions:
-                (options.type === 'complaint' || options.type === 'complaint-informal') && options.complaintOptions,
-            harEntries,
-            trackHarResult,
-            findings,
-        },
+        context: nunjucksContext,
     });
 
     // Compile Typst to PDF.
@@ -370,8 +424,21 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
                     harEntries
                         .map((e, index) => ({ ...e, index }))
                         .filter((e) => trackHarResult.some((r) => r.harIndex === e.index)),
-                    { includeResponses: false, truncateContent: 4096, language: options.language }
+                    {
+                        includeResponses: false,
+                        truncateContent: 4096,
+                        language: options.language,
+                        topHeadingLevel: options.analysisSource === 'web' ? 3 : 2,
+                    }
                 ),
+                ...(options.analysisSource === 'web' && {
+                    '/har-interaction.typ': generateTypForHar(
+                        harEntries
+                            .map((e, index) => ({ ...e, index }))
+                            .filter((e) => trackHarResult.some((r) => r.harIndex === e.index)),
+                        { includeResponses: false, truncateContent: 4096, language: options.language }
+                    ),
+                }),
             }),
         },
     });

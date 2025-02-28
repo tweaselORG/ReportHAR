@@ -39,10 +39,10 @@ export const templates = {
             style: fs.readFileSync(join(templateFolder, 'web/en/style.typ'), 'utf-8'),
         },
         de: {
-            report: fs.readFileSync(join(templateFolder, 'web/de/report.typ'), 'utf-8'),
-            notice: fs.readFileSync(join(templateFolder, 'web/de/notice.typ'), 'utf-8'),
-            complaint: fs.readFileSync(join(templateFolder, 'web/de/complaint.typ'), 'utf-8'),
-            style: fs.readFileSync(join(templateFolder, 'web/de/style.typ'), 'utf-8'),
+            report: fs.readFileSync(join(templateFolder, 'web/en/report.typ'), 'utf-8'),
+            notice: fs.readFileSync(join(templateFolder, 'web/en/notice.typ'), 'utf-8'),
+            complaint: fs.readFileSync(join(templateFolder, 'web/en/complaint.typ'), 'utf-8'),
+            style: fs.readFileSync(join(templateFolder, 'web/en/style.typ'), 'utf-8'),
         },
     },
 };
@@ -53,4 +53,6 @@ export const supportedLanguages = Object.keys(translations).filter((l) =>
 ) as SupportedLanguage[];
 
 /** A language that translations and templates are available for. */
-export type SupportedLanguage = keyof typeof templates & keyof typeof translations;
+export type SupportedLanguage = keyof (typeof templates)['mobile'] &
+    keyof (typeof templates)['web'] &
+    keyof typeof translations;

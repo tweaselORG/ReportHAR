@@ -124,7 +124,7 @@ The full content of these request(s) and the method used for decoding the reques
 
 === Tracking with interaction
 
-Tracking in this section was performed after a period of {{ analysis.periodWithoutInteraction | durationFormat }}, in which I did not interact with the website. It therefore may be a result of my interaction with the website.{% if analysis.interactionNoConsent %} However, I assure that I did not consciously interact with any elements on the website, in particular consent dialogs, in a way which could have been interpreted as consent by the controller.{% endif %}
+Tracking in this section was performed after a period of {{ analysis.periodWithoutInteraction | durationFormat }}, in which I did not interact with the website. It therefore may be a result of my interaction with the website.{% if complaintOptions.interactionNoConsent %} However, I assure that I did not consciously interact with any elements on the website, in particular consent dialogs, in a way which could have been interpreted as consent by the controller.{% endif %}
 
 {% for adapterSlug, adapterResult in findingsWithInteraction %}
 == {{ adapterResult.adapter.name }}
