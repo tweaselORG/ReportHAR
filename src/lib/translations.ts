@@ -14,24 +14,36 @@ export const translations = {
 
 /** The Typst template files. */
 export const templates = {
-    en: {
-        report: fs.readFileSync(__dirname + '/../../templates/en/report.typ', 'utf-8'),
-        notice: fs.readFileSync(__dirname + '/../../templates/en/notice.typ', 'utf-8'),
-        complaint: fs.readFileSync(__dirname + '/../../templates/en/complaint.typ', 'utf-8'),
-        style: fs.readFileSync(__dirname + '/../../templates/en/style.typ', 'utf-8'),
+    mobile: {
+        en: {
+            report: fs.readFileSync(__dirname + '/../../templates/mobile/en/report.typ', 'utf-8'),
+            notice: fs.readFileSync(__dirname + '/../../templates/mobile/en/notice.typ', 'utf-8'),
+            complaint: fs.readFileSync(__dirname + '/../../templates/mobile/en/complaint.typ', 'utf-8'),
+            style: fs.readFileSync(__dirname + '/../../templates/mobile/en/style.typ', 'utf-8'),
+        },
+        de: {
+            report: fs.readFileSync(__dirname + '/../../templates/mobile/de/report.typ', 'utf-8'),
+            notice: fs.readFileSync(__dirname + '/../../templates/mobile/de/notice.typ', 'utf-8'),
+            complaint: fs.readFileSync(__dirname + '/../../templates/mobile/de/complaint.typ', 'utf-8'),
+            style: fs.readFileSync(__dirname + '/../../templates/mobile/de/style.typ', 'utf-8'),
+        },
     },
-    de: {
-        report: fs.readFileSync(__dirname + '/../../templates/de/report.typ', 'utf-8'),
-        notice: fs.readFileSync(__dirname + '/../../templates/de/notice.typ', 'utf-8'),
-        complaint: fs.readFileSync(__dirname + '/../../templates/de/complaint.typ', 'utf-8'),
-        style: fs.readFileSync(__dirname + '/../../templates/de/style.typ', 'utf-8'),
+    web: {
+        en: {
+            report: fs.readFileSync(__dirname + '/../../templates/web/en/report.typ', 'utf-8'),
+            notice: fs.readFileSync(__dirname + '/../../templates/web/en/notice.typ', 'utf-8'),
+            complaint: fs.readFileSync(__dirname + '/../../templates/web/en/complaint.typ', 'utf-8'),
+            style: fs.readFileSync(__dirname + '/../../templates/web/en/style.typ', 'utf-8'),
+        },
     },
 };
 
 /** The languages that translations and templates are available for. */
-export const supportedLanguages = Object.keys(translations).filter((l) =>
-    Object.keys(templates).includes(l)
+export const supportedLanguages = Object.keys(translations).filter(
+    (l) => Object.keys(templates.mobile).includes(l) && Object.keys(templates.web).includes(l)
 ) as SupportedLanguage[];
 
 /** A language that translations and templates are available for. */
-export type SupportedLanguage = keyof typeof templates & keyof typeof translations;
+export type SupportedLanguage = keyof (typeof templates)['mobile'] &
+    keyof (typeof templates)['web'] &
+    keyof typeof translations;

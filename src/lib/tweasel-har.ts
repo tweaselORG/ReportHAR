@@ -9,9 +9,35 @@ import type { Har } from 'har-format';
 export type TweaselHar = Har & {
     log: {
         /** Metadata about the traffic collection. */
-        _tweasel: TweaselHarMetaV1;
+        _tweasel: TweaselHarMetaV2;
     };
 };
+/** Metadata about the traffic collection as included in a {@link TweaselHar}. */
+export type TweaselHarMetaV2 = {
+    /** The time and date at which the traffic collection was started. */
+    startDate: string;
+    /** The time and date at which the traffic collection was stopped. */
+    endDate: string;
+    /** The options that were used for the traffic collection. */
+    options?: TrafficCollectionOptions;
+    /** Details about the device that the analysis was run on. */
+    device: Device;
+    /** The versions of the dependencies used in the analysis. */
+    versions: Record<string, string>;
+    /**
+     * Details about the app(s) that was/were analyzed. Currently only populated if the traffic was recorded through an
+     * app analysis.
+     */
+    apps?: App[];
+    /** Duration in milliseconds for how long the analysis target is guaranteed to have not been interacted with. */
+    periodWithoutInteraction?: number;
+    /**
+     * The version of the tweasel-specific metadata format. Currently, `1.0` is the only version. If the format is ever
+     * changed or extended in the future, this version will be incremented.
+     */
+    metaVersion: '2.0';
+};
+
 /** Metadata about the traffic collection as included in a {@link TweaselHar}. */
 export type TweaselHarMetaV1 = {
     /** The time and date at which the traffic collection was started. */

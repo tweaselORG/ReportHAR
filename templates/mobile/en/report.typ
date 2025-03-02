@@ -64,7 +64,7 @@ The analysis was performed using the following versions of the tools and librari
 
 == Analysis steps
 
-To collect record and analyze the data, the Tweasel toolchain#footnote[An overview of the tools can be found here: #link("https://docs.tweasel.org")] was used.
+To collect, record and analyze the data, the Tweasel toolchain#footnote[An overview of the tools can be found here: #link("https://docs.tweasel.org")] was used.
 
 The `appstraction`#footnote[#link("https://github.com/tweaselORG/appstraction")] library was used to control the device and set up the environment the app is running in. It allows to change and read out app settings, and install, remove and start apps. {% if analysis.app.platform  === 'Android' -%}
 It uses the Android Debug Bridge (`adb`)#footnote[#link("https://developer.android.com/tools/adb")] to control the device and read out information via the USB Debugging API built into Android. The device was rooted before the analysis was started and `adb` was used to open an elevated shell to manipulate system functions. Where Android does not provide an accessible API, `appstraction` uses the instrumentation toolkit Frida#footnote[#link("https://frida.re/")], which can hook into an app's functions while the process is running and access its execution context. `appstraction` contains scripts to hook into system functions, e.g. to set the content of the clipboard.
