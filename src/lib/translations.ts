@@ -35,18 +35,12 @@ export const templates = {
             complaint: fs.readFileSync(__dirname + '/../../templates/web/en/complaint.typ', 'utf-8'),
             style: fs.readFileSync(__dirname + '/../../templates/web/en/style.typ', 'utf-8'),
         },
-        de: {
-            report: fs.readFileSync(__dirname + '/../../templates/web/en/report.typ', 'utf-8'),
-            notice: fs.readFileSync(__dirname + '/../../templates/web/en/notice.typ', 'utf-8'),
-            complaint: fs.readFileSync(__dirname + '/../../templates/web/en/complaint.typ', 'utf-8'),
-            style: fs.readFileSync(__dirname + '/../../templates/web/en/style.typ', 'utf-8'),
-        },
     },
 };
 
 /** The languages that translations and templates are available for. */
-export const supportedLanguages = Object.keys(translations).filter((l) =>
-    Object.keys(templates).includes(l)
+export const supportedLanguages = Object.keys(translations).filter(
+    (l) => Object.keys(templates.mobile).includes(l) && Object.keys(templates.web).includes(l)
 ) as SupportedLanguage[];
 
 /** A language that translations and templates are available for. */
