@@ -403,7 +403,7 @@ A language that translations and templates are available for.
 
 #### Defined in
 
-[src/lib/translations.ts:53](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L53)
+[src/lib/translations.ts:47](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L47)
 
 ___
 
@@ -423,13 +423,13 @@ Exports across all apps contain more fields than exports for just one app.
 
 ### supportedLanguages
 
-• `Const` **supportedLanguages**: (``"en"`` \| ``"de"``)[]
+• `Const` **supportedLanguages**: ``"en"``[]
 
 The languages that translations and templates are available for.
 
 #### Defined in
 
-[src/lib/translations.ts:48](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L48)
+[src/lib/translations.ts:42](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L42)
 
 ___
 
@@ -454,12 +454,7 @@ The Typst template files.
 | `mobile.en.notice` | `string` |
 | `mobile.en.report` | `string` |
 | `mobile.en.style` | `string` |
-| `web` | { `de`: { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  } ; `en`: { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  }  } |
-| `web.de` | { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  } |
-| `web.de.complaint` | `string` |
-| `web.de.notice` | `string` |
-| `web.de.report` | `string` |
-| `web.de.style` | `string` |
+| `web` | { `en`: { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  }  } |
 | `web.en` | { `complaint`: `string` ; `notice`: `string` ; `report`: `string` ; `style`: `string`  } |
 | `web.en.complaint` | `string` |
 | `web.en.notice` | `string` |
