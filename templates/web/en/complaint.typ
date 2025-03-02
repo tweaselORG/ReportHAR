@@ -57,7 +57,6 @@ I am a regular user of the website in a browser profile that is only used by me 
 I am hereby asking you to investigate the website "{{ analysis.website.name }}" (hereinafter: "the website").
 
 As far as I can tell, the website is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the website's controller. Should this assumption be incorrect, my request is directed against the actual controller of the website.
-As far as I can tell, the website is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the website's controller. Should this assumption be incorrect, my request is directed against the actual controller of the website.
 {% endif %}
 
 = Facts
