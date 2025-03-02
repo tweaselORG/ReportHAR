@@ -403,7 +403,7 @@ A language that translations and templates are available for.
 
 #### Defined in
 
-[src/lib/translations.ts:56](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L56)
+[src/lib/translations.ts:53](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L53)
 
 ___
 
@@ -429,7 +429,7 @@ The languages that translations and templates are available for.
 
 #### Defined in
 
-[src/lib/translations.ts:51](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L51)
+[src/lib/translations.ts:48](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L48)
 
 ___
 
@@ -468,7 +468,7 @@ The Typst template files.
 
 #### Defined in
 
-[src/lib/translations.ts:19](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L19)
+[src/lib/translations.ts:16](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L16)
 
 ___
 
@@ -763,7 +763,7 @@ The string translations.
 
 #### Defined in
 
-[src/lib/translations.ts:7](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L7)
+[src/lib/translations.ts:6](https://github.com/tweaselORG/ReportHAR/blob/main/src/lib/translations.ts#L6)
 
 ## Functions
 
