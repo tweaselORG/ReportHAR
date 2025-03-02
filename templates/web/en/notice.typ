@@ -13,10 +13,14 @@ With this notice, I am making you aware of these violations and giving you the o
 
 = Findings
 
+{% if findings | length > 0 %}
+
+== Tracking data transmissions without interaction
+
 I have recorded {{ trackHarResult.length }} requests that transmitted data to {{ findings | length }} tracker(s) between {{ harEntries[0].startTime | dateFormat }} and {{ harEntries[harEntries.length - 1].startTime | dateFormat }}. These requests happened *without any interaction* with the website or any potential consent dialogs, and thus without consent. See the attached technical report for further details.
 
 {% for adapterSlug, adapterResult in findings %}
-== {{ adapterResult.adapter.name }}
+=== {{ adapterResult.adapter.name }}
 
 The website sent {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterResult.adapter.name }}", operated by "{{ adapterResult.adapter.tracker.name }}". Through these requests, at least the following information was transmitted:
 
@@ -29,6 +33,31 @@ The website sent {{ adapterResult.requests.length }} request(s) to the tracker "
   {% endfor %}
 )
 {% endfor %}
+
+{% endif %}
+
+{% if findingsInteraction | length > 0 %}
+
+== Tracking data transmissions after interaction
+
+I have recorded {{ trackHarResultInteraction.length }} requests that transmitted data to {{ findingsInteraction | length }} tracker(s) between {{ harEntriesInteraction[0].startTime | dateFormat }} and {{ harEntriesInteraction[harEntries.length - 1].startTime | dateFormat }}. These requests happened after I interacted with the website. See the attached technical report for further details.
+
+{% for adapterSlug, adapterResult in findingsInteraction %}
+=== {{ adapterResult.adapter.name }}
+
+The website sent {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterResult.adapter.name }}", operated by "{{ adapterResult.adapter.tracker.name }}". Through these requests, at least the following information was transmitted:
+
+#table(
+  columns: (33.3333%, 66.6666%),
+
+  [*Data type*], [*Transmitted value(s)*],
+  {% for property, value in adapterResult.receivedData -%}
+  [{{ t("properties", property) }}], [{{ value | join(', ') | code }}],
+  {% endfor %}
+)
+{% endfor %}
+
+{% endif %}
 
 = Legal assessment
 
