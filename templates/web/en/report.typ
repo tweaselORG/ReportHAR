@@ -41,7 +41,7 @@ The following information was detected as being transmitted through this request
 
 {% if findingsInteraction | length > 0 %}
 
-== Network traffic with interaction
+== Network traffic after interaction
 
 The requests described in this section happened in the second analysis part. The traffic in this section can therefore be a result of interaction with the website.
 
