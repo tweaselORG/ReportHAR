@@ -86,7 +86,7 @@ In the interest of avoiding unnecessary work for the data protection authorities
 
 I am attaching my notice to the controller{% if complaintOptions.controllerResponse !== "none" %} as well as any communication I have received from them in this matter{% endif %}.
 
-On {{ analysis.date | dateFormat }}, {% if complaintOptions.controllerResponse === "none" %}and thus after the expiration of the voluntary grace period{% else %}after the controller had responded{% endif %}, I retested the app using the Tweasel tools. The analysis was performed on version {{ analysis.app.version }} of the app, {% if analysis.app.store %}downloaded from the {{ analysis.app.store }}, {% endif %}running on {{ analysis.app.platform }} {{ analysis.platformVersion }}. Unfortunately, I had to find that the app still performs tracking in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}. Both this second technical report and the traffic recording are also attached.
+On {{ analysis.date | dateFormat }}, {% if complaintOptions.controllerResponse === "none" %}and thus after the expiration of the voluntary grace period{% else %}after the controller had responded{% endif %}, I retested the app using the Tweasel tools. The analysis was performed on version {{ analysis.app.version }} of the app, {% if analysis.app.store %}downloaded from the {{ analysis.app.store }}, {% endif %}running on {{ analysis.app.platform }} {{ analysis.platformVersion }}. Unfortunately, I had to find that the app still performs tracking, which I believe to be in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}. Both this second technical report and the traffic recording are also attached.
 
 {% if type === 'complaint' %}
 To verify that the tracking also affects me, I used {% if analysis.app.platform === 'Android' %}the "TrackerControl" app#footnote[https://trackercontrol.org/#network-traffic-analysis]{% elif analysis.app.platform === 'iOS' %}the "App Privacy Report" feature#footnote[https://support.apple.com/en-gb/HT212958]{% endif %} on my personal {{ analysis.app.platform }} device. This confirmed that the app also contacts those tracking servers on my own device.#footnote[Recording a phone's network traffic requires rooting the device and making severe configuration changes. Doing this is not feasible or advised for devices that are in actual day-to-day use. That is why the Tweasel project provides public infrastructure for doing such testing on devices/emulators that are only used for this purpose. However, logging a list of DNS hostnames contacted by an app is possible without such severe procedures {% if analysis.app.platform === 'Android' %}by installing the "TrackerControl" app{% elif analysis.app.platform === 'iOS' %}using the "App Privacy Report" feature integrated directly into iOS{% endif %}.\
@@ -105,7 +105,7 @@ Additionally, I am only including transmissions to servers for which the log of 
 It further bears repeating that, as guaranteed by the analysis methodology, the tracking transmissions described here all occurred *without any interaction* with the app or any potential consent dialog.
 
 {% for adapterSlug, adapterResult in findings %}
-== {{ adapterResult.adapter.name }}
+=== {{ adapterResult.adapter.name }}
 
 The app sent {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterResult.adapter.name }}", operated by "{{ adapterResult.adapter.tracker.name }}".
 

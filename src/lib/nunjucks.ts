@@ -30,7 +30,7 @@ export const renderNunjucks = (options: RenderNunjucksOptions) => {
 
         return [
             hours > 0 ? `${hours} h` : '',
-            minutes > 0 ? `${minutes} m` : '',
+            minutes > 0 ? `${minutes} min` : '',
             seconds > 0 ? `${seconds}.${milliseconds} s` : '',
             milliseconds > 0 ? `${milliseconds} ms` : '',
         ]

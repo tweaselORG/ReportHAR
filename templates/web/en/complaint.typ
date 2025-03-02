@@ -51,11 +51,12 @@ I am hereby filing a complaint under Art. 77(1) GDPR regarding the website "{{ a
 
 As far as I can tell, the website is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the websites's controller. Should this assumption be incorrect, my complaint is directed against the actual controller of the website.
 
-I am a user of the website on my personal device. The device is only used by me personally.
+I am a regular user of the website in a browser profile that is only used by me personally.
 
 {% else %}
 I am hereby asking you to investigate the website "{{ analysis.website.name }}" (hereinafter: "the website").
 
+As far as I can tell, the website is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the website's controller. Should this assumption be incorrect, my request is directed against the actual controller of the website.
 As far as I can tell, the website is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the website's controller. Should this assumption be incorrect, my request is directed against the actual controller of the website.
 {% endif %}
 
@@ -63,11 +64,11 @@ As far as I can tell, the website is operated by {{ complaintOptions.controllerA
 
 == Preliminary remarks
 
-To understand how the website is processing my data, I used the TweaselForWeb addon#footnote[https://docs.tweasel.org/], operated by Datenanfragen.de e.~V., to perform an automated analysis of the website's network traffic. The analysis was performed on {{ initialAnalysis.date | dateFormat }}, using {{ analysis.browser }} {{ analysis.browserVersion }}. The website was opened in a clean, new browsing context containing no cookies or other site-related data.
+To understand how the website is processing my data, I used the Tweasel browser addon#footnote[https://docs.tweasel.org/] to perform an automated analysis of the website's network traffic. The analysis was performed on {{ initialAnalysis.date | dateFormat }}, using {{ initialAnalysis.browser }} {{ initialAnalysis.browserVersion }}. The website was opened in a new clean browsing context containing no cookies or other site-related data.
 
-During this analysis, the website was, for the first {{ analysis.periodWithoutInteraction | durationFormat }}, loaded _without any user input_ (i.e. there was no interaction with the website at all) and its network traffic was recorded. After this period of no interaction, I also collected traffic while interacting with the website.{% if analysis.interactionNoConsent %} However, I assure that I did not consciously interact with any elements on the website, in particular consent dialogs, in a way which could have been interpreted as consent by the controller.{% endif %} The recorded traffic was then analyzed for tracking and similar data transmissions. Based on that, the Tweasel tools produced a technical report.
+During this analysis, the website was accessed _without any user input_ (i.e. there was no interaction with the website at all) for{% if complaintOptions.interactionNoConsent and findingsInteraction | length > 0 %} the first{% endif %} {{ initialAnalysis.periodWithoutInteraction | durationFormat }} and its network traffic was recorded.{% if complaintOptions.interactionNoConsent and findingsInteraction | length > 0 %} After this period of no interaction, it also collected the traffic while I interacted with the website. I assure that I did not consciously interact with any elements on the website, in particular consent dialogs, in a way which could have been interpreted as consent by the controller.{% endif %} The recorded traffic was then analyzed for tracking and similar data transmissions. Based on that, the Tweasel browser addon produced a technical report.
 
-Both this technical report and the traffic recording are attached as evidence as part of my communication with the controller. The report also contains a detailed description of the methodology used for the analysis and its basis in mobile privacy research.
+Both this technical report and the traffic recording are attached as evidence as part of my communication with the controller. The report also contains a detailed description of the methodology used for the analysis and its basis in privacy research.
 
 Through the analysis, I unfortunately had to find out that the website performs tracking without consent (as explained in @tracking) which I believe to be in violation of the GDPR{% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %} (as explained in @legal-grounds).
 
@@ -85,18 +86,21 @@ In the interest of avoiding unnecessary work for the data protection authorities
 
 I am attaching my notice to the controller{% if complaintOptions.controllerResponse !== "none" %} as well as any communication I have received from them in this matter{% endif %}.
 
-On {{ analysis.date | dateFormat }}, {% if complaintOptions.controllerResponse === "none" %}and thus after the expiration of the voluntary grace period{% else %}after the controller had responded{% endif %}, I retested the website using the TweaselForWeb addon. The analysis was performed on  {{ initialAnalysis.date | dateFormat }}, using {{ analysis.browser }} {{ analysis.browserVersion }}. Unfortunately, I had to find that the website still performs tracking in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}. Both this second technical report and the traffic recording are also attached.
+On {{ analysis.date | dateFormat }}, {% if complaintOptions.controllerResponse === "none" %}and thus after the expiration of the voluntary grace period{% else %}after the controller had responded{% endif %}, I retested the website using the Tweasel browser addon. The analysis was performed using {{ analysis.browser }} {{ analysis.browserVersion }}. Unfortunately, I had to find that the website still performs tracking, which I believe to be in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}. Both this second technical report and the traffic recording are also attached.
 
 == Tracking <tracking>
 
-In this section, I am detailing the tracking data transmissions that the website performed. I am only including transmissions from the second technical report from the Tweasel project from {{ analysis.date | dateFormat(false) }}. All these transmissions thus occurred {% if complaintOptions.controllerResponse === "none" %}*at least 60 days after* I informed the controller of the violations I had initially discovered and gave them the opportunity to remedy them{% else %}after the controller had responded to my notice{% endif %}.
+In this section, I am detailing the tracking data transmissions that the website performed. I am only including transmissions from the second technical report from {{ analysis.date | dateFormat(false) }}. All these transmissions thus occurred {% if complaintOptions.controllerResponse === "none" %}*at least 60 days after* I informed the controller of the violations I had initially discovered and gave them the opportunity to remedy them{% else %}after the controller had responded to my notice{% endif %}.
 
 === Tracking without interaction
 
-The tracking transmissions described here all occurred *without any interaction* with the website or any potential consent dialog, as guaranteed by the analysis methodology, in a browsing context that did not contain any data by the website, related to consent or otherwise. Tracking transmission which are guaranteed without interaction were recorded for {{ analysis.periodWithoutInteraction | durationFormat }}.
+The tracking transmissions described here all occurred in the first analysis part *without any interaction* with the website or any potential consent dialog, as guaranteed by the analysis methodology, in a clean browsing context that did not contain any data by the website (or any other), related to consent or otherwise. This first part lasted for {{ analysis.periodWithoutInteraction | durationFormat }}.
 
+{% if findings | length == 0 %}
+_no tracking transmissions were detected in this part of the analysis_
+{% endif %}
 {% for adapterSlug, adapterResult in findings %}
-== {{ adapterResult.adapter.name }}
+==== {{ adapterResult.adapter.name }}
 
 The website sent {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterResult.adapter.name }}", operated by "{{ adapterResult.adapter.tracker.name }}".
 
@@ -122,14 +126,14 @@ Through these request(s), at least the following information was transmitted:
 The full content of these request(s) and the method used for decoding the request(s) and extracting this information is documented in the attached technical report.
 {% endfor %}
 
-{% if findingsWithInteraction.length > 0 %}
+{% if complaintOptions.interactionNoConsent and findingsInteraction | length > 0 %}
 
 === Tracking with interaction
 
-Tracking in this section was performed after a period of {{ analysis.periodWithoutInteraction | durationFormat }}, in which I did not interact with the website. It therefore may be a result of my interaction with the website.{% if complaintOptions.interactionNoConsent %} However, I assure that I did not consciously interact with any elements on the website, in particular consent dialogs, in a way which could have been interpreted as consent by the controller.{% endif %}
+Tracking in this section was performed during the second analysis part. It therefore may be a result of my interaction with the website. However, I assure that I did not consciously interact with any elements on the website, in particular consent dialogs, in a way which could have been interpreted as consent by the controller.
 
-{% for adapterSlug, adapterResult in findingsWithInteraction %}
-== {{ adapterResult.adapter.name }}
+{% for adapterSlug, adapterResult in findingsInteraction %}
+==== {{ adapterResult.adapter.name }}
 
 The website sent {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterResult.adapter.name }}", operated by "{{ adapterResult.adapter.tracker.name }}".
 
