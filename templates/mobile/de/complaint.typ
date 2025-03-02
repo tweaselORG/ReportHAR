@@ -105,7 +105,7 @@ Zusätzlich berücksichtige ich nur Übertragungen an Server, für die das Proto
 Es sei noch einmal darauf hingewiesen, dass die hier beschriebenen Tracking-Übertragungen durch die Analysemethodik garantiert alle *ohne jegliche Interaktion* mit der App oder einem möglichen Einwilligungsdialog erfolgten.
 
 {% for adapterSlug, adapterResult in findings %}
-== {{ adapterResult.adapter.name }}
+=== {{ adapterResult.adapter.name }}
 
 Die App sendete {{ adapterResult.requests.length }} Anfrage(n) an den Tracker "{{ adapterResult.adapter.name }}", betrieben von "{{ adapterResult.adapter.tracker.name }}".
 

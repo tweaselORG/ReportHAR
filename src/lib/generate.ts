@@ -28,11 +28,10 @@ export type Analysis = {
     /** The date and time the analysis was performed. */
     date: Date;
 
-    /** Information about the analyzed app. */
-    app: App;
-
     /** Whether the analysis was run on an emulator or a physical device. */
     deviceType: 'device' | 'emulator';
+    /** The operating system of the device/emulator the analysis as performed on. */
+    platform: string;
     /** The operating system version of the device/emulator the analysis was performed on. */
     platformVersion: string;
     /** The OS build string of the device/emulator the analysis was performed on. */
@@ -55,7 +54,45 @@ export type Analysis = {
 
     /** The versions of the dependencies used in the analysis. */
     dependencies: Record<string, string>;
-};
+} & (
+    | {
+          /** Information about the analyzed app. */
+          app: App;
+          /**
+           * Which toolchain collected the HAR, with the following possible values:
+           *
+           * - `web` for HARs originating from the TweaselForWeb addon.
+           * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+           */
+          source: 'mobile';
+      }
+    | {
+          /**
+           * Which toolchain collected the HAR, with the following possible values:
+           *
+           * - `web` for HARs originating from the TweaselForWeb addon.
+           * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+           */
+          source: 'web';
+          /** Information about the analyzed website. */
+          website: {
+              /** The name or title of the website. */
+              name: string;
+              /** The full URL of the specific (sub-)page which was analyzed. */
+              url: string;
+          };
+          /** Duration in milliseconds for how long the website is guaranteed to have not been interacted with. */
+          periodWithoutInteraction: number;
+          /** The name of the browser the analysis was done in. */
+          browser: string;
+          /** The version of the browser the analysis was done in. */
+          browserVersion: string;
+          /** Name of the addon the traffic was collect with. */
+          addonName: string;
+          /** Version of the addon the traffic was collect with. */
+          addonVersion: string;
+      }
+);
 /** Additional information required for generating an informal complaint to a data protection authority. */
 export type ComplaintOptionsInformal = {
     /** The date the complaint is being made. */
@@ -95,8 +132,8 @@ export type ComplaintOptionsInformal = {
     /** Whether the complainant agrees to the DPA communicating with them via unencrypted email. */
     complainantAgreesToUnencryptedCommunication: boolean;
 };
-/** Additional information for formal complaints to a data protection authority. */
-export type ComplaintOptionsFormal = {
+/** Additional information for formal complaints about mobile apps to a data protection authority. */
+export type ComplaintOptionsFormalMobile = {
     /** The app store the app was installed through on the user's device. */
     userDeviceAppStore?: string;
     /** Whether the user is logged into this app store account on their device. */
@@ -112,6 +149,11 @@ export type ComplaintOptionsFormal = {
      */
     userNetworkActivity: NetworkActivityReport;
 };
+/** Additional information for formal complaints about websites to a data protection authority. */
+export type ComplaintOptionsFormalWeb = {
+    /** True, if the user assures that during the interaction they did not knowingly consent to tracking. */
+    interactionNoConsent?: boolean;
+};
 
 /** Options for generating a report or controller notice using the {@link generateAdvanced} function. */
 export type GenerateAdvancedOptionsDefault = {
@@ -122,20 +164,53 @@ export type GenerateAdvancedOptionsDefault = {
      * - `notice`: Generate a notice to the controller.
      */
     type: 'report' | 'notice';
+
     /** The language the generated document should be in. */
     language: SupportedLanguage;
 
-    /** Information about the network traffic analyis that the document should be based on. */
+    /** Information about the network traffic analysis that the document should be based on. */
     analysis: Analysis;
-};
-/** Options for generating a formal complaint using the {@link generateAdvanced} function. */
-export type GenerateAdvancedOptionsComplaintFormal = {
+} & (
+    | {
+          /**
+           * Which toolchain collected the HAR, with the following possible values:
+           *
+           * - `web` for HARs originating from the TweaselForWeb addon.
+           * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+           */
+          analysisSource: 'web';
+          /**
+           * Information about the network traffic analysis which might contain interaction triggered traffic that will
+           * be the basis for the complaint.
+           */
+          analysisInteraction: Analysis;
+      }
+    | {
+          /**
+           * Which toolchain collected the HAR, with the following possible values:
+           *
+           * - `web` for HARs originating from the TweaselForWeb addon.
+           * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+           */
+          analysisSource: 'mobile';
+      }
+);
+
+/** Options for generating a formal complaint for mobiles apps using the {@link generateAdvanced} function. */
+export type GenerateAdvancedOptionsComplaintFormalMobile = {
     /**
      * The type of document to generate, with the following possible values:
      *
      * - `complaint`: Generate a formal complaint to a data protection authority.
      */
     type: 'complaint';
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'mobile';
     /** The language the generated document should be in. */
     language: SupportedLanguage;
 
@@ -145,16 +220,61 @@ export type GenerateAdvancedOptionsComplaintFormal = {
     analysis: Analysis;
 
     /** Additional metadata for formal complaints. */
-    complaintOptions: ComplaintOptionsInformal & ComplaintOptionsFormal;
+    complaintOptions: ComplaintOptionsInformal & ComplaintOptionsFormalMobile;
 };
+
+/** Options for generating a formal complaint for websites using the {@link generateAdvanced} function. */
+export type GenerateAdvancedOptionsComplaintFormalWeb = {
+    /**
+     * The type of document to generate, with the following possible values:
+     *
+     * - `complaint`: Generate a formal complaint to a data protection authority.
+     */
+    type: 'complaint';
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'web';
+    /** The language the generated document should be in. */
+    language: SupportedLanguage;
+
+    /** Information about the initial network traffic analysis that the notice to the controller was based on. */
+    initialAnalysis: Analysis;
+    /**
+     * Information about the initial network traffic analysis which might contain interaction triggered traffic that the
+     * notice to the controller was based on.
+     */
+    initialAnalysisInteraction: Analysis;
+    /** Information about the second network traffic analysis that will be the basis for the complaint. */
+    analysis: Analysis;
+    /**
+     * Information about the second network traffic analysis which might contain interaction triggered traffic that will
+     * be the basis for the complaint.
+     */
+    analysisInteraction: Analysis;
+
+    /** Additional metadata for formal complaints. */
+    complaintOptions: ComplaintOptionsInformal & ComplaintOptionsFormalWeb;
+};
+
 /** Options for generating a formal or in informal complaint using the {@link generateAdvanced} function. */
-export type GenerateAdvancedOptionsComplaintInformal = {
+export type GenerateAdvancedOptionsComplaintInformalMobile = {
     /**
      * The type of document to generate, with the following possible values:
      *
      * - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority.
      */
     type: 'complaint-informal';
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'mobile';
     /** The language the generated document should be in. */
     language: SupportedLanguage;
 
@@ -162,6 +282,43 @@ export type GenerateAdvancedOptionsComplaintInformal = {
     initialAnalysis: Analysis;
     /** Information about the second network traffic analyis that will be the basis for the complaint. */
     analysis: Analysis;
+
+    /** Additional metadata for complaints. */
+    complaintOptions: ComplaintOptionsInformal;
+};
+
+/** Options for generating a formal or in informal complaint using the {@link generateAdvanced} function. */
+export type GenerateAdvancedOptionsComplaintInformalWeb = {
+    /**
+     * The type of document to generate, with the following possible values:
+     *
+     * - `complaint-informal`: Generate an informal suggestion for investigation to a data protection authority.
+     */
+    type: 'complaint-informal';
+    /**
+     * Which toolchain collected the HAR, with the following possible values:
+     *
+     * - `web` for HARs originating from the TweaselForWeb addon.
+     * - `mobile` for HARs collected using the Tweasel mobile toolchain.
+     */
+    analysisSource: 'web';
+    /** The language the generated document should be in. */
+    language: SupportedLanguage;
+
+    /** Information about the initial network traffic analysis that the notice to the controller was based on. */
+    initialAnalysis: Analysis;
+    /**
+     * Information about the initial network traffic analysis which might contain interaction triggered traffic that the
+     * notice to the controller was based on.
+     */
+    initialAnalysisInteraction: Analysis;
+    /** Information about the second network traffic analysis that will be the basis for the complaint. */
+    analysis: Analysis;
+    /**
+     * Information about the second network traffic analysis which might contain interaction triggered traffic that will
+     * be the basis for the complaint.
+     */
+    analysisInteraction: Analysis;
 
     /** Additional metadata for complaints. */
     complaintOptions: ComplaintOptionsInformal;
@@ -178,8 +335,10 @@ export type GenerateAdvancedOptionsComplaintInformal = {
  */
 export type GenerateAdvancedOptions =
     | GenerateAdvancedOptionsDefault
-    | GenerateAdvancedOptionsComplaintFormal
-    | GenerateAdvancedOptionsComplaintInformal;
+    | GenerateAdvancedOptionsComplaintFormalMobile
+    | GenerateAdvancedOptionsComplaintFormalWeb
+    | GenerateAdvancedOptionsComplaintInformalMobile
+    | GenerateAdvancedOptionsComplaintInformalWeb;
 
 /**
  * Generate a technical report, controller notice or DPA complaint based on a network traffic analysis, manually
@@ -198,9 +357,9 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
         har: options.analysis.har,
         trackHarResult: options.analysis.trackHarResult,
     };
-    if (options.type === 'complaint') {
+    if (options.type === 'complaint' && options.analysisSource === 'mobile') {
         options.complaintOptions.userNetworkActivity = options.complaintOptions.userNetworkActivity.filter(
-            (e) => e.appId === undefined || e.appId === options.analysis.app.id
+            (e) => e.appId === undefined || options.analysis.source !== 'mobile' || e.appId === options.analysis.app.id
         );
 
         // For complaints, only consider results from adapters for which we know that the user's device contacted at
@@ -214,39 +373,81 @@ export const generateAdvanced = (options: GenerateAdvancedOptions) => {
     }
     const { harEntries, trackHarResult, findings } = prepareTraffic(prepareTrafficOptions);
 
+    let nunjucksContext: Record<string, unknown> = {
+        type: options.type,
+        analysis: options.analysis,
+        initialAnalysis:
+            (options.type === 'complaint' || options.type === 'complaint-informal') && options.initialAnalysis,
+        complaintOptions:
+            (options.type === 'complaint' || options.type === 'complaint-informal') && options.complaintOptions,
+        harEntries,
+        trackHarResult,
+        findings,
+    };
+
+    const additionalFiles: Record<string, string> = {
+        '/style.typ': templates[options.analysisSource][options.language].style,
+        ...(options.type === 'report' && {
+            '/har.typ': generateTypForHar(
+                harEntries
+                    .map((e, index) => ({ ...e, index }))
+                    .filter((e) => trackHarResult.some((r) => r.harIndex === e.index)),
+                {
+                    includeResponses: false,
+                    truncateContent: 4096,
+                    language: options.language,
+                    topHeadingLevel: options.analysisSource === 'web' ? 3 : 2,
+                }
+            ),
+        }),
+    };
+
+    if (options.analysisSource === 'web') {
+        const {
+            harEntries: harEntriesInteraction,
+            trackHarResult: trackHarResultInteraction,
+            findings: findingsInteraction,
+        } = prepareTraffic({
+            har: options.analysisInteraction.har,
+            trackHarResult: options.analysisInteraction.trackHarResult,
+        });
+
+        nunjucksContext = {
+            ...nunjucksContext,
+            harEntriesInteraction,
+            trackHarResultInteraction,
+            findingsInteraction,
+            analysisInteraction: options.analysisInteraction,
+        };
+
+        if (options.type === 'report')
+            additionalFiles['/har-interaction.typ'] = generateTypForHar(
+                harEntriesInteraction
+                    .map((e, index) => ({ ...e, index }))
+                    .filter((e) => trackHarResultInteraction.some((r) => r.harIndex === e.index)),
+                {
+                    includeResponses: false,
+                    truncateContent: 4096,
+                    language: options.language,
+                    topHeadingLevel: 3,
+                    key: 'interaction',
+                }
+            );
+    }
+
     // Render Nunjucks template.
     const typSource = renderNunjucks({
         template:
-            templates[options.language][
+            templates[options.analysisSource][options.language][
                 options.type === 'complaint' || options.type === 'complaint-informal' ? 'complaint' : options.type
             ],
         language: options.language,
-        context: {
-            type: options.type,
-            analysis: options.analysis,
-            initialAnalysis:
-                (options.type === 'complaint' || options.type === 'complaint-informal') && options.initialAnalysis,
-            complaintOptions:
-                (options.type === 'complaint' || options.type === 'complaint-informal') && options.complaintOptions,
-            harEntries,
-            trackHarResult,
-            findings,
-        },
+        context: nunjucksContext,
     });
 
     // Compile Typst to PDF.
     return compileTypst({
         mainContent: typSource,
-        additionalFiles: {
-            '/style.typ': templates[options.language].style,
-            ...(options.type === 'report' && {
-                '/har.typ': generateTypForHar(
-                    harEntries
-                        .map((e, index) => ({ ...e, index }))
-                        .filter((e) => trackHarResult.some((r) => r.harIndex === e.index)),
-                    { includeResponses: false, truncateContent: 4096, language: options.language }
-                ),
-            }),
-        },
+        additionalFiles,
     });
 };

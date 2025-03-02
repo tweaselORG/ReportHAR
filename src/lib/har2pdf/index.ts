@@ -22,12 +22,19 @@ export type RenderOptions = {
     truncateContent?: number;
     /** Whether to include responses as well (default: `true`). */
     includeResponses?: boolean;
+    /** What level the highest level generated heading should be at (default: `2`) */
+    topHeadingLevel?: number;
+    /** Key to add to the heading labels. */
+    key?: string;
 };
 
 export const generateTyp = (entries: (HarEntry & { index?: number })[], options?: RenderOptions) => {
     const translation = translations[options?.language ?? 'en'];
     if (!translation) throw new Error(`Unsupported language: ${options?.language}`);
     const _ = getTranslator(translation, translationsEn);
+
+    const topHeadingLevel = options?.topHeadingLevel && options.topHeadingLevel > 0 ? options.topHeadingLevel : 2;
+    const key = options?.key ? `-${options.key}` : '';
 
     /**
      * Wrap content in a raw/code block, properly escaping user input (cf.
@@ -95,11 +102,11 @@ ${entries
     .map((r, i) => {
         const index = r.index ?? i;
         return `
-== ${$(r.request.method + ' ' + r.request.host)} (${renderDate(r.startTime)}) <har2pdf-e${index}>
+== ${$(r.request.method + ' ' + r.request.host)} (${renderDate(r.startTime)}) <har2pdf-e${index}${key}>
 
-=== ${_('har.request')} <har2pdf-e${index}-req>
+=== ${_('har.request')} <har2pdf-e${index}${key}-req>
 
-==== ${_('har.general')} <har2pdf-e${index}-req-general>
+==== ${_('har.general')} <har2pdf-e${index}${key}-req-general>
 
 / ${_('har.method')}: ${$(r.request.method)}
 / ${_('har.http-version')}: ${$(r.request.httpVersion)} #v(0.8em)
@@ -108,7 +115,7 @@ ${entries
 / ${_('har.file-name')}: ${$(r.request.pathWithoutQuery)}
 ${r.request.port ? `/ ${_('har.port')}: ${$(r.request.port)}` : ''}
 
-==== ${_('har.query-params')} <har2pdf-e${index}-req-query-params>
+==== ${_('har.query-params')} <har2pdf-e${index}${key}-req-query-params>
 
 ${
     r.request.queryParams.length > 0
@@ -116,37 +123,37 @@ ${
         : `_${_('har.none')}_`
 }
 
-==== ${_('har.headers')} <har2pdf-e${index}-req-headers>
+==== ${_('har.headers')} <har2pdf-e${index}${key}-req-headers>
 
 ${renderHeaders(r.request.headers)}
 
-==== ${_('har.cookies')} <har2pdf-e${index}-req-cookies>
+==== ${_('har.cookies')} <har2pdf-e${index}${key}-req-cookies>
 
 ${renderCookies(r.request.cookies)}
 
-==== ${_('har.content')} <har2pdf-e${index}-req-content>
+==== ${_('har.content')} <har2pdf-e${index}${key}-req-content>
 
 ${renderContent(r.request.content)}
 
 ${
     options?.includeResponses !== false
         ? `
-=== ${_('har.response')} <har2pdf-e${index}-res>
+=== ${_('har.response')} <har2pdf-e${index}${key}-res>
 
-==== ${_('har.general')} <har2pdf-e${index}-res-general>
+==== ${_('har.general')} <har2pdf-e${index}${key}-res-general>
 
 / ${_('har.status')}: ${$(r.response.status + ' ' + r.response.statusText)}
 / ${_('har.http-version')}: ${$(r.response.httpVersion)}
 
-==== ${_('har.headers')} <har2pdf-e${index}-res-headers>
+==== ${_('har.headers')} <har2pdf-e${index}${key}-res-headers>
 
 ${renderHeaders(r.response.headers)}
 
-==== ${_('har.cookies')} <har2pdf-e${index}-res-cookies>
+==== ${_('har.cookies')} <har2pdf-e${index}${key}-res-cookies>
 
 ${renderCookies(r.response.cookies)}
 
-==== ${_('har.content')} <har2pdf-e${index}-res-content>
+==== ${_('har.content')} <har2pdf-e${index}${key}-res-content>
 
 ${renderContent(r.response.content)}
           `
@@ -155,7 +162,7 @@ ${renderContent(r.response.content)}
 `;
     })
     .join('\n')}
-`;
+`.replaceAll(/^==/gm, '='.repeat(topHeadingLevel));
 };
 
 export const har2Pdf = async (har: Har, options?: RenderOptions) => {

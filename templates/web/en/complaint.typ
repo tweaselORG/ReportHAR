@@ -20,7 +20,7 @@
   (complainant, hereinafter: "I")
 
   _against_ \
-  the controller for the {{ analysis.app.platform }} app "{{ analysis.app.name }}", assumed to be \
+  the controller for the website "{{ analysis.website.name }}", assumed to be \
   {{ complaintOptions.controllerAddress }} \
   (respondent, hereinafter: "the controller")
 
@@ -47,67 +47,62 @@
 = Introduction
 
 {% if type === 'complaint' %}
-I am hereby filing a complaint under Art. 77(1) GDPR regarding the {{ analysis.app.platform }} app "{{ analysis.app.name }}" (hereinafter: "the app").
+I am hereby filing a complaint under Art. 77(1) GDPR regarding the website "{{ analysis.website.name }}", located at {{ analysis.website.url | safe }}, (hereinafter: "the website").
 
-As far as I can tell, the app is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the app's controller. Should this assumption be incorrect, my complaint is directed against the actual controller of the app.
+As far as I can tell, the website is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the websites's controller. Should this assumption be incorrect, my complaint is directed against the actual controller of the website.
 
-I am a user of the app on my personal {{ analysis.app.platform }} device. The {{ analysis.app.platform }} device is only used by me personally.{% if complaintOptions.userDeviceAppStore and complaintOptions.loggedIntoAppStore %} I have installed the app through the {{ complaintOptions.userDeviceAppStore }}. I am logged into the {{ complaintOptions.userDeviceAppStore }} with my personal account.{% endif %}
+I am a regular user of the website in a browser profile that is only used by me personally.
 
-{% if complaintOptions.deviceHasRegisteredSimCard %}My {{ analysis.app.platform }} device has a SIM card installed that is registered to my name.{% endif %}
 {% else %}
-I am hereby asking you to investigate the {{ analysis.app.platform }} app "{{ analysis.app.name }}" (hereinafter: "the app").
+I am hereby asking you to investigate the website "{{ analysis.website.name }}" (hereinafter: "the website").
 
-As far as I can tell, the app is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the app's controller. Should this assumption be incorrect, my request is directed against the actual controller of the app.
+As far as I can tell, the website is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the website's controller. Should this assumption be incorrect, my request is directed against the actual controller of the website.
+As far as I can tell, the website is operated by {{ complaintOptions.controllerAddress }}.#footnote[{{ complaintOptions.controllerAddressSourceUrl | safe }}] I am thus assuming them to be the website's controller. Should this assumption be incorrect, my request is directed against the actual controller of the website.
 {% endif %}
 
 = Facts
 
 == Preliminary remarks
 
-To understand how the app is processing my data, I used the tools of the Tweasel project#footnote[https://docs.tweasel.org/], operated by Datenanfragen.de e.~V., to perform an automated analysis of the app's network traffic. The analysis was performed on {{ initialAnalysis.date | dateFormat }} on version {{ initialAnalysis.app.version }} of the app, {% if analysis.app.store %}downloaded from the {{ analysis.app.store }}, {% endif %}running on {{ initialAnalysis.app.platform }} {{ initialAnalysis.platformVersion }}.
+To understand how the website is processing my data, I used the Tweasel browser addon#footnote[https://docs.tweasel.org/] to perform an automated analysis of the website's network traffic. The analysis was performed on {{ initialAnalysis.date | dateFormat }}, using {{ initialAnalysis.browser }} {{ initialAnalysis.browserVersion }}. The website was opened in a new clean browsing context containing no cookies or other site-related data.
 
-During this analysis, the app was run _without any user input_ (i.e. there was no interaction with the app at all) and its network traffic was recorded. The recorded traffic was then analyzed for tracking and similar data transmissions. Based on that, the Tweasel tools produced a technical report.
+During this analysis, the website was accessed _without any user input_ (i.e. there was no interaction with the website at all) for{% if complaintOptions.interactionNoConsent and findingsInteraction | length > 0 %} the first{% endif %} {{ initialAnalysis.periodWithoutInteraction | durationFormat }} and its network traffic was recorded.{% if complaintOptions.interactionNoConsent and findingsInteraction | length > 0 %} After this period of no interaction, it also collected the traffic while I interacted with the website. I assure that I did not consciously interact with any elements on the website, in particular consent dialogs, in a way which could have been interpreted as consent by the controller.{% endif %} The recorded traffic was then analyzed for tracking and similar data transmissions. Based on that, the Tweasel browser addon produced a technical report.
 
-Both this technical report and the traffic recording are attached as evidence as part of my communication with the controller. The report also contains a detailed description of the methodology used for the analysis and its basis in mobile privacy research.
+Both this technical report and the traffic recording are attached as evidence as part of my communication with the controller. The report also contains a detailed description of the methodology used for the analysis and its basis in privacy research.
 
-Through the analysis, I unfortunately had to find out that the app performs tracking without consent (as explained in @tracking) which I believe to be in violation of the GDPR{% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %} (as explained in @legal-grounds).
+Through the analysis, I unfortunately had to find out that the website performs tracking without consent (as explained in @tracking) which I believe to be in violation of the GDPR{% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %} (as explained in @legal-grounds).
 
 On {{ complaintOptions.noticeDate | dateFormat(false) }}, I sent a notice to the controller making them aware of the violations I discovered and giving them the opportunity to remedy them.
 
-In the interest of avoiding unnecessary work for the data protection authorities, the controller, and myself, I gave the controller a voluntary grace period of 60 days to bring their app in line with applicable data protection law. I also informed them that I planned on filing a complaint otherwise.
+In the interest of avoiding unnecessary work for the data protection authorities, the controller, and myself, I gave the controller a voluntary grace period of 60 days to bring their website in line with applicable data protection law. I also informed them that I planned on filing a complaint otherwise.
 
 {% if complaintOptions.controllerResponse === "none" %}
   I have not received any response from the controller.
 {% elif complaintOptions.controllerResponse === "denial" %}
-  I have received a response from the controller in which they deny there being any violations in their app. I am providing an in-depth technical and legal argument as to why I do believe the controller is violating the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %} below.
+  I have received a response from the controller in which they deny there being any violations in their website. I am providing an in-depth technical and legal argument as to why I do believe the controller is violating the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %} below.
 {% elif complaintOptions.controllerResponse === "broken-promise" %}
   I have received a response from the controller in which they agreed to remedy the violations I discovered. However, as I will explain below, they have not actually done so.
 {% endif %}
 
 I am attaching my notice to the controller{% if complaintOptions.controllerResponse !== "none" %} as well as any communication I have received from them in this matter{% endif %}.
 
-On {{ analysis.date | dateFormat }}, {% if complaintOptions.controllerResponse === "none" %}and thus after the expiration of the voluntary grace period{% else %}after the controller had responded{% endif %}, I retested the app using the Tweasel tools. The analysis was performed on version {{ analysis.app.version }} of the app, {% if analysis.app.store %}downloaded from the {{ analysis.app.store }}, {% endif %}running on {{ analysis.app.platform }} {{ analysis.platformVersion }}. Unfortunately, I had to find that the app still performs tracking in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}. Both this second technical report and the traffic recording are also attached.
+On {{ analysis.date | dateFormat }}, {% if complaintOptions.controllerResponse === "none" %}and thus after the expiration of the voluntary grace period{% else %}after the controller had responded{% endif %}, I retested the website using the Tweasel browser addon. The analysis was performed using {{ analysis.browser }} {{ analysis.browserVersion }}. Unfortunately, I had to find that the website still performs tracking, which I believe to be in violation of the GDPR {% if complaintOptions.nationalEPrivacyLaw %} and {{ complaintOptions.nationalEPrivacyLaw }}{% endif %}. Both this second technical report and the traffic recording are also attached.
 
-{% if type === 'complaint' %}
-To verify that the tracking also affects me, I used {% if analysis.app.platform === 'Android' %}the "TrackerControl" app#footnote[https://trackercontrol.org/#network-traffic-analysis]{% elif analysis.app.platform === 'iOS' %}the "App Privacy Report" feature#footnote[https://support.apple.com/en-gb/HT212958]{% endif %} on my personal {{ analysis.app.platform }} device. This confirmed that the app also contacts those tracking servers on my own device.#footnote[Recording a phone's network traffic requires rooting the device and making severe configuration changes. Doing this is not feasible or advised for devices that are in actual day-to-day use. That is why the Tweasel project provides public infrastructure for doing such testing on devices/emulators that are only used for this purpose. However, logging a list of DNS hostnames contacted by an app is possible without such severe procedures {% if analysis.app.platform === 'Android' %}by installing the "TrackerControl" app{% elif analysis.app.platform === 'iOS' %}using the "App Privacy Report" feature integrated directly into iOS{% endif %}.\
-\
-While the results from this log don't allow for inspecting the actual data that was transmitted, they do prove that the app contacted the same tracking servers. In combination with the technical report by the Tweasel project, for which the request content was actually analysed, this provides a very strong indication that I am affected by the same tracking. As I will elaborate on in @legal-grounds-burden-of-proof, the controller has the burden of proving that their processing is in line with the GDPR. It would thus be on them to produce evidence for disproving the conclusion I am drawing here.] I have attached the evidence for this in @personal-hostnames[Appendix]
+== Tracking <tracking>
+
+In this section, I am detailing the tracking data transmissions that the website performed. I am only including transmissions from the second technical report from {{ analysis.date | dateFormat(false) }}. All these transmissions thus occurred {% if complaintOptions.controllerResponse === "none" %}*at least 60 days after* I informed the controller of the violations I had initially discovered and gave them the opportunity to remedy them{% else %}after the controller had responded to my notice{% endif %}.
+
+=== Tracking without interaction
+
+The tracking transmissions described here all occurred in the first analysis part *without any interaction* with the website or any potential consent dialog, as guaranteed by the analysis methodology, in a clean browsing context that did not contain any data by the website (or any other), related to consent or otherwise. This first part lasted for {{ analysis.periodWithoutInteraction | durationFormat }}.
+
+{% if findings | length == 0 %}
+_no tracking transmissions were detected in this part of the analysis_
 {% endif %}
-
-== Tracking without interaction <tracking>
-
-In this section, I am detailing the tracking data transmissions that the app performed. I am only including transmissions from the second technical report from the Tweasel project from {{ analysis.date | dateFormat(false) }}. All these transmissions thus occurred {% if complaintOptions.controllerResponse === "none" %}*at least 60 days after* I informed the controller of the violations I had initially discovered and gave them the opportunity to remedy them{% else %}after the controller had responded to my notice{% endif %}.
-
-{% if type === 'complaint' %}
-Additionally, I am only including transmissions to servers for which the log of {% if analysis.app.platform === 'Android' %}the "TrackerControl" app{% elif analysis.app.platform === 'iOS' %}the "App Privacy Report"{% endif %} confirmed that the app also contacts them on my personal device, as explained above. It is thus safe to assume that all these transmissions also affect me personally.
-{% endif %}
-
-It further bears repeating that, as guaranteed by the analysis methodology, the tracking transmissions described here all occurred *without any interaction* with the app or any potential consent dialog.
-
 {% for adapterSlug, adapterResult in findings %}
-== {{ adapterResult.adapter.name }}
+==== {{ adapterResult.adapter.name }}
 
-The app sent {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterResult.adapter.name }}", operated by "{{ adapterResult.adapter.tracker.name }}".
+The website sent {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterResult.adapter.name }}", operated by "{{ adapterResult.adapter.tracker.name }}".
 
 {% if adapterResult.adapter.tracker.description %}
 {{ t("tracker-descriptions", adapterResult.adapter.tracker.description) | trackharMl | safe }}
@@ -131,9 +126,44 @@ Through these request(s), at least the following information was transmitted:
 The full content of these request(s) and the method used for decoding the request(s) and extracting this information is documented in the attached technical report.
 {% endfor %}
 
+{% if complaintOptions.interactionNoConsent and findingsInteraction | length > 0 %}
+
+=== Tracking with interaction
+
+Tracking in this section was performed during the second analysis part. It therefore may be a result of my interaction with the website. However, I assure that I did not consciously interact with any elements on the website, in particular consent dialogs, in a way which could have been interpreted as consent by the controller.
+
+{% for adapterSlug, adapterResult in findingsInteraction %}
+==== {{ adapterResult.adapter.name }}
+
+The website sent {{ adapterResult.requests.length }} request(s) to the tracker "{{ adapterResult.adapter.name }}", operated by "{{ adapterResult.adapter.tracker.name }}".
+
+{% if adapterResult.adapter.tracker.description %}
+{{ t("tracker-descriptions", adapterResult.adapter.tracker.description) | trackharMl | safe }}
+{% endif %}
+
+{% if adapterResult.adapter.description %}
+{{ t("tracker-descriptions", adapterResult.adapter.description) | trackharMl | safe }}
+{% endif %}
+
+Through these request(s), at least the following information was transmitted:
+
+#table(
+  columns: (33.3333%, 66.6666%),
+
+  [*Data type*], [*Transmitted value(s)*],
+  {% for property, value in adapterResult.receivedData -%}
+  [{{ t("properties", property) }}], [{{ value | join(', ') | code }}],
+  {% endfor %}
+)
+
+The full content of these request(s) and the method used for decoding the request(s) and extracting this information is documented in the attached technical report.
+{% endfor %}
+
+{% endif %}
+
 = Context: Online tracking <context-online-tracking>
 
-The tracking practices employed in the app by the controller are part of a broader ecosystem of online tracking that has become pervasive across the web and mobile apps. Extensive research has again and again revealed ubiquitous violations of and a prevalent disregard for data protection law in this context. The vast amounts of personal data collected through such tracking activities are fed into an opaque and shadowy system consisting of thousands of companies, posing very real dangers to users.
+The tracking practices employed in the website by the controller are part of a broader ecosystem of online tracking that has become pervasive across the web and mobile apps. Extensive research has again and again revealed ubiquitous violations of and a prevalent disregard for data protection law in this context. The vast amounts of personal data collected through such tracking activities are fed into an opaque and shadowy system consisting of thousands of companies, posing very real dangers to users.
 
 == Habitual violations of data protection law
 
@@ -187,7 +217,7 @@ As such, it is apparent that the IDs' very purpose is to single out users as ref
 
 Even if the IDs themselves were not personal data on their own, the transmitted tracking data as whole unequivocally constitutes personal data. A controller does not need to be able to immediately infer a data subject's name from some information for that information to be personal data.#footnote[Farinho in Spiecker gen. Döhmann/Papakonstantinou/Hornung/De Hert, General Data Protection Regulation, Art. 4(1) Personal data, 2023, mn. 20; Purtova, From knowing by name to targeting: the meaning of identification under the GDPR, 2022, https://academic.oup.com/idpl/article/12/3/163/6612144; EU FRA, Handbook on European data protection law, 2018 edition, section 2.1, https://fra.europa.eu/sites/default/files/fra_uploads/fra-coe-edps-2018-handbook-data-protection_en.pdf; Albrecht/Jotzo, Das neue Datenschutzrecht der EU, 1. edition, 2017, Part 3, mn. 3; Arning/Rothkegel in Taeger/Gabel, DSGVO - BDSG - TTDSG, 4. edition, 2022, Art. 4 DSGVO, mn. 24, 30; Ernst in Paal/Pauly, DS-GVO BDSG, 3. edition, 2021, Art. 4 Nr. 1 DSGVO, mn. 8; Karg in Simitis/Hornung/Spiecker gen. Döhmann, Datenschutzrecht, 1. edition, 2019, Art. 4 Nr. 1 DSGVO, mn. 48–49; Klabunde in Ehmann/Selmayr/Klabunde, DS-GVO, 2. edition, 2018, Art. 4 DSGVO Nr. 1, mn. 18; Schantz in Schantz/Wolff, Das neue Datenschutzrecht, 1. edition, 2017, chapter C.II, mn. 291–292; Schild in BeckOK Datenschutzrecht, 45. edition, 2023, Art. 4 Nr. 1, mn. 17; Ziebarth in Sydow/Marsch, DS-GVO/BDSG, 3. edition, 2022, Art. 4 Nr. 1 DSGVO, mn. 14; Karg/Kühn, Datenschutzrechtlicher Rahmen für "Device Fingerprinting" - Das klammheimliche Ende der Anonymität im Internet, ZD 2014, 285, p. 288; Wenhold, Nutzerprofilbildung durch Webtracking, 1. edition, 2018, chapter E.I.2, p. 130]
 
-In the context of online tracking and advertising, IDs are never processed on their own. Instead, they are combined with other information, such as interaction data, browsing history, location data, device parameters, behavioral patterns, and IP addresses, to create detailed fingerprints and profiles of users and target them with personalized ads. As shown in @tracking, the very purpose of the trackers that the controller embedded into the app is to target and/or recognize individual users. In this larger context, there is an overwhelming consensus among legal scholars that such data processing falls under the scope of the GDPR and constitutes personal data.#footnote[Gola in Gola/Heckmann, Datenschutz-Grundverordnung - Bundesdatenschutzgesetz, 3. edition, 2022, Art. 4 Nr. 1 DSGVO, mn. 23; Klar/Kühling in Kühling/Buchner, DS-GVO/BDSG, 3. edition, 2020, Art. 4 Nr. 1 DSGVO, mn. 36; Schild in BeckOK Datenschutzrecht, 45. edition, 2023, Art. 4 Nr. 1, mn. 20] This is in line with Recital 30 GDPR.
+In the context of online tracking and advertising, IDs are never processed on their own. Instead, they are combined with other information, such as interaction data, browsing history, location data, device parameters, behavioral patterns, and IP addresses, to create detailed fingerprints and profiles of users and target them with personalized ads. As shown in @tracking, the very purpose of the trackers that the controller embedded into the website is to target and/or recognize individual users. In this larger context, there is an overwhelming consensus among legal scholars that such data processing falls under the scope of the GDPR and constitutes personal data.#footnote[Gola in Gola/Heckmann, Datenschutz-Grundverordnung - Bundesdatenschutzgesetz, 3. edition, 2022, Art. 4 Nr. 1 DSGVO, mn. 23; Klar/Kühling in Kühling/Buchner, DS-GVO/BDSG, 3. edition, 2020, Art. 4 Nr. 1 DSGVO, mn. 36; Schild in BeckOK Datenschutzrecht, 45. edition, 2023, Art. 4 Nr. 1, mn. 20] This is in line with Recital 30 GDPR.
 
 This position is further supported by a large corpus of guidelines and decisions by various data protection authorities. These are outlined in the Appendix in @dpa-guidelines-id and @dpa-decisions-id, respectively.
 
@@ -216,19 +246,19 @@ The controller has failed to implement appropriate technical and organisational 
 
 Art. 25(1) GDPR requires the controller to implement appropriate measures at the time of determining the means of processing as well as during the processing itself. This includes measures to effectively implement the data minimisation principle as per Art. 5(1)(c) GDPR.#footnote[EDPB, Guidelines 4/2019 on Article 25 Data Protection by Design and by Default, Version 2.0, 2020, https://edpb.europa.eu/sites/default/files/files/file1/edpb_guidelines_201904_dataprotection_by_design_and_by_default_v2.0_en.pdf, mn. 61] The EDPB has confirmed that this obligation applies to all controllers, regardless of their size or the complexity of their processing operations.#footnote[ibid., mn. 6]
 
-@tracking details the tracking that the app has performed. As explained in @context-online-tracking, the online tracking ecosystem presents severe risks to the rights and freedoms of data subjects, even if only seemingly benign data is being processed. It is the controller's obligation to take the current 'state of the art' into account in their risk analysis and have knowledge of how technology can present data protection risks. #footnote[ibid., mn. 19, 30] They should have been aware of these risks as they are widely documented and discussed in literature, media, and public debate.
+@tracking details the tracking that the website has performed. As explained in @context-online-tracking, the online tracking ecosystem presents severe risks to the rights and freedoms of data subjects, even if only seemingly benign data is being processed. It is the controller's obligation to take the current 'state of the art' into account in their risk analysis and have knowledge of how technology can present data protection risks. #footnote[ibid., mn. 19, 30] They should have been aware of these risks as they are widely documented and discussed in literature, media, and public debate.
 
-However, they have failed to mitigate these risks, instead enabling unnecessary collection and transmission of data by default. The controller has included the above mentioned third-party tracking SDKs into their app and configured them to send tracking payloads without any user interaction.
+However, they have failed to mitigate these risks, instead enabling unnecessary collection and transmission of data by default. The controller has included the above mentioned third-party tracking SDKs and scripts into their website and configured them to send tracking payloads without any user interaction.
 
-The controller cannot argue that the SDKs themselves configured the tracking to be enabled by default, either. It is the controller's responsiblity to make sure that functions that do not have a legal basis or are not compatible with the intended purposes of processing are switched off when including third-party software in their app. #footnote[ibid., mn. 44]
+The controller cannot argue that the SDKs and scripts themselves configured the tracking to be enabled by default, either. It is the controller's responsiblity to make sure that functions that do not have a legal basis or are not compatible with the intended purposes of processing are switched off when including third-party software in their website. #footnote[ibid., mn. 44]
 
-As explained in @no-legal-basis, the data collected through the tracking goes beyond what is adequate and necessary for the app's functionality. If the controller should argue that they need certain statistics for example to monitor the performance of their app, less granular, aggregated, or anonymized data would have sufficed for this purpose instead of combining the data with unique identifiers that allow the controller and third-parties to identify me.#footnote[ibid., mn. 49, 75] They have thus collected more data than is necessary, violating the principle of data minimisation as prescribed by Art. 5(1)(c) GDPR.
+As explained in @no-legal-basis, the data collected through the tracking goes beyond what is adequate and necessary for the website's functionality. If the controller should argue that they need certain statistics for example to monitor the performance of their website, less granular, aggregated, or anonymized data would have sufficed for this purpose instead of combining the data with unique identifiers that allow the controller and third-parties to identify me.#footnote[ibid., mn. 49, 75] They have thus collected more data than is necessary, violating the principle of data minimisation as prescribed by Art. 5(1)(c) GDPR.
 
-Finally, users cannot reasonably expect that apps transmit such detailed identifiable data about them without any interaction.#footnote[ibid., mn. 70]
+Finally, users cannot reasonably expect that websites transmit such detailed identifiable data about them without any interaction.#footnote[ibid., mn. 70]
 
 == Burden of proof <legal-grounds-burden-of-proof>
 
-As a data subject, I have no insights into the internal processes and data processing practices of either the controller or the tracking companies the controller has integrated into their app. Through this complaint, I have materially substantiated why I believe that the controller has violated my data protection rights on a technical and legal basis.
+As a data subject, I have no insights into the internal processes and data processing practices of either the controller or the tracking companies the controller has integrated into their website. Through this complaint, I have materially substantiated why I believe that the controller has violated my data protection rights on a technical and legal basis.
 
 The burden of proof that their processing is in line with the GDPR falls on the controller as per Art. 5(2) GDPR.#footnote[with additional references: Schantz in BeckOK Datenschutzrecht, 45. edition, 2023, Art. 5, mn. 39] It was further explicitly confirmed by the European Court of Justice.#footnote[European Court of Justice, Judgment of 24 February 2022, Case C-175/20, https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:62020CJ0175]
 
@@ -237,7 +267,7 @@ The burden of proof that their processing is in line with the GDPR falls on the 
 
 In addition to the GDPR, I believe that the controller has also violated §~25 TDDDG as the transposition of Art. 5(3) ePrivacy Directive into German law.
 
-As shown in @tracking, the app has sent various information relating to the used device to tracking companies. In order to do so, the app inevitably had to read the information from the terminal equipment#footnote[Schürmann/Guttmann in Auernhammer, DSGVO/BDSG, 8. edition, 2023, §~25 TTDSG, mn. 27, 31, 37; EDPB, Guidelines 2/2023 on Technical Scope of Art. 5(3) of ePrivacy Directive, 2023, https://www.edpb.europa.eu/system/files/2023-11/edpb_guidelines_202302_technical_scope_art_53_eprivacydirective_en.pdf, mn. 29, 31, 35, 39], thus opening the scope of §~25 TDDDG. Unlike the GDPR, the TDDDG doesn't just cover personal data but any data that is read from or stored on an end user's terminal equipment.#footnote[EDPB, Guidelines 2/2023 on Technical Scope of Art. 5(3) of ePrivacy Directive, 2023, https://www.edpb.europa.eu/system/files/2023-11/edpb_guidelines_202302_technical_scope_art_53_eprivacydirective_en.pdf, mn. 7–12; Schneider in Assion, TTDSG, 2022, §~25 TTDSG, mn. 23] The TDDDG does not include any significance threshold on the types of data concerned, either—any information can fall within its scope, including purely technical information.#footnote[Schürmann/Guttmann in Auernhammer, DSGVO/BDSG, 8. edition, 2023, §~25 TTDSG, mn. 20–23; Burkhardt/Reif/Schwartmann in Schwartmann/Jaspers/Eckhardt, TTDSG, 1. edition, 2022, §~25 TTDSG, mn. 29]
+As shown in @tracking, the website has sent various information relating to the used device to tracking companies. In order to do so, the website inevitably had to read the information from the terminal equipment#footnote[Schürmann/Guttmann in Auernhammer, DSGVO/BDSG, 8. edition, 2023, §~25 TTDSG, mn. 27, 31, 37; EDPB, Guidelines 2/2023 on Technical Scope of Art. 5(3) of ePrivacy Directive, 2023, https://www.edpb.europa.eu/system/files/2023-11/edpb_guidelines_202302_technical_scope_art_53_eprivacydirective_en.pdf, mn. 29, 31, 35, 39], thus opening the scope of §~25 TDDDG. Unlike the GDPR, the TDDDG doesn't just cover personal data but any data that is read from or stored on an end user's terminal equipment.#footnote[EDPB, Guidelines 2/2023 on Technical Scope of Art. 5(3) of ePrivacy Directive, 2023, https://www.edpb.europa.eu/system/files/2023-11/edpb_guidelines_202302_technical_scope_art_53_eprivacydirective_en.pdf, mn. 7–12; Schneider in Assion, TTDSG, 2022, §~25 TTDSG, mn. 23] The TDDDG does not include any significance threshold on the types of data concerned, either—any information can fall within its scope, including purely technical information.#footnote[Schürmann/Guttmann in Auernhammer, DSGVO/BDSG, 8. edition, 2023, §~25 TTDSG, mn. 20–23; Burkhardt/Reif/Schwartmann in Schwartmann/Jaspers/Eckhardt, TTDSG, 1. edition, 2022, §~25 TTDSG, mn. 29]
 
 The storing of information, or the gaining of access to information already stored in the terminal equipment of a user requires the user's consent on the basis of clear and comprehensive information according to §~25(1) TDDDG.
 
@@ -246,7 +276,7 @@ While the TDDDG does list two exceptions to that rule in §~25(2) TDDDG, neither
 + As set out above, the information was sent to tracking and/or advertising companies. As such, the purpose of accessing this information was expressly _not_ the transmission of a message over a public telecommunications network. The exception in §~25(2)(1) TDDDG only applies where the transmission of a message over a public telecommunications network would not be possible at all without the storing of or the access to the concerned information#footnote[Schürmann/Guttmann in Auernhammer, DSGVO/BDSG, 8. edition, 2023, §~25 TTDSG, mn. 123; Schmitz in Geppert/Schütz, Beck'scher TKG-Kommentar, 5. edition, 2023, §~25 TTDSG, mn. 66; Hanloser in  Gierschmann/Baumgartner, TTDSG, 1. edition, 2023, §~25 TTDSG, mn. 94; Nolte in Säcker/Körber, TKG – TTDSG, 4. edition, 2023, §~25 TTDSG, mn. 33], and is thus not applicable here.
 + Likewise, the controller cannot claim that the access was absolutely necessary to provide a digital service expressly requested by me. The exception has to be interpreted narrowly, with tracking and advertising not being strictly necessary.#footnote[Article 29 Data Protection Working Party, WP 194, Opinion 04/2012 on Cookie Consent Exemption, https://ec.europa.eu/justice/article-29/documentation/opinion-recommendation/files/2012/wp194_en.pdf; Datenschutzkonferenz, Orientierungshilfe der Aufsichtsbehörden für Anbieter:innen von Telemedien ab dem 1. Dezember 2021 (OH Telemedien 2021), Version 1.1, 2022, https://www.datenschutzkonferenz-online.de/media/oh/20221130_OH_Telemedien_2021_Version_1_1.pdf, Section III. 3. c); Der Landesbeauftragte für Datenschutz und Informationsfreiheit Baden-Württemberg, FAQ: Cookies und Tracking durch Betreiber von Webseiten und Hersteller von Smartphone-Apps, Version 2.0.1, 2022, https://www.baden-wuerttemberg.datenschutz.de/wp-content/uploads/2022/03/FAQ-Tracking-online.pdf, Section A.1.4; Schneider in Assion, TTDSG, 2022, § 25 TTDSG, mn. 36, 44; Nolte in Säcker/Körber, TKG – TTDSG, 4. edition, 2023, §~25 TTDSG, mn. 37; Burkhardt/Reif/Schwartmann in Schwartmann/Jaspers/Eckhardt, TTDSG, 1. edition, 2022, §~25 TTDSG, mn. 127, 140; Ettig in Taeger/Gabel, DSGVO - BDSG - TTDSG, 4. edition, 2022, § 25 TTDSG, mn. 56] Thus, §~25(2)(2) TDDDG is not applicable either.
 
-However, the controller has not obtained consent as there was no interaction with the app at all. §~25(1) TDDDG defers to the GDPR for conditions on consent. As such, the same reasoning as in @no-legal-basis applies here as well.
+However, the controller has not obtained consent as there was no interaction with the website at all. §~25(1) TDDDG defers to the GDPR for conditions on consent. As such, the same reasoning as in @no-legal-basis applies here as well.
 {% endif %}
 
 = Requests and suggestions
@@ -258,9 +288,9 @@ I ask you to investigate my complaint and to examine the described issues by mea
 
 I also ask you to inform me about the progress and outcome of the complaint procedure according to Art. 77(2) GDPR and Art. 57(1)(f) GDPR during the course of the complaint procedure, but at the latest within three months (cf. Art. 78(2) GDPR).
 
-I finally ask you to make use of any supervisory measures that you deem necessary to mitigate the controller's violation of my rights in line with your corrective powers as per Art. 58(2) GDPR. In doing so, please consider that the described violations in all likelihood do not just apply to me, but to all users of the app.
+I finally ask you to make use of any supervisory measures that you deem necessary to mitigate the controller's violation of my rights in line with your corrective powers as per Art. 58(2) GDPR. In doing so, please consider that the described violations in all likelihood do not just apply to me, but to all users of the website.
 {% else %}
-In the previous sections, I have explained why I believe that the controller has violated my data protection rights. I am therefore asking you to investigate this matter and to examine the described issues by means of your investigative powers according to Art. 58(1) GDPR. I am also asking you to make use of any supervisory measures that you deem necessary to mitigate the controller's violation of my rights in line with your corrective powers as per Art. 58(2) GDPR. In doing so, please consider that the described violations in all likelihood do not just apply to me, but to all users of the app.
+In the previous sections, I have explained why I believe that the controller has violated my data protection rights. I am therefore asking you to investigate this matter and to examine the described issues by means of your investigative powers according to Art. 58(1) GDPR. I am also asking you to make use of any supervisory measures that you deem necessary to mitigate the controller's violation of my rights in line with your corrective powers as per Art. 58(2) GDPR. In doing so, please consider that the described violations in all likelihood do not just apply to me, but to all users of the website.
 
 While I am aware that you are not legally required to inform me about the progress and outcome of the procedure as this is not a formal complaint, I would nonetheless appreciate if you did.
 {% endif %}
@@ -283,20 +313,6 @@ Thank you in advance for your assistance.
 #set heading(numbering: (..nums) => "A" + nums.pos().map(str).join(".") + ".")
 
 #text(weight: 700, 1.75em)[Appendix]
-
-{% if type === 'complaint' %}
-= Results from "{% if analysis.app.platform === 'Android' %}TrackerControl{% elif analysis.app.platform === 'iOS' %}App Privacy Report{% endif %}" on my device, filtered to DNS hostnames contacted by the app <personal-hostnames>
-
-#table(
-  columns: (10%, 30%, 60%),
-  align: (right, left, left),
-
-  [*\#*], [*Time*], [*Hostname*],
-  {% for entry in complaintOptions.userNetworkActivity -%}
-  [{{ entry.index + 1 }}], [{{ entry.timestamp | dateFormat }}], [{{ entry.hostname }}],
-  {% endfor %}
-)
-{% endif %}
 
 = DPA guidelines regarding personal data in the context of online tracking <dpa-guidelines-id>
 

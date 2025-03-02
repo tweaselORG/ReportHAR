@@ -20,6 +20,23 @@ export const renderNunjucks = (options: RenderNunjucksOptions) => {
     nunjucks.addFilter('timeFormat', (date: Date | string | undefined) =>
         date ? new Date(date).toLocaleTimeString(options.language) : undefined
     );
+    nunjucks.addFilter('durationFormat', (durationInMs: number | undefined) => {
+        if (!durationInMs) return undefined;
+
+        const hours = Math.floor(durationInMs / 36e5);
+        const minutes = Math.floor((durationInMs % 36e5) / 6e4);
+        const seconds = Math.floor((durationInMs % 6e4) / 1e3);
+        const milliseconds = durationInMs % 1e3;
+
+        return [
+            hours > 0 ? `${hours} h` : '',
+            minutes > 0 ? `${minutes} min` : '',
+            seconds > 0 ? `${seconds}.${milliseconds} s` : '',
+            milliseconds > 0 ? `${milliseconds} ms` : '',
+        ]
+            .filter((s) => s !== '')
+            .join(', ');
+    });
     // Wrap content in a raw/code block, properly escaping user input.
     nunjucks.addFilter(
         'code',
